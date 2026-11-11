@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calendario de Riego</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <!-- MENU LATERAL -->
+        <aside class="menu-lateral">
+
+            <h2>Orquídeas</h2>
+
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Datos</a>
+                <a href="#" class="activo">Calendario de Riego</a>
+                <a href="#">Configuración</a>
+            </nav>
+
+        </aside>
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="contenido">
+
+            <header class="encabezado">
+
+                <h1>Calendario de Riego</h1>
+
+                <div class="perfil">
+                    <span>👤</span>
+                </div>
+
+            </header>
+
+
+            <!-- SECCION DEL CALENDARIO -->
+            <section class="contenido-calendario">
+
+                <div class="calendario">
+
+                    <div class="calendario-encabezado">
+
+                        <h2>Calendario de Riego</h2>
+
+                        <div class="navegacion-mes">
+
+                            <button id="mesAnterior">&lt;</button>
+
+                            <h3 id="mesActual"></h3>
+
+                            <button id="mesSiguiente">&gt;</button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DIAS DE LA SEMANA -->
+                    <div class="dias-semana">
+
+                        <div>Lun</div>
+                        <div>Mar</div>
+                        <div>Mié</div>
+                        <div>Jue</div>
+                        <div>Vie</div>
+                        <div>Sáb</div>
+                        <div>Dom</div>
+
+                    </div>
+
+
+                    <!-- DIAS DEL MES -->
+                    <div id="diasCalendario" class="dias-calendario">
+
+                    </div>
+
+                </div>
+
+
+                <!-- PANEL DE PROXIMOS RIEGOS -->
+                <div class="proximos-riegos">
+
+                    <h2>Próximos riegos</h2>
+
+                    <div id="listaRiegos">
+
+                        <p>No hay riegos programados.</p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- VENTANA PARA PROGRAMAR EL RIEGO -->
+            <div id="modalRiego" class="modal">
+
+                <div class="modal-contenido">
+
+                    <!-- ENCABEZADO DEL MODAL -->
+                    <div class="modal-encabezado">
+
+                        <h2>Programar riego</h2>
+
+                        <button
+                            id="cerrarModal"
+                            class="cerrar-modal"
+                            type="button">
+                            &times;
+                        </button>
+
+                    </div>
+
+
+                    <!-- FECHA SELECCIONADA -->
+                    <p id="fechaSeleccionada"></p>
+
+
+                    <!-- SELECCIONAR HORA -->
+                    <label for="horaRiego">
+                        Seleccionar hora de riego:
+                    </label>
+
+                    <input
+                        type="time"
+                        id="horaRiego"
+                    >
+
+
+                    <!-- BOTONES DEL MODAL -->
+                    <div class="modal-botones">
+
+                        <button
+                            id="eliminarRiego"
+                            class="btn-eliminar"
+                            type="button">
+                            Eliminar
+                        </button>
+
+                        <button
+                            id="cancelarRiego"
+                            class="btn-cancelar"
+                            type="button">
+                            Cancelar
+                        </button>
+
+                        <button
+                            id="guardarRiego"
+                            class="btn-guardar"
+                            type="button">
+                            Guardar riego
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ARCHIVO JAVASCRIPT -->
+    <script src="calendario.js"></script>
+
+</body>
+</html>

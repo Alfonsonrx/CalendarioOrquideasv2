@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos - Orquídeas</title>
+
+    <!-- Estilos generales -->
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- Estilos propios de Datos -->
+    <link rel="stylesheet" href="datos.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <!-- BARRA LATERAL -->
+        <aside class="sidebar">
+
+            <h2>Orquídeas</h2>
+
+            <nav>
+                <a href="../Home/home.html">Home</a>
+
+                <a href="datos.html" class="activo">Datos</a>
+
+                <a href="../index.html">Calendario de Riego</a>
+
+                <a href="../Configuracion/configuracion.html">
+                    Configuración
+                </a>
+            </nav>
+
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="contenido">
+
+            <h1>Datos Ambientales</h1>
+
+            <!-- ALERTAS AMBIENTALES -->
+            <section class="panel-alertas">
+
+                <h2>Estado del ambiente</h2>
+
+                <div id="estadoGeneral" class="estado-general">
+                    Evaluando condiciones ambientales...
+                </div>
+
+                <div class="indicadores-alerta">
+
+                    <!-- HUMEDAD -->
+                    <div class="indicador-alerta">
+
+                        <h3>Humedad ambiental</h3>
+
+                        <p id="alertaHumedad">--</p>
+
+                        <span id="valorHumedad">-- %</span>
+
+                    </div>
+
+                    <!-- TEMPERATURA -->
+                    <div class="indicador-alerta">
+
+                        <h3>Temperatura ambiental</h3>
+
+                        <p id="alertaTemperatura">--</p>
+
+                        <span id="valorTemperatura">-- °C</span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- GRAFICOS -->
+            <section class="graficos">
+
+                <div class="tarjeta grafico">
+
+                    <h2>Humedad Ambiental</h2>
+
+                    <p>Registro de humedad (%)</p>
+
+                    <canvas id="graficoHumedad"></canvas>
+
+                </div>
+
+
+                <div class="tarjeta grafico">
+
+                    <h2>Temperatura Ambiental</h2>
+
+                    <p>Registro de temperatura (°C)</p>
+
+                    <canvas id="graficoTemperatura"></canvas>
+
+                </div>
+
+            </section>
+
+
+            <!-- REGISTRO HISTORICO -->
+            <section class="tarjeta historial">
+
+                <h2>Registro Histórico de Condiciones Ambientales</h2>
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Temperatura</th>
+                                <th>Humedad</th>
+                                <th>Hora</th>
+                                <th>Estado %</th>
+                                <th>Estado °C</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tablaRegistros">
+                            <!-- Los registros se cargarán desde JavaScript -->
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- LIBRERIA PARA GRAFICOS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- JAVASCRIPT DE DATOS -->
+    <script src="datos.js"></script>
+
+</body>
+</html>

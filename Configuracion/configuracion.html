@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Configuración - Orquídeas</title>
+
+    <!-- Estilos generales -->
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="configuracion.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <!-- MENU LATERAL -->
+        <aside class="menu-lateral">
+
+            <h2>Orquídeas</h2>
+
+            <nav>
+
+                <a href="../Home/home.html">Home</a>
+
+                <a href="../Datos/datos.html">Datos</a>
+
+                <a href="../index.html">Calendario de Riego</a>
+
+                <a href="configuracion.html" class="activo">Configuración</a>
+                    
+                
+
+            </nav>
+
+        </aside>
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="contenido">
+
+            <header class="encabezado">
+
+                <h1>Configuración</h1>
+
+                <div class="perfil">
+                    <span>👤</span>
+                </div>
+
+            </header>
+
+
+            <!-- ESTADO DE CONEXION -->
+            <section class="tarjeta-configuracion">
+
+                <div class="titulo-configuracion">
+
+                    <div>
+                        <h2>Estado de conexión</h2>
+
+                        <p>
+                            Consulta el estado de conexión de los sensores.
+                        </p>
+                    </div>
+
+                    <div id="estadoConexion" class="estado-conexion desconectado">
+                        <span class="indicador-conexion"></span>
+                        Desconectado
+                    </div>
+
+                </div>
+
+
+                <div class="informacion-sensor">
+
+                    <div class="icono-sensor">
+                        📡
+                    </div>
+
+                    <div>
+                        <h3>Sensor de humedad y temperatura</h3>
+
+                        <p id="descripcionConexion">
+                            No hay sensores conectados.
+                        </p>
+                    </div>
+
+                </div>
+
+                <button id="btnConexion" class="btn-principal" type="button">
+                    Simular conexión
+                </button>
+
+            </section>
+
+
+            <!-- MODIFICAR FECHAS DE RIEGO -->
+            <section class="tarjeta-configuracion">
+
+                <div class="titulo-configuracion">
+
+                    <div>
+                        <h2>Modificar fechas de riego</h2>
+
+                        <p>
+                            Administra los días y horarios de riego
+                            de tus orquídeas.
+                        </p>
+                    </div>
+
+                    <div class="icono-seccion">
+                        📅
+                    </div>
+
+                </div>
+
+                <a href="../index.html" class="btn-principal enlace-boton">
+                    Ir al calendario de riego
+                </a>
+
+            </section>
+
+
+            <!-- FRECUENCIA DEL REGISTRO HISTORICO -->
+            <section class="tarjeta-configuracion">
+
+                <div class="titulo-configuracion">
+
+                    <div>
+                        <h2>Frecuencia del registro histórico</h2>
+
+                        <p>
+                            Selecciona cada cuánto tiempo se registran
+                            los datos ambientales.
+                        </p>
+                    </div>
+
+                    <div class="icono-seccion">
+                        📊
+                    </div>
+
+                </div>
+
+
+                <div class="formulario-frecuencia">
+
+                    <label for="frecuencia">
+                        Frecuencia de registro:
+                    </label>
+
+                    <select id="frecuencia">
+
+                        <option value="15">Cada 15 minutos</option>
+
+                        <option value="30">Cada 30 minutos</option>
+
+                        <option value="60" selected>
+                            Cada 1 hora
+                        </option>
+
+                        <option value="120">Cada 2 horas</option>
+
+                        <option value="360">Cada 6 horas</option>
+
+                    </select>
+
+
+                    <button id="guardarFrecuencia"
+                        class="btn-principal"
+                        type="button">
+
+                        Guardar configuración
+
+                    </button>
+
+                    <p id="mensajeFrecuencia" class="mensaje"></p>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="configuracion.js"></script>
+
+</body>
+</html>

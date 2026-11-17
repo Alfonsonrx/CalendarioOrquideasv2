@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Home - Orquídeas</title>
+
+    <!-- Estilos generales de la aplicación -->
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- Estilos propios de Home -->
+    <link rel="stylesheet" href="home.css">
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <!-- MENU LATERAL -->
+        <aside class="menu-lateral">
+
+            <h2>Orquídeas</h2>
+
+            <nav>
+                <a href="home.html" class="activo">Home</a>
+
+                <a href="../Datos/datos.html">Datos</a>
+
+                <a href="../index.html">Calendario de Riego</a>
+
+                <a href="../Configuracion/configuracion.html">Configuración</a>
+                    
+            </nav>
+
+        </aside>
+
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="contenido">
+
+            <!-- ENCABEZADO -->
+            <header class="encabezado">
+
+                <h1>Panel Principal</h1>
+
+                <div class="perfil">
+                    <span>👤</span>
+                </div>
+
+            </header>
+
+
+            <!-- TEMPERATURA Y HUMEDAD -->
+            <section class="indicadores-home">
+
+                <div class="indicador">
+
+                    <div class="indicador-dato">
+                        <span id="temperatura">25</span>
+                        <span>°C</span>
+                    </div>
+
+                    <p>Temperatura ambiental</p>
+
+                </div>
+
+
+                <div class="separador"></div>
+
+
+                <div class="indicador">
+
+                    <div class="indicador-dato">
+                        <span id="humedad">75</span>
+                        <span>%</span>
+                    </div>
+
+                    <p>Humedad ambiental</p>
+
+                </div>
+
+            </section>
+
+
+            <p class="descripcion-home">
+                Información actual del ambiente de tus orquídeas
+            </p>
+
+
+            <!-- SECCION INFERIOR -->
+            <section class="seccion-inferior">
+
+
+                <!-- CALENDARIO DE RIEGO -->
+                <div class="tarjeta-home calendario-home">
+
+                    <div class="titulo-tarjeta">
+
+                        <h2>Fechas de riego</h2>
+
+                        <a href="../index.html">Ver calendario</a>
+
+                    </div>
+
+
+                    <div class="mes-home">
+
+                        <button id="mesAnteriorHome" type="button">
+                            &lt;
+                        </button>
+
+                        <h3 id="mesActualHome"></h3>
+
+                        <button id="mesSiguienteHome" type="button">
+                            &gt;
+                        </button>
+
+                    </div>
+
+
+                    <div class="dias-semana-home">
+
+                        <span>Lun</span>
+                        <span>Mar</span>
+                        <span>Mié</span>
+                        <span>Jue</span>
+                        <span>Vie</span>
+                        <span>Sáb</span>
+                        <span>Dom</span>
+
+                    </div>
+
+
+                    <div id="calendarioHome" class="dias-mes-home">
+
+                    </div>
+
+                    <p class="leyenda-riego">
+                        <span></span>
+                        Días programados para riego
+                    </p>
+
+                </div>
+
+
+                <!-- RELOJ -->
+                <div class="tarjeta-home reloj-home">
+
+                    <h2>Hora actual</h2>
+
+                    <div id="horaActual" class="hora-actual">
+                        00:00:00
+                    </div>
+
+
+                    <div class="reloj-analogico">
+
+                        <div class="marca-reloj marca-12">12</div>
+                        <div class="marca-reloj marca-3">3</div>
+                        <div class="marca-reloj marca-6">6</div>
+                        <div class="marca-reloj marca-9">9</div>
+
+                        <div id="manecillaHora" class="manecilla hora"></div>
+
+                        <div id="manecillaMinuto" class="manecilla minuto"></div>
+
+                        <div id="manecillaSegundo" class="manecilla segundo"></div>
+
+                        <div class="centro-reloj"></div>
+
+                    </div>
+
+                    <p>Hora local del dispositivo</p>
+
+                </div>
+
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="home.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 # 102 — Sensores en Configuración · Implementation plan
 
-Status: draft · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
+Status: built · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
 
 ## 1. Module structure
 

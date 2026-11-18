@@ -1,6 +1,6 @@
 # 102 — Sensores en Configuración
 
-Status: draft · Depends on: `001-sesion-cliente-api`, backend `102-sensor-registry`, backend `103-sensor-readings`
+Status: built · Depends on: `001-sesion-cliente-api`, backend `102-sensor-registry`, backend `103-sensor-readings`
 
 ## 1. Context and objective
 
@@ -162,4 +162,32 @@ mostraría una conexión y una frecuencia que no existen.
 
 ### Taken while building
 
-None yet.
+- 2026-11-18 · Claude (navegador de Orca, backend local, simulador del backend; cuenta de prueba con
+  sensores 7–10 de 101) · round 1: FR-7.a: Configuración sin "Simular conexión" ni frecuencia global,
+  solo "Mis sensores" y "Modificar fechas de riego". FR-1.a, FR-1.b, FR-1.c: la lista leyó `/sensors` y
+  mostró "#7 · Humedad banco norte" con "Humedad · Wi-Fi · Intervalo: 1 min · Mín: 70 % · Máx: 90 % ·
+  Activo" (y "Bluetooth", "Temperatura", "°C" en los demás). FR-1.d: con el máximo del 10 vaciado por la
+  API, "Máx: —". FR-1.e: con `sensores = []` en la consola, "Aún no registras sensores.". FR-2.a: con el
+  simulador enviando, 7–9 "Conectado". FR-2.c, FR-2.d: el 10, sin lecturas, "Esperando la primera
+  lectura" con los 4 puntos de qué revisar (energía, Wi-Fi, id 10 y clave vigente, dirección
+  `http://localhost:8000`). FR-2.b: con el simulador detenido a las 16:30:59, a las 16:33:10 (dos
+  intervalos de 1 min) 7–9 pasaron a "Sin señal" con qué revisar.
+- 2026-11-18 · Claude (mismo entorno) · round 2: FR-3.a, FR-3.b, FR-3.g: "Registrar sensor" abrió el
+  formulario con Nombre, Tipo, Conexión, Intervalo de lectura (1, 5, 15, 30, 60, 120, 360), Mínimo y
+  Máximo, y "Si dejas un límite vacío, se usa el valor por defecto del tipo.". FR-3.e: mínimo 95 y máximo
+  90 mostraron "El límite inferior no puede ser mayor que el superior" con el formulario abierto y lo
+  escrito conservado. FR-3.c: con los límites vacíos se registró el sensor 11 y se mostró "Sensor 11 ·
+  clave:" con la clave (43 caracteres, no copiada aquí) y "Cópiala en el dispositivo: no se volverá a
+  mostrar."; el simulador del backend con esa clave recibió "201 aceptada". FR-3.d: ningún valor de
+  `localStorage` contenía la clave, tampoco tras la clave nueva. FR-3.f: el 11 apareció en la lista con
+  70 %–90 %; repetido tras corregir el botón (sensor 12, temperatura, Bluetooth). FR-4.a, FR-4.b:
+  "Editar" en el 11 mostró sus valores con Tipo y Conexión deshabilitados y la ayuda de límite vacío de
+  edición. FR-4.c: cambiar solo el nombre envió `{"name": "Humedad maceta"}`. FR-4.d: vaciar el máximo
+  envió `{"max_val": null}`, la lista mostró "Máx: —" y `GET /sensors/11` dio `max_val` null. FR-4.e:
+  95/90 al editar mostró el rechazo y conservó lo escrito. FR-5.a: "Desactivar" preguntó
+  "¿Desactivar «Humedad maceta»? Dejará de registrar lecturas."; cancelar no cambió nada. FR-5.b: al
+  confirmar, "Inactivo" y botón "Activar"; el simulador recibió "403 Sensor inactivo". FR-2.e: el sensor
+  inactivo mostró "Inactivo" sin qué revisar. FR-5.c: "Activar", sin confirmación, lo devolvió a
+  "Conectado". FR-6.a: "Clave nueva" preguntó "¿Generar una clave nueva para «Humedad maceta»? La clave
+  anterior deja de funcionar.". FR-6.b: al confirmar se mostró la clave nueva con "Sensor 11"; el
+  simulador con la clave anterior recibió "401 Clave de sensor inválida" y se detuvo.

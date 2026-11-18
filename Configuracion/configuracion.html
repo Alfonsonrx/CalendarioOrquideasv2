@@ -55,46 +55,106 @@
             </header>
 
 
-            <!-- ESTADO DE CONEXION -->
+            <!-- MIS SENSORES (spec 102) -->
             <section class="tarjeta-configuracion">
 
                 <div class="titulo-configuracion">
 
                     <div>
-                        <h2>Estado de conexión</h2>
-
+                        <h2>Mis sensores</h2>
                         <p>
-                            Consulta el estado de conexión de los sensores.
+                            Registra tus sensores, elige cada cuánto miden
+                            y revisa si están enviando datos.
                         </p>
                     </div>
 
-                    <div id="estadoConexion" class="estado-conexion desconectado">
-                        <span class="indicador-conexion"></span>
-                        Desconectado
-                    </div>
-
-                </div>
-
-
-                <div class="informacion-sensor">
-
-                    <div class="icono-sensor">
+                    <div class="icono-seccion">
                         📡
                     </div>
 
-                    <div>
-                        <h3>Sensor de humedad y temperatura</h3>
+                </div>
 
-                        <p id="descripcionConexion">
-                            No hay sensores conectados.
-                        </p>
-                    </div>
+                <p id="mensajeSensores" class="mensaje-error" role="status" hidden></p>
+
+                <div id="listaSensores" class="lista-sensores"></div>
+
+
+                <!-- CLAVE DEL SENSOR: se muestra una sola vez (FR-3.c, FR-6.b) -->
+                <div id="claveSensor" class="caja-clave" role="status" hidden>
+
+                    <p id="claveSensorId"></p>
+
+                    <code id="claveSensorValor"></code>
+
+                    <p>Cópiala en el dispositivo: no se volverá a mostrar.</p>
+
+                    <button id="cerrarClave" class="btn-secundario" type="button">
+                        Listo
+                    </button>
 
                 </div>
 
-                <button id="btnConexion" class="btn-principal" type="button">
-                    Simular conexión
+
+                <button id="btnNuevoSensor" class="btn-principal" type="button">
+                    Registrar sensor
                 </button>
+
+
+                <!-- FORMULARIO: REGISTRAR O EDITAR UN SENSOR -->
+                <form id="formSensor" class="formulario-sensor" hidden>
+
+                    <h3 id="tituloFormulario">Registrar sensor</h3>
+
+                    <label for="nombreSensor">Nombre:</label>
+                    <input type="text" id="nombreSensor" required maxlength="100">
+
+                    <label for="tipoSensor">Tipo:</label>
+                    <select id="tipoSensor">
+                        <option value="humidity">Humedad</option>
+                        <option value="temperature">Temperatura</option>
+                    </select>
+
+                    <label for="conexionSensor">Conexión:</label>
+                    <select id="conexionSensor">
+                        <option value="wifi">Wi-Fi</option>
+                        <option value="bluetooth">Bluetooth</option>
+                    </select>
+
+                    <!-- Frecuencia del registro histórico (RF5, 102 D5) -->
+                    <label for="intervaloSensor">Intervalo de lectura:</label>
+                    <select id="intervaloSensor">
+                        <option value="1">Cada 1 minuto</option>
+                        <option value="5">Cada 5 minutos</option>
+                        <option value="15">Cada 15 minutos</option>
+                        <option value="30">Cada 30 minutos</option>
+                        <option value="60" selected>Cada 1 hora</option>
+                        <option value="120">Cada 2 horas</option>
+                        <option value="360">Cada 6 horas</option>
+                    </select>
+
+                    <label for="minSensor">Mínimo:</label>
+                    <input type="number" id="minSensor" step="0.01">
+
+                    <label for="maxSensor">Máximo:</label>
+                    <input type="number" id="maxSensor" step="0.01">
+
+                    <p id="ayudaLimites" class="ayuda-limites"></p>
+
+                    <p id="mensajeFormulario" class="mensaje-error" role="status" hidden></p>
+
+                    <div class="botones-formulario">
+
+                        <button id="cancelarSensor" class="btn-secundario" type="button">
+                            Cancelar
+                        </button>
+
+                        <button class="btn-principal" type="submit">
+                            Guardar
+                        </button>
+
+                    </div>
+
+                </form>
 
             </section>
 
@@ -126,70 +186,15 @@
             </section>
 
 
-            <!-- FRECUENCIA DEL REGISTRO HISTORICO -->
-            <section class="tarjeta-configuracion">
-
-                <div class="titulo-configuracion">
-
-                    <div>
-                        <h2>Frecuencia del registro histórico</h2>
-
-                        <p>
-                            Selecciona cada cuánto tiempo se registran
-                            los datos ambientales.
-                        </p>
-                    </div>
-
-                    <div class="icono-seccion">
-                        📊
-                    </div>
-
-                </div>
-
-
-                <div class="formulario-frecuencia">
-
-                    <label for="frecuencia">
-                        Frecuencia de registro:
-                    </label>
-
-                    <select id="frecuencia">
-
-                        <option value="15">Cada 15 minutos</option>
-
-                        <option value="30">Cada 30 minutos</option>
-
-                        <option value="60" selected>
-                            Cada 1 hora
-                        </option>
-
-                        <option value="120">Cada 2 horas</option>
-
-                        <option value="360">Cada 6 horas</option>
-
-                    </select>
-
-
-                    <button id="guardarFrecuencia"
-                        class="btn-principal"
-                        type="button">
-
-                        Guardar configuración
-
-                    </button>
-
-                    <p id="mensajeFrecuencia" class="mensaje"></p>
-
-                </div>
-
-            </section>
-
         </main>
 
     </div>
 
 
     <!-- JAVASCRIPT -->
+    <!-- CLIENTE DEL BACKEND (sesión y peticiones) -->
+    <script src="../api.js"></script>
+
     <script src="configuracion.js"></script>
 
 </body>

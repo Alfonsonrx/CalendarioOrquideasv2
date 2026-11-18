@@ -354,3 +354,187 @@ body {
     margin-top: 12px;
     font-weight: 600;
 }
+
+
+/* =====================================
+   MIS SENSORES (spec 102)
+===================================== */
+
+.lista-sensores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fila-sensor {
+    padding: 16px;
+    border: 1px solid #dce8dd;
+    border-radius: 10px;
+    background-color: #f8faf8;
+}
+
+.fila-sensor-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.fila-sensor-encabezado h3 {
+    font-size: 16px;
+    color: #244d3a;
+}
+
+.fila-sensor-datos {
+    font-size: 13px;
+    color: #555;
+}
+
+.sin-sensores {
+    color: #777;
+    font-size: 14px;
+}
+
+.estado-conexion.esperando {
+    color: #8a5a1d;
+    background-color: #fdf1dc;
+}
+
+.estado-conexion.esperando .indicador-conexion {
+    background-color: #d99a3f;
+}
+
+.estado-conexion.inactivo {
+    color: #666;
+    background-color: #eceeed;
+}
+
+.estado-conexion.inactivo .indicador-conexion {
+    background-color: #999;
+}
+
+.que-revisar-titulo {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #244d3a;
+}
+
+.que-revisar {
+    margin: 6px 0 0 18px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+}
+
+
+/* =====================================
+   FORMULARIO Y CLAVE DEL SENSOR (spec 102)
+===================================== */
+
+#btnNuevoSensor {
+    margin-top: 16px;
+}
+
+.formulario-sensor {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+    gap: 10px 14px;
+    max-width: 520px;
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #dce8dd;
+    border-radius: 10px;
+}
+
+.formulario-sensor[hidden] {
+    display: none;
+}
+
+.formulario-sensor h3,
+.formulario-sensor .ayuda-limites,
+.formulario-sensor .mensaje-error,
+.formulario-sensor .botones-formulario {
+    grid-column: 1 / -1;
+}
+
+.formulario-sensor h3 {
+    color: #244d3a;
+}
+
+.formulario-sensor label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #244d3a;
+}
+
+.formulario-sensor input,
+.formulario-sensor select {
+    padding: 9px 11px;
+    border: 1px solid #dce8dd;
+    border-radius: 8px;
+    background-color: #f8faf8;
+    font-size: 14px;
+}
+
+.formulario-sensor input:disabled,
+.formulario-sensor select:disabled {
+    color: #888;
+    cursor: not-allowed;
+}
+
+.ayuda-limites {
+    font-size: 12px;
+    color: #777;
+}
+
+.botones-formulario {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-secundario {
+    border: 1px solid #c9d8cc;
+    background-color: white;
+    color: #244d3a;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.caja-clave {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 10px;
+    background-color: #fdf1dc;
+    color: #5c3d12;
+    font-size: 14px;
+}
+
+.caja-clave code {
+    display: block;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+    word-break: break-all;
+    user-select: all;
+}
+
+.acciones-sensor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.acciones-sensor .btn-secundario {
+    padding: 7px 12px;
+    font-size: 13px;
+}

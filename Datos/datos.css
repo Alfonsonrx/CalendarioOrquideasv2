@@ -144,7 +144,15 @@ body {
 
 .tabla-contenedor {
     width: 100%;
-    overflow-x: auto;
+    max-height: 24rem; /* ~6 filas; el resto se recorre con scroll */
+    overflow: auto;
+}
+
+/* La cabecera queda visible al recorrer la tabla */
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e8f1e9;
 }
 
 table {

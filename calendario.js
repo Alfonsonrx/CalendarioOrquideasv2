@@ -32,6 +32,8 @@ const eliminarRiego = document.getElementById("eliminarRiego");
 
 const listaRiegos = document.getElementById("listaRiegos");
 
+const riegosDelDia = document.getElementById("riegosDelDia");
+
 
 /* =====================================
    NOMBRES DE LOS MESES
@@ -56,19 +58,38 @@ const nombresDias = [
 
 
 /* =====================================
-   CARGAR RIEGOS GUARDADOS
+   RIEGOS PROGRAMADOS (DESDE EL BACKEND)
 ===================================== */
 
-let riegos = JSON.parse(localStorage.getItem("riegos")) || [];
+// Cada riego: { id, fecha: "AAAA-MM-DD", hora: "HH:MM" }.
+// Un día puede tener varios riegos.
+
+let riegos = [];
 
 let fechaEnEdicion = null;
+
+let riegoEnEdicion = null; // id del riego que se edita; null = riego nuevo
+
+
+async function cargarRiegos() {
+
+    const entradas = await api("/schedules?active_only=true");
+
+    riegos = entradas.map(entrada => ({
+        id: entrada.id,
+        fecha: entrada.irrigation_date,
+        hora: entrada.irrigation_time.slice(0, 5) // "14:30:00" → "14:30"
+    }));
+
+}
 
 
 /* =====================================
    NOTIFICACIONES DE RIEGO
 ===================================== */
 
-// Recuperar notificaciones que ya fueron enviadas.
+// El backend crea los recordatorios; aquí solo se muestran.
+// Se recuerdan los ids ya mostrados para no repetirlos.
 
 let notificacionesEnviadas =
     JSON.parse(localStorage.getItem("notificacionesEnviadas")) || [];
@@ -127,82 +148,32 @@ function solicitarPermisoNotificaciones() {
 
 
 /* =====================================
-   COMPROBAR SI HAY UN RIEGO PROGRAMADO
+   MOSTRAR NOTIFICACIONES NUEVAS DEL BACKEND
 ===================================== */
 
-function comprobarNotificaciones() {
+async function comprobarNotificaciones() {
 
-    // Si el navegador no permite notificaciones, salir.
+    // Si el navegador no permite notificaciones o no hay permiso, salir.
 
-    if (!("Notification" in window)) {
+    if (!("Notification" in window) || Notification.permission !== "granted") {
         return;
     }
 
-    // Comprobar si el usuario aceptó las notificaciones.
+    const nuevas = await api("/notifications?unread_only=true");
 
-    if (Notification.permission !== "granted") {
-        return;
-    }
+    nuevas
+        .filter(aviso => !notificacionesEnviadas.includes(aviso.id))
+        .forEach(function(aviso) {
 
-    const ahora = new Date();
+            notificacionesEnviadas.push(aviso.id);
 
-    const fechaHoy = crearFecha(
-        ahora.getFullYear(),
-        ahora.getMonth(),
-        ahora.getDate()
-    );
+            const titulo = aviso.type === "irrigation_reminder"
+                ? "¡Hora de regar tus orquídeas! 🌱"
+                : "Alerta del invernadero ⚠";
 
-    const horaActual =
-        String(ahora.getHours()).padStart(2, "0") +
-        ":" +
-        String(ahora.getMinutes()).padStart(2, "0");
+            const notificacion = new Notification(titulo, { body: aviso.message });
 
-
-    // Buscar riegos que coincidan con la fecha y hora actuales.
-
-    riegos.forEach(function(riego) {
-
-        if (
-            riego.fecha === fechaHoy &&
-            riego.hora === horaActual
-        ) {
-
-            // Identificador único de la notificación.
-
-            const identificador =
-                riego.fecha + "_" + riego.hora;
-
-            // Evitar enviar la misma notificación varias veces.
-
-            if (notificacionesEnviadas.includes(identificador)) {
-                return;
-            }
-
-            // Registrar que la notificación ya fue enviada.
-
-            notificacionesEnviadas.push(identificador);
-
-            localStorage.setItem(
-                "notificacionesEnviadas",
-                JSON.stringify(notificacionesEnviadas)
-            );
-
-
-            // MOSTRAR NOTIFICACION
-
-            const notificacion = new Notification(
-                "¡Hora de regar tus orquídeas! 🌱",
-                {
-                    body:
-                        "Tienes un riego programado para hoy a las " +
-                        riego.hora + ".",
-
-                    icon: ""
-                }
-            );
-
-            // Al hacer clic en la notificación,
-            // volver a la ventana de la aplicación.
+            // Al hacer clic, volver a la ventana de la aplicación.
 
             notificacion.onclick = function() {
 
@@ -212,18 +183,23 @@ function comprobarNotificaciones() {
 
             };
 
-        }
+        });
 
-    });
+    localStorage.setItem(
+        "notificacionesEnviadas",
+        JSON.stringify(notificacionesEnviadas)
+    );
 
 }
 
 
 /* =====================================
-   COMPROBAR NOTIFICACIONES CADA 10 SEGUNDOS
+   COMPROBAR NOTIFICACIONES CADA 30 SEGUNDOS
 ===================================== */
 
-setInterval(comprobarNotificaciones, 10000);
+// El backend revisa los riegos cada 60 s, no hace falta consultar más seguido.
+
+setInterval(() => comprobarNotificaciones().catch(console.error), 30000);
 
 
 /* =====================================
@@ -345,8 +321,24 @@ function abrirModal(fecha) {
         dia + " de " +
         nombresMeses[mes - 1] + " de " + año;
 
-    const riegoExistente = riegos.find(r => r.fecha === fecha);
+    seleccionarRiego(null);
 
+    modalRiego.style.display = "flex";
+
+}
+
+
+/* =====================================
+   SELECCIONAR RIEGO DEL DIA
+===================================== */
+
+// null prepara un riego nuevo; un id carga ese riego para editarlo.
+
+function seleccionarRiego(id) {
+
+    riegoEnEdicion = id;
+
+    const riegoExistente = riegos.find(r => r.id === id);
 
     if (riegoExistente) {
 
@@ -370,7 +362,44 @@ function abrirModal(fecha) {
 
     }
 
-    modalRiego.style.display = "flex";
+    mostrarRiegosDelDia();
+
+}
+
+
+/* =====================================
+   MOSTRAR RIEGOS DEL DIA EN EL MODAL
+===================================== */
+
+function mostrarRiegosDelDia() {
+
+    riegosDelDia.innerHTML = "";
+
+    riegos
+        .filter(r => r.fecha === fechaEnEdicion)
+        .forEach(riego => {
+
+            const elemento = document.createElement("div");
+
+            elemento.classList.add("riego-item");
+
+            if (riego.id === riegoEnEdicion) {
+                elemento.classList.add("seleccionado");
+            }
+
+            elemento.textContent = "Hora: " + riego.hora + " (clic para editar)";
+
+            elemento.addEventListener("click", function() {
+
+                // Un segundo clic vuelve a "riego nuevo".
+
+                seleccionarRiego(riego.id === riegoEnEdicion ? null : riego.id);
+
+            });
+
+            riegosDelDia.appendChild(elemento);
+
+        });
 
 }
 
@@ -385,6 +414,8 @@ function cerrarVentana() {
 
     fechaEnEdicion = null;
 
+    riegoEnEdicion = null;
+
 }
 
 cerrarModal.addEventListener("click", cerrarVentana);
@@ -396,7 +427,9 @@ cancelarRiego.addEventListener("click", cerrarVentana);
    GUARDAR O ACTUALIZAR RIEGO
 ===================================== */
 
-guardarRiego.addEventListener("click", function() {
+// El backend valida que la fecha y hora sean futuras (hora del invernadero).
+
+guardarRiego.addEventListener("click", async function() {
 
     const hora = horaRiego.value;
 
@@ -412,99 +445,48 @@ guardarRiego.addEventListener("click", function() {
     }
 
 
-    // OBTENER FECHA ACTUAL
-
-    const ahora = new Date();
-
-    const hoy = crearFecha(
-        ahora.getFullYear(),
-        ahora.getMonth(),
-        ahora.getDate()
-    );
-
-
-    // VALIDAR QUE NO SEA UNA FECHA PASADA
-
-    if (fechaEnEdicion < hoy) {
-
-        alert("No puedes programar un riego en una fecha pasada.");
-
-        return;
-
-    }
-
-
-    // VALIDAR QUE LA HORA NO HAYA PASADO SI ES HOY
-
-    if (fechaEnEdicion === hoy) {
-
-        const horaActual =
-            String(ahora.getHours()).padStart(2, "0") +
-            ":" +
-            String(ahora.getMinutes()).padStart(2, "0");
-
-        if (hora <= horaActual) {
-
-            alert("Selecciona una hora posterior a la hora actual.");
-
-            return;
-
-        }
-
-    }
-
-
     // SOLICITAR PERMISO PARA NOTIFICACIONES
 
     solicitarPermisoNotificaciones();
 
 
-    // BUSCAR SI YA EXISTE UN RIEGO EN ESA FECHA
+    try {
 
-    const indice = riegos.findIndex(
-        r => r.fecha === fechaEnEdicion
-    );
+        if (riegoEnEdicion !== null) {
 
+            // ACTUALIZAR RIEGO EXISTENTE
 
-    const nuevoRiego = {
-        fecha: fechaEnEdicion,
-        hora: hora
-    };
+            await api("/schedules/" + riegoEnEdicion, {
+                method: "PATCH",
+                body: { irrigation_time: hora }
+            });
 
+            alert("El horario del riego fue actualizado correctamente.");
 
-    if (indice !== -1) {
+        } else {
 
-        // ACTUALIZAR RIEGO EXISTENTE
+            // AGREGAR NUEVO RIEGO
 
-        riegos[indice] = nuevoRiego;
+            await api("/schedules", {
+                method: "POST",
+                body: { irrigation_date: fechaEnEdicion, irrigation_time: hora }
+            });
 
-        alert("El horario del riego fue actualizado correctamente.");
+            alert("El riego fue programado correctamente.");
 
-    } else {
+        }
 
-        // AGREGAR NUEVO RIEGO
+    } catch (error) {
 
-        riegos.push(nuevoRiego);
+        alert(error.message);
 
-        alert("El riego fue programado correctamente.");
+        return;
 
     }
 
-
-    // ORDENAR PROGRAMACIONES
-
-    riegos.sort((a, b) =>
-        (a.fecha + a.hora).localeCompare(b.fecha + b.hora)
-    );
-
-
-    guardarDatos();
-
     cerrarVentana();
 
-    mostrarCalendario();
-
-    mostrarProximosRiegos();
+    await actualizarPantalla();
 
 });
 
@@ -513,7 +495,9 @@ guardarRiego.addEventListener("click", function() {
    ELIMINAR RIEGO
 ===================================== */
 
-eliminarRiego.addEventListener("click", function() {
+// El backend no borra riegos: los desactiva y dejan de mostrarse.
+
+eliminarRiego.addEventListener("click", async function() {
 
     const confirmar = confirm(
         "¿Estás seguro de que deseas eliminar este riego?"
@@ -523,38 +507,28 @@ eliminarRiego.addEventListener("click", function() {
         return;
     }
 
+    try {
 
-    riegos = riegos.filter(
-        r => r.fecha !== fechaEnEdicion
-    );
+        await api("/schedules/" + riegoEnEdicion, {
+            method: "PATCH",
+            body: { is_active: false }
+        });
 
+    } catch (error) {
 
-    guardarDatos();
+        alert(error.message);
+
+        return;
+
+    }
 
     cerrarVentana();
 
-    mostrarCalendario();
-
-    mostrarProximosRiegos();
-
+    await actualizarPantalla();
 
     alert("El riego fue eliminado correctamente.");
 
 });
-
-
-/* =====================================
-   GUARDAR DATOS EN LOCALSTORAGE
-===================================== */
-
-function guardarDatos() {
-
-    localStorage.setItem(
-        "riegos",
-        JSON.stringify(riegos)
-    );
-
-}
 
 
 /* =====================================
@@ -565,8 +539,14 @@ function mostrarProximosRiegos() {
 
     listaRiegos.innerHTML = "";
 
+    const ahora = new Date();
 
-    if (riegos.length === 0) {
+    const hoy = crearFecha(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+
+    const proximos = riegos.filter(r => r.fecha >= hoy);
+
+
+    if (proximos.length === 0) {
 
         listaRiegos.innerHTML =
             "<p>No hay riegos programados.</p>";
@@ -576,7 +556,7 @@ function mostrarProximosRiegos() {
     }
 
 
-    riegos.forEach(riego => {
+    proximos.forEach(riego => {
 
         const [año, mes, dia] =
             riego.fecha.split("-").map(Number);
@@ -646,8 +626,24 @@ botonSiguiente.addEventListener("click", function() {
    INICIAR APLICACION
 ===================================== */
 
-mostrarCalendario();
+async function actualizarPantalla() {
 
-mostrarProximosRiegos();
+    try {
 
-comprobarNotificaciones();
+        await cargarRiegos();
+
+    } catch (error) {
+
+        alert("No se pudieron cargar los riegos: " + error.message);
+
+    }
+
+    mostrarCalendario();
+
+    mostrarProximosRiegos();
+
+}
+
+actualizarPantalla();
+
+comprobarNotificaciones().catch(console.error);

@@ -443,3 +443,16 @@ body {
 .btn-eliminar.oculto {
     display: none;
 }
+
+
+/* =====================================
+   RIEGOS DEL DIA (MODAL)
+===================================== */
+
+#riegosDelDia .riego-item {
+    cursor: pointer;
+}
+
+#riegosDelDia .riego-item.seleccionado {
+    background-color: #c9e2cc;
+}

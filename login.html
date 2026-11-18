@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iniciar sesión</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .pantalla-login {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-contenido .oculto {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="pantalla-login">
+
+        <form id="formLogin" class="modal-contenido">
+
+            <div class="modal-encabezado">
+                <h2 id="tituloLogin">Iniciar sesión</h2>
+            </div>
+
+            <div id="campoNombre" class="oculto">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" maxlength="100">
+            </div>
+
+            <label for="email">Correo:</label>
+            <input type="email" id="email" required maxlength="150">
+
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" required>
+
+            <p id="mensajeLogin"></p>
+
+            <div class="modal-botones">
+
+                <button id="cambiarModo" class="btn-cancelar" type="button">
+                    Crear cuenta
+                </button>
+
+                <button id="enviarLogin" class="btn-guardar" type="submit">
+                    Entrar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script src="api.js"></script>
+
+    <script>
+
+        const formLogin = document.getElementById("formLogin");
+        const campoNombre = document.getElementById("campoNombre");
+        const nombre = document.getElementById("nombre");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const mensajeLogin = document.getElementById("mensajeLogin");
+        const cambiarModo = document.getElementById("cambiarModo");
+
+        let registrando = false;
+
+
+        // ALTERNAR ENTRE INICIAR SESION Y CREAR CUENTA
+
+        cambiarModo.addEventListener("click", function() {
+
+            registrando = !registrando;
+
+            campoNombre.classList.toggle("oculto", !registrando);
+            nombre.required = registrando;
+
+            document.getElementById("tituloLogin").textContent =
+                registrando ? "Crear cuenta" : "Iniciar sesión";
+
+            document.getElementById("enviarLogin").textContent =
+                registrando ? "Registrarme" : "Entrar";
+
+            cambiarModo.textContent =
+                registrando ? "Ya tengo cuenta" : "Crear cuenta";
+
+            mensajeLogin.textContent = "";
+
+        });
+
+
+        // ENVIAR FORMULARIO
+
+        formLogin.addEventListener("submit", async function(evento) {
+
+            evento.preventDefault();
+
+            mensajeLogin.textContent = "";
+
+            try {
+
+                if (registrando) {
+
+                    await api("/auth/register", {
+                        method: "POST",
+                        body: {
+                            name: nombre.value,
+                            email: email.value,
+                            password: password.value
+                        }
+                    });
+
+                }
+
+                // El login de FastAPI usa formulario y llama "username" al correo.
+
+                const sesion = await api("/auth/login", {
+                    method: "POST",
+                    form: {
+                        username: email.value,
+                        password: password.value
+                    }
+                });
+
+                localStorage.setItem("token", sesion.access_token);
+
+                location.href = "Home/home.html";
+
+            } catch (error) {
+
+                mensajeLogin.textContent = error.message;
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

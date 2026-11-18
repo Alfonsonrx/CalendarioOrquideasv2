@@ -54,12 +54,15 @@ setInterval(actualizarReloj, 1000);
    CALENDARIO DE RIEGO HOME
 ===================================== */
 
-// OBTENER LOS RIEGOS GUARDADOS
-// EN EL CALENDARIO PRINCIPAL
+// RIEGOS ACTIVOS DEL BACKEND (se cargan al iniciar)
 
-function obtenerRiegosHome() {
+let riegosHome = [];
 
-    return JSON.parse(localStorage.getItem("riegos")) || [];
+async function cargarRiegosHome() {
+
+    const entradas = await api("/schedules?active_only=true");
+
+    riegosHome = entradas.map(entrada => ({ fecha: entrada.irrigation_date }));
 
 }
 
@@ -147,11 +150,6 @@ function mostrarCalendarioHome() {
         calendarioHome.appendChild(espacio);
 
     }
-
-
-    // OBTENER RIEGOS GUARDADOS
-
-    const riegosHome = obtenerRiegosHome();
 
 
     // CREAR LOS DIAS DEL MES
@@ -251,3 +249,7 @@ botonMesSiguiente.addEventListener("click", function() {
 ===================================== */
 
 mostrarCalendarioHome();
+
+cargarRiegosHome()
+    .then(mostrarCalendarioHome)
+    .catch(error => console.error("No se pudieron cargar los riegos:", error));

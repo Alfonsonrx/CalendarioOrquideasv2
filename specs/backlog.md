@@ -23,3 +23,9 @@ páginas que faltan. Esto es lo que **no** cubren.
 ## Sin dueño
 - **Pruebas automáticas del frontend**: hoy se verifican con revisiones en vivo en el navegador
   (decisión del dueño, 2026-11-18). Si el proyecto crece, una suite de navegador (p. ej. Playwright).
+
+## Herramientas
+- **El servidor de desarrollo deja que el navegador guarde en caché** (`python3 -m http.server` no envía
+  `Cache-Control`): una revisión en vivo puede correr el JS anterior sin aviso. Servir con
+  `Cache-Control: no-store` (un servidor de 8 líneas) o recargar sin caché · source: 101 round 1 ·
+  target: → perfil (*Made when examples*) | unowned.

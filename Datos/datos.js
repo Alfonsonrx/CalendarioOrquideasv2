@@ -1,366 +1,309 @@
-
 /* =====================================
-   DATOS DE EJEMPLO
+   PANTALLA DATOS (spec 101)
+   Los datos vienen del backend: condiciones actuales e historial.
 ===================================== */
-
-const registros = [
-    {
-        temperatura: 30,
-        humedad: 30,
-        hora: "09:00"
-    },
-    {
-        temperatura: 20,
-        humedad: 78,
-        hora: "10:00"
-    },
-    {
-        temperatura: 15,
-        humedad: 100,
-        hora: "11:00"
-    },
-    {
-        temperatura: 22,
-        humedad: 80,
-        hora: "12:00"
-    },
-    {
-        temperatura: 24,
-        humedad: 85,
-        hora: "13:00"
-    },
-    {
-        temperatura: 19,
-        humedad: 76,
-        hora: "14:00"
-    }
-];
 
 
 /* =====================================
-   EVALUAR ESTADO DE TEMPERATURA
+   ESTADO DE UNA LECTURA (FR-1.d–f)
 ===================================== */
 
-function obtenerEstadoTemperatura(temperatura) {
+// Mismos bordes que las alertas del backend: los límites cuentan como
+// "en rango" y un límite vacío no limita ese lado (backend 104 D5).
 
-    if (temperatura > 24) {
-        return {
-            texto: "Calor",
-            clase: "calor"
-        };
+const NOMBRES_FUERA_DE_RANGO = {
+    humidity: { bajo: "Baja", alto: "Alta" },
+    temperature: { bajo: "Frío", alto: "Calor" }
+};
+
+function estadoLectura(valor, sensor) {
+
+    const nombres = NOMBRES_FUERA_DE_RANGO[sensor.type] || { bajo: "Bajo", alto: "Alto" };
+
+    if (sensor.min_val != null && valor < sensor.min_val) {
+        return { texto: nombres.bajo, clase: "frio" };
     }
 
-    if (temperatura < 18) {
-        return {
-            texto: "Frío",
-            clase: "frio"
-        };
+    if (sensor.max_val != null && valor > sensor.max_val) {
+        return { texto: nombres.alto, clase: "calor" };
     }
 
-    return {
-        texto: "En rango",
-        clase: "en-rango"
-    };
+    return { texto: "En rango", clase: "en-rango" };
 }
 
 
 /* =====================================
-   EVALUAR ESTADO DE HUMEDAD
+   AYUDAS DE PANTALLA
 ===================================== */
 
-// Rango visual provisional: 75% a 85%.
+// Los nombres de sensores los escribe la persona: siempre textContent,
+// nunca innerHTML.
 
-function obtenerEstadoHumedad(humedad) {
+function crearElemento(etiqueta, texto, clase) {
 
-    if (humedad < 75) {
-        return {
-            texto: "Baja",
-            clase: "frio"
-        };
+    const elemento = document.createElement(etiqueta);
+
+    elemento.textContent = texto;
+
+    if (clase) {
+        elemento.className = clase;
     }
 
-    if (humedad > 85) {
-        return {
-            texto: "Alta",
-            clase: "calor"
-        };
-    }
+    return elemento;
+}
 
-    return {
-        texto: "En rango",
-        clase: "en-rango"
-    };
+function formatearFechaHora(iso) {
+
+    return new Date(iso).toLocaleString("es-CL", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+    });
+}
+
+const avisoDatos = document.getElementById("avisoDatos");
+
+function mostrarAviso(texto) {
+
+    avisoDatos.textContent = texto;
+
+    avisoDatos.hidden = !texto;
 }
 
 
 /* =====================================
-   MOSTRAR ALERTAS AMBIENTALES
+   CONDICIONES ACTUALES (FR-1)
 ===================================== */
 
-function mostrarAlertas() {
+// Una entrada por sensor activo: nombre, tipo, unidad, límites,
+// último valor y su fecha (value y recorded_at son null sin lecturas).
 
-    // OBTENER LA ULTIMA MEDICION
+let condiciones = [];
 
-    const ultimoRegistro = registros[registros.length - 1];
+async function cargarCondiciones() {
 
-    if (!ultimoRegistro) {
-        return;
-    }
+    condiciones = await api("/conditions");
+}
 
-    const estadoTemperatura =
-        obtenerEstadoTemperatura(ultimoRegistro.temperatura);
+const tarjetasSensores = document.getElementById("tarjetasSensores");
 
-    const estadoHumedad =
-        obtenerEstadoHumedad(ultimoRegistro.humedad);
+function mostrarTarjetas() {
 
+    tarjetasSensores.replaceChildren(...condiciones.map(function(sensor) {
 
-    // OBTENER ELEMENTOS HTML
+        const tarjeta = crearElemento("div", "", "indicador-alerta");
 
-    const estadoGeneral = document.getElementById("estadoGeneral");
+        tarjeta.appendChild(crearElemento("h3", sensor.name));
 
-    const alertaHumedad = document.getElementById("alertaHumedad");
+        if (sensor.value === null) {
 
-    const alertaTemperatura =
-        document.getElementById("alertaTemperatura");
+            tarjeta.appendChild(crearElemento("p", "Sin lecturas", "estado-alerta"));
 
-    const valorHumedad = document.getElementById("valorHumedad");
+            tarjeta.appendChild(crearElemento("span", "--"));
 
-    const valorTemperatura =
-        document.getElementById("valorTemperatura");
-
-
-    // MOSTRAR VALORES
-
-    valorHumedad.textContent = ultimoRegistro.humedad + " %";
-
-    valorTemperatura.textContent =
-        ultimoRegistro.temperatura + " °C";
-
-
-    // ACTUALIZAR ALERTA DE HUMEDAD
-
-    alertaHumedad.textContent = estadoHumedad.texto;
-
-    alertaHumedad.className =
-        "estado-alerta " + estadoHumedad.clase;
-
-
-    // ACTUALIZAR ALERTA DE TEMPERATURA
-
-    alertaTemperatura.textContent = estadoTemperatura.texto;
-
-    alertaTemperatura.className =
-        "estado-alerta " + estadoTemperatura.clase;
-
-
-    // EVALUAR CONDICIONES GENERALES
-
-    const humedadAdecuada =
-        estadoHumedad.clase === "en-rango";
-
-    const temperaturaAdecuada =
-        estadoTemperatura.clase === "en-rango";
-
-
-    // MOSTRAR RESULTADO GENERAL
-
-    if (humedadAdecuada && temperaturaAdecuada) {
-
-        estadoGeneral.textContent =
-            "✓ Las condiciones ambientales son adecuadas para las orquídeas.";
-
-        estadoGeneral.className =
-            "estado-general adecuado";
-
-    } else {
-
-        let mensaje = "⚠ Atención: ";
-
-        if (!humedadAdecuada && !temperaturaAdecuada) {
-
-            mensaje +=
-                "la humedad y la temperatura están fuera del rango recomendado.";
-
-        } else if (!humedadAdecuada) {
-
-            mensaje +=
-                "la humedad ambiental está fuera del rango recomendado.";
-
-        } else {
-
-            mensaje +=
-                "la temperatura ambiental está fuera del rango recomendado.";
-
+            return tarjeta;
         }
 
-        estadoGeneral.textContent = mensaje;
+        const estado = estadoLectura(sensor.value, sensor);
 
-        estadoGeneral.className =
-            "estado-general advertencia";
+        tarjeta.appendChild(crearElemento("p", estado.texto, "estado-alerta " + estado.clase));
 
-    }
+        tarjeta.appendChild(crearElemento("span", sensor.value + " " + sensor.unit));
 
+        tarjeta.appendChild(crearElemento("small", formatearFechaHora(sensor.recorded_at)));
+
+        return tarjeta;
+    }));
 }
 
 
 /* =====================================
-   CARGAR TABLA DE REGISTROS
+   ESTADO GENERAL (FR-2)
 ===================================== */
 
-function cargarTabla() {
+const estadoGeneral = document.getElementById("estadoGeneral");
 
-    const tabla = document.getElementById("tablaRegistros");
+function mostrarEstadoGeneral() {
 
-    tabla.innerHTML = "";
+    const conLectura = condiciones.filter(sensor => sensor.value !== null);
 
-    registros.forEach(registro => {
+    const fueraDeRango = conLectura.filter(
+        sensor => estadoLectura(sensor.value, sensor).clase !== "en-rango"
+    );
 
-        const estadoTemperatura =
-            obtenerEstadoTemperatura(registro.temperatura);
+    let texto = "✓ Las condiciones ambientales son adecuadas para las orquídeas.";
 
-        const estadoHumedad =
-            obtenerEstadoHumedad(registro.humedad);
+    let clase = "adecuado";
+
+    if (condiciones.length === 0) {
+
+        texto = "No hay sensores activos. Regístralos en Configuración.";
+
+        clase = "advertencia";
+
+    } else if (conLectura.length === 0) {
+
+        texto = "Aún no hay lecturas de tus sensores.";
+
+        clase = "advertencia";
+
+    } else if (fueraDeRango.length > 0) {
+
+        texto = "⚠ Atención: fuera de rango " +
+            fueraDeRango.map(sensor => sensor.name).join(", ");
+
+        clase = "advertencia";
+    }
+
+    estadoGeneral.textContent = texto;
+
+    estadoGeneral.className = "estado-general " + clase;
+}
+
+
+/* =====================================
+   HISTORIAL DEL PERIODO (FR-4)
+===================================== */
+
+// El backend entrega a lo más 1000 lecturas por sensor y consulta,
+// de la más reciente a la más antigua (backend 103).
+
+const LIMITE_LECTURAS = 1000;
+
+const periodo = document.getElementById("periodo");
+
+let lecturas = [];        // { value, recorded_at, sensor } del periodo, más reciente primero
+
+let sensoresTopados = []; // nombres de sensores que llegaron al tope
+
+async function cargarHistorial() {
+
+    const horas = Number(periodo.value);
+
+    const inicio = new Date(Date.now() - horas * 3600 * 1000).toISOString();
+
+    const porSensor = await Promise.all(condiciones.map(sensor => api(
+        "/sensors/" + sensor.sensor_id + "/readings" +
+        "?start=" + encodeURIComponent(inicio) + "&limit=" + LIMITE_LECTURAS
+    )));
+
+    lecturas = porSensor
+        .flatMap((lista, i) => lista.map(lectura => ({ ...lectura, sensor: condiciones[i] })))
+        .sort((a, b) => Date.parse(b.recorded_at) - Date.parse(a.recorded_at));
+
+    sensoresTopados = condiciones
+        .filter((sensor, i) => porSensor[i].length === LIMITE_LECTURAS)
+        .map(sensor => sensor.name);
+}
+
+const tablaRegistros = document.getElementById("tablaRegistros");
+
+const tablaContenedor = document.querySelector(".tabla-contenedor");
+
+const sinLecturas = document.getElementById("sinLecturas");
+
+const avisoLimite = document.getElementById("avisoLimite");
+
+function mostrarTabla() {
+
+    tablaRegistros.replaceChildren(...lecturas.map(function(lectura) {
+
+        const estado = estadoLectura(lectura.value, lectura.sensor);
+
+        const celdaEstado = document.createElement("td");
+
+        celdaEstado.appendChild(crearElemento("span", estado.texto, "estado " + estado.clase));
 
         const fila = document.createElement("tr");
 
-        fila.innerHTML = `
-            <td>${registro.temperatura} °C</td>
+        fila.append(
+            crearElemento("td", lectura.sensor.name),
+            crearElemento("td", lectura.value + " " + lectura.sensor.unit),
+            crearElemento("td", formatearFechaHora(lectura.recorded_at)),
+            celdaEstado
+        );
 
-            <td>${registro.humedad}%</td>
+        return fila;
+    }));
 
-            <td>${registro.hora}</td>
+    sinLecturas.hidden = lecturas.length > 0;
 
-            <td>
-                <span class="estado ${estadoHumedad.clase}">
-                    ${estadoHumedad.texto}
-                </span>
-            </td>
+    tablaContenedor.hidden = lecturas.length === 0;
 
-            <td>
-                <span class="estado ${estadoTemperatura.clase}">
-                    ${estadoTemperatura.texto}
-                </span>
-            </td>
-        `;
+    avisoLimite.textContent = sensoresTopados
+        .map(nombre => "Se muestran las últimas 1000 lecturas de " + nombre + ".")
+        .join(" ");
 
-        tabla.appendChild(fila);
-
-    });
-
+    avisoLimite.hidden = sensoresTopados.length === 0;
 }
 
 
 /* =====================================
-   GRAFICO DE HUMEDAD
+   GRAFICOS: UNO POR MAGNITUD, UNA SERIE POR SENSOR (FR-4.c)
 ===================================== */
 
-function crearGraficoHumedad() {
+// Eje horizontal numérico (milisegundos) con etiquetas de fecha y hora:
+// cada sensor tiene sus propias horas y el eje de tiempo de Chart.js
+// pediría otra librería (plan 101 D2).
 
-    const contexto = document
-        .getElementById("graficoHumedad")
-        .getContext("2d");
+const COLORES_SERIES = ["#397b59", "#c27c2c", "#4a6fa5", "#9b4a8c", "#83b894"];
 
-    new Chart(contexto, {
+const graficos = {};
 
-        type: "bar",
+function dibujarGrafico(tipo, idCanvas, tituloEje) {
 
-        data: {
+    const series = condiciones
+        .filter(sensor => sensor.type === tipo)
+        .map(function(sensor, i) {
 
-            labels: registros.map(registro => registro.hora),
+            const color = COLORES_SERIES[i % COLORES_SERIES.length];
 
-            datasets: [{
+            return {
+                label: sensor.name,
+                data: lecturas
+                    .filter(lectura => lectura.sensor.sensor_id === sensor.sensor_id)
+                    .map(lectura => ({ x: Date.parse(lectura.recorded_at), y: lectura.value }))
+                    .reverse(), // de la más antigua a la más reciente
+                borderColor: color,
+                backgroundColor: color,
+                borderWidth: 2,
+                pointRadius: 0,
+                tension: 0.3
+            };
+        });
 
-                label: "Humedad (%)",
+    const grafico = graficos[tipo];
 
-                data: registros.map(registro => registro.humedad),
+    // Ya existe: cambiar solo los datos, así la leyenda conserva
+    // las series ocultas y no parpadea (plan 101 D4).
 
-                backgroundColor: "#83b894",
+    if (grafico) {
 
-                borderColor: "#397b59",
+        grafico.data.datasets = series.map(function(serie) {
 
-                borderWidth: 1,
+            const anterior = grafico.data.datasets.find(d => d.label === serie.label);
 
-                borderRadius: 6
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: "Humedad (%)"
-                    }
-                }
-
-            },
-
-            plugins: {
-
-                legend: {
-                    display: true
-                }
-
+            if (anterior) {
+                anterior.data = serie.data;
+                return anterior;
             }
 
-        }
+            return serie;
+        });
 
-    });
+        grafico.update();
 
-}
+        return;
+    }
 
-
-/* =====================================
-   GRAFICO DE TEMPERATURA
-===================================== */
-
-function crearGraficoTemperatura() {
-
-    const contexto = document
-        .getElementById("graficoTemperatura")
-        .getContext("2d");
-
-    new Chart(contexto, {
+    graficos[tipo] = new Chart(document.getElementById(idCanvas), {
 
         type: "line",
 
-        data: {
-
-            labels: registros.map(registro => registro.hora),
-
-            datasets: [{
-
-                label: "Temperatura (°C)",
-
-                data: registros.map(registro => registro.temperatura),
-
-                borderColor: "#397b59",
-
-                backgroundColor: "rgba(57, 123, 89, 0.15)",
-
-                borderWidth: 3,
-
-                pointBackgroundColor: "#397b59",
-
-                pointRadius: 5,
-
-                tension: 0.3,
-
-                fill: true
-
-            }]
-
-        },
+        data: { datasets: series },
 
         options: {
 
@@ -368,30 +311,42 @@ function crearGraficoTemperatura() {
 
             maintainAspectRatio: false,
 
+            animation: false,
+
             scales: {
 
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: "Temperatura (°C)"
+                x: {
+                    type: "linear",
+                    ticks: {
+                        maxTicksLimit: 6,
+                        callback: valor => formatearFechaHora(valor).slice(0, -3) // sin segundos
                     }
-                }
+                },
 
+                y: {
+                    title: { display: true, text: tituloEje }
+                }
             },
 
             plugins: {
 
-                legend: {
-                    display: true
+                legend: { display: true },
+
+                tooltip: {
+                    callbacks: {
+                        title: puntos => formatearFechaHora(puntos[0].parsed.x)
+                    }
                 }
-
             }
-
         }
-
     });
+}
 
+function dibujarGraficos() {
+
+    dibujarGrafico("humidity", "graficoHumedad", "Humedad (%)");
+
+    dibujarGrafico("temperature", "graficoTemperatura", "Temperatura (°C)");
 }
 
 
@@ -399,14 +354,58 @@ function crearGraficoTemperatura() {
    INICIAR PANTALLA DATOS
 ===================================== */
 
-document.addEventListener("DOMContentLoaded", function() {
+// Vuelve a leer condiciones e historial. Si falla, lo mostrado se conserva
+// y el rechazo se muestra hasta la siguiente actualización exitosa (FR-3).
+// Nunca corren dos a la vez: un pedido durante otra se repite al terminar.
 
-    mostrarAlertas();
+const ACTUALIZAR_CADA_MS = 30 * 1000;
 
-    cargarTabla();
+let actualizando = false;
 
-    crearGraficoHumedad();
+let repetirAlTerminar = false;
 
-    crearGraficoTemperatura();
+async function actualizar() {
 
-});
+    if (actualizando) {
+        repetirAlTerminar = true;
+        return;
+    }
+
+    actualizando = true;
+
+    try {
+
+        await cargarCondiciones();
+
+        await cargarHistorial();
+
+        mostrarAviso("");
+
+        mostrarTarjetas();
+
+        mostrarEstadoGeneral();
+
+        mostrarTabla();
+
+        dibujarGraficos();
+
+    } catch (error) {
+
+        mostrarAviso(error.message);
+
+    } finally {
+
+        actualizando = false;
+    }
+
+    if (repetirAlTerminar) {
+        repetirAlTerminar = false;
+        actualizar();
+    }
+}
+
+periodo.addEventListener("change", actualizar);
+
+actualizar();
+
+setInterval(actualizar, ACTUALIZAR_CADA_MS);

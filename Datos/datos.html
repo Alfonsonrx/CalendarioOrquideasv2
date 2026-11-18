@@ -50,31 +50,11 @@
                     Evaluando condiciones ambientales...
                 </div>
 
-                <div class="indicadores-alerta">
+                <!-- Mensaje cuando el backend no responde o rechaza -->
+                <p id="avisoDatos" class="aviso-datos" role="status" hidden></p>
 
-                    <!-- HUMEDAD -->
-                    <div class="indicador-alerta">
-
-                        <h3>Humedad ambiental</h3>
-
-                        <p id="alertaHumedad">--</p>
-
-                        <span id="valorHumedad">-- %</span>
-
-                    </div>
-
-                    <!-- TEMPERATURA -->
-                    <div class="indicador-alerta">
-
-                        <h3>Temperatura ambiental</h3>
-
-                        <p id="alertaTemperatura">--</p>
-
-                        <span id="valorTemperatura">-- °C</span>
-
-                    </div>
-
-                </div>
+                <!-- UNA TARJETA POR SENSOR ACTIVO (se llenan desde JavaScript) -->
+                <div id="tarjetasSensores" class="indicadores-alerta"></div>
 
             </section>
 
@@ -111,6 +91,20 @@
 
                 <h2>Registro Histórico de Condiciones Ambientales</h2>
 
+                <!-- PERIODO DEL HISTORIAL (gráficos y tabla) -->
+                <div class="selector-periodo">
+                    <label for="periodo">Periodo:</label>
+                    <select id="periodo">
+                        <option value="24" selected>Últimas 24 horas</option>
+                        <option value="168">Últimos 7 días</option>
+                    </select>
+                </div>
+
+                <!-- Aviso cuando un sensor llega al tope de 1000 lecturas -->
+                <p id="avisoLimite" class="aviso-limite" hidden></p>
+
+                <p id="sinLecturas" hidden>No hay lecturas en este periodo.</p>
+
                 <div class="tabla-contenedor">
 
                     <table>
@@ -118,11 +112,10 @@
                         <thead>
 
                             <tr>
-                                <th>Temperatura</th>
-                                <th>Humedad</th>
-                                <th>Hora</th>
-                                <th>Estado %</th>
-                                <th>Estado °C</th>
+                                <th>Sensor</th>
+                                <th>Valor</th>
+                                <th>Fecha y hora</th>
+                                <th>Estado</th>
                             </tr>
 
                         </thead>
@@ -143,7 +136,11 @@
 
 
     <!-- LIBRERIA PARA GRAFICOS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Versión fija: una versión nueva no cambia la página sola (plan 101 D3) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- CLIENTE DEL BACKEND (sesión y peticiones) -->
+    <script src="../api.js"></script>
 
     <!-- JAVASCRIPT DE DATOS -->
     <script src="datos.js"></script>

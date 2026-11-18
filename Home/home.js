@@ -253,3 +253,48 @@ mostrarCalendarioHome();
 cargarRiegosHome()
     .then(mostrarCalendarioHome)
     .catch(error => console.error("No se pudieron cargar los riegos:", error));
+
+
+/* =====================================
+   TEMPERATURA Y HUMEDAD ACTUALES (spec 101 FR-5)
+===================================== */
+
+// Con varios sensores del mismo tipo, la lectura más reciente es la
+// mejor respuesta a "¿cómo está ahora?" (spec 101 D3).
+
+function lecturaMasReciente(condiciones, tipo) {
+
+    return condiciones
+        .filter(sensor => sensor.type === tipo && sensor.value !== null)
+        .sort((a, b) => Date.parse(b.recorded_at) - Date.parse(a.recorded_at))[0];
+}
+
+function mostrarCondicionesHome(condiciones) {
+
+    const temperatura = lecturaMasReciente(condiciones, "temperature");
+
+    const humedad = lecturaMasReciente(condiciones, "humidity");
+
+    document.getElementById("temperatura").textContent = temperatura ? temperatura.value : "--";
+
+    document.getElementById("humedad").textContent = humedad ? humedad.value : "--";
+}
+
+// Si la consulta falla se conservan los valores mostrados; el calendario
+// de esta misma página ya avisa cuando el backend no responde.
+
+async function cargarCondicionesHome() {
+
+    try {
+
+        mostrarCondicionesHome(await api("/conditions"));
+
+    } catch (error) {
+
+        console.error("No se pudieron leer las condiciones:", error);
+    }
+}
+
+cargarCondicionesHome();
+
+setInterval(cargarCondicionesHome, 30 * 1000);

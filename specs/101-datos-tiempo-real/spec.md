@@ -1,6 +1,6 @@
 # 101 — Datos en tiempo real e historial
 
-Status: draft · Depends on: `001-sesion-cliente-api`, backend `102-sensor-registry`, backend `103-sensor-readings`
+Status: built · Depends on: `001-sesion-cliente-api`, backend `102-sensor-registry`, backend `103-sensor-readings`
 
 ## 1. Context and objective
 
@@ -148,4 +148,27 @@ mejor respuesta a "¿cómo está ahora?".
 
 ### Taken while building
 
-None yet.
+- 2026-11-18 · Claude (navegador de Orca, backend local, simulador del backend cada 5 s; cuenta de
+  prueba con sensores de humedad 7 y 8, temperatura 9 y 10, el 10 sin lecturas) · round 1:
+  FR-1.a, FR-1.b: Datos pidió `/conditions` y mostró una tarjeta por sensor activo con nombre, valor
+  con unidad y fecha y hora. FR-1.c: "Temperatura exterior" mostró "Sin lecturas". FR-1.d–f: en la
+  consola de Datos, `estadoLectura` dio 90→"En rango", 92.5→"Alta", 99 sin máximo→"En rango",
+  50→"Baja", 30→"Calor", 10→"Frío"; en vivo, 25.2 °C con máximo 24 mostró "Calor". FR-2.b: en vivo,
+  "⚠ Atención: fuera de rango Temperatura invernadero". FR-2.a, FR-2.c, FR-2.d: con
+  `mostrarEstadoGeneral()` sobre listas de condiciones sustituidas en la consola (todas en rango, ninguna,
+  sin lecturas) — no con esos estados reales en el backend.
+- 2026-11-18 · Claude (mismo entorno; 1100 lecturas del sensor 8 sembradas en la base de desarrollo entre
+  6 y 2 días atrás) · round 2: FR-4.a: "Periodo:" con "Últimas 24 horas" elegido y "Últimos 7 días".
+  FR-4.b: con 24 h la tabla tuvo 177 filas (solo del simulador); con 7 días, 1120, la más antigua del
+  13/11. FR-4.d: la primera fila fue la lectura más reciente, con sensor, valor con unidad, fecha y hora,
+  y estado; todas en orden descendente. FR-4.e: con 7 días, "Se muestran las últimas 1000 lecturas de
+  Humedad banco sur.". FR-4.f: con `lecturas = []` en la consola, "No hay lecturas en este periodo." y la
+  tabla oculta. FR-3.a: la hora de una tarjeta pasó de 15:51:12 a 15:51:42 sin recargar. FR-3.b: con el
+  backend detenido, "No se pudo conectar con el servidor." y las 4 tarjetas y 231 filas conservadas.
+  FR-3.c: con el backend de vuelta, el aviso desapareció. FR-4.c: gráfico de humedad con dos series
+  ("Humedad banco norte", "Humedad banco sur") y de temperatura con una por sensor, eje horizontal de
+  fecha y hora (captura).
+- 2026-11-18 · Claude (mismo entorno) · round 3: FR-5.a: Home mostró 20.9 °C y 71 % de `/conditions`,
+  en lugar de 25 y 75; con dos sensores de temperatura sustituidos en la consola (20 a las 10:00, 23.5 a
+  las 10:05) mostró 23.5. FR-5.b: en esa misma prueba, sin sensor de humedad, mostró "--". FR-5.c: pasó
+  de 21.2 °C / 71 % a 20.8 °C / 71.5 % en 31 s sin recargar.

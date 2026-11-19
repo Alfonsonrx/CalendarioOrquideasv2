@@ -158,13 +158,18 @@ None.
   backend. *Por qué:* leerlos es una acción de la persona en la lista de avisos (103), no del sistema.
 - **D7 — Próximos riegos filtra por fecha, no por fecha y hora.** *Por qué:* comparar la hora exigiría la
   hora del invernadero, que es del backend; un riego de hoy ya pasado se ve hasta mañana.
+- **D8 — FR-7 lo reemplaza 103** (2026-11-18, 103 `built`). FR-7.b–e pasan a 103 FR-4 (los avisos del
+  navegador en todas las páginas, desde `notificaciones.js`) y FR-7.a a 103 FR-5 (el permiso se pide desde
+  la lista de avisos, no al guardar un riego). *Por qué:* un recordatorio no espera a que la persona abra
+  el calendario, y pedir el permiso al guardar interrumpía y, bloqueado, avisaba en cada guardado.
+  `calendario.js` ya no tiene ese código.
 
 ### Known deviations
 
-- **Permiso bloqueado avisa en cada guardado** (FR-7.a): con las notificaciones bloqueadas, cada
-  guardado muestra "Las notificaciones están bloqueadas..." antes de guardar. Tarea T13.
-- **Los avisos solo llegan con la página del calendario abierta** (FR-7.b): en Home, Datos o
-  Configuración no se consultan. Lo resuelve 103, que lleva los avisos a todas las páginas. Tarea T14.
+- ~~**Permiso bloqueado avisa en cada guardado** (FR-7.a): con las notificaciones bloqueadas, cada
+  guardado muestra "Las notificaciones están bloqueadas..." antes de guardar. Tarea T13.~~ → D8 (103)
+- ~~**Los avisos solo llegan con la página del calendario abierta** (FR-7.b): en Home, Datos o
+  Configuración no se consultan. Lo resuelve 103, que lleva los avisos a todas las páginas. Tarea T14.~~ → D8 (103)
 
 ### Taken while building
 

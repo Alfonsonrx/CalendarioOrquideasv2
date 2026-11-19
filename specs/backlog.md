@@ -20,6 +20,11 @@ páginas que faltan. Esto es lo que **no** cubren.
 - **Promedios por hora o día para los gráficos** (backend 103 §7) · target: → 101.
 - **Recuperar contraseña, editar perfil** (backend 001 §7) · target: → 001.
 
+## Pantallas
+- **Gráficos de Datos con 0 o 1 lectura**: el eje horizontal muestra etiquetas sin sentido (sin
+  lecturas, "31/12, 21:00" repetido; con una, de "14/11" a "17/3"). Fijar el eje al periodo elegido
+  (ahora − 24 h / 7 días → ahora) · source: 103 round 1 (revisión en vivo) · target: → 101.
+
 ## Sin dueño
 - **Pruebas automáticas del frontend**: hoy se verifican con revisiones en vivo en el navegador
   (decisión del dueño, 2026-11-18). Si el proyecto crece, una suite de navegador (p. ej. Playwright).

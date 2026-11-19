@@ -1,6 +1,6 @@
 # 103 — Notificaciones en la app · Implementation plan
 
-Status: draft · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
+Status: built · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
 
 ## 1. Module structure
 

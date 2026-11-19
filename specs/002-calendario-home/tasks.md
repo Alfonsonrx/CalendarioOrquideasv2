@@ -52,12 +52,13 @@ Reconstrucción de cómo se construyó (commit `444dbab`). Las revisiones en viv
 - [ ] **T12 — Quitar código de la versión local** · —
   `calendario.js`: nada lee ni escribe `localStorage.riegos`; confirmar y borrar la clave vieja de navegadores de prueba si molesta.
   *Made when:* `grep -rn '"riegos"' --include=*.js .` no encuentra nada.
-- [ ] **T13 — Avisar una sola vez del permiso bloqueado** · FR-7.a
+- [x] **T13 — Avisar una sola vez del permiso bloqueado** · FR-7.a
   `calendario.js`: `solicitarPermisoNotificaciones()` muestra el aviso de bloqueo en cada guardado. Avisar una vez por sesión o mostrarlo en la página.
   *Made when:* con el permiso bloqueado, dos guardados seguidos muestran el aviso una vez.
-- [ ] **T14 — Avisos en todas las páginas** · FR-7.b
+  Cerrada por 103 T06: guardar ya no pide permiso (spec §10 D8).
+- [x] **T14 — Avisos en todas las páginas** · FR-7.b
   Lo hace 103 (sus avisos del navegador reemplazan FR-7.b–e de este spec).
-  *Made when:* 103 está `built`.
+  *Made when:* 103 está `built`. Cerrada: 103 `built` el 2026-11-18 (spec §10 D8).
 
 ## D. Requirement coverage
 

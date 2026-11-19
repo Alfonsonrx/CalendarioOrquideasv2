@@ -77,9 +77,8 @@ body {
     padding: 30px;
 }
 
-.contenido > h1 {
+.encabezado h1 {
     font-size: 28px;
-    margin-bottom: 28px;
     color: #244d3a;
 }
 
@@ -253,7 +252,7 @@ tbody tr:hover {
         padding: 18px;
     }
 
-    .contenido > h1 {
+    .encabezado h1 {
         font-size: 23px;
     }
 

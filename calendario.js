@@ -85,124 +85,6 @@ async function cargarRiegos() {
 
 
 /* =====================================
-   NOTIFICACIONES DE RIEGO
-===================================== */
-
-// El backend crea los recordatorios; aquí solo se muestran.
-// Se recuerdan los ids ya mostrados para no repetirlos.
-
-let notificacionesEnviadas =
-    JSON.parse(localStorage.getItem("notificacionesEnviadas")) || [];
-
-
-/* =====================================
-   SOLICITAR PERMISO DE NOTIFICACIONES
-===================================== */
-
-function solicitarPermisoNotificaciones() {
-
-    // Comprobar si el navegador permite notificaciones.
-
-    if (!("Notification" in window)) {
-
-        alert("Tu navegador no permite notificaciones.");
-
-        return;
-    }
-
-    // Si ya se concedió el permiso, no hacer nada.
-
-    if (Notification.permission === "granted") {
-        return;
-    }
-
-    // Si el permiso fue bloqueado.
-
-    if (Notification.permission === "denied") {
-
-        alert(
-            "Las notificaciones están bloqueadas. " +
-            "Debes habilitarlas desde la configuración del navegador."
-        );
-
-        return;
-    }
-
-    // Solicitar permiso al usuario.
-
-    Notification.requestPermission().then(function(resultado) {
-
-        if (resultado === "granted") {
-
-            alert("¡Notificaciones de riego activadas correctamente!");
-
-        } else {
-
-            alert("No se activaron las notificaciones de riego.");
-
-        }
-
-    });
-
-}
-
-
-/* =====================================
-   MOSTRAR NOTIFICACIONES NUEVAS DEL BACKEND
-===================================== */
-
-async function comprobarNotificaciones() {
-
-    // Si el navegador no permite notificaciones o no hay permiso, salir.
-
-    if (!("Notification" in window) || Notification.permission !== "granted") {
-        return;
-    }
-
-    const nuevas = await api("/notifications?unread_only=true");
-
-    nuevas
-        .filter(aviso => !notificacionesEnviadas.includes(aviso.id))
-        .forEach(function(aviso) {
-
-            notificacionesEnviadas.push(aviso.id);
-
-            const titulo = aviso.type === "irrigation_reminder"
-                ? "¡Hora de regar tus orquídeas! 🌱"
-                : "Alerta del invernadero ⚠";
-
-            const notificacion = new Notification(titulo, { body: aviso.message });
-
-            // Al hacer clic, volver a la ventana de la aplicación.
-
-            notificacion.onclick = function() {
-
-                window.focus();
-
-                notificacion.close();
-
-            };
-
-        });
-
-    localStorage.setItem(
-        "notificacionesEnviadas",
-        JSON.stringify(notificacionesEnviadas)
-    );
-
-}
-
-
-/* =====================================
-   COMPROBAR NOTIFICACIONES CADA 30 SEGUNDOS
-===================================== */
-
-// El backend revisa los riegos cada 60 s, no hace falta consultar más seguido.
-
-setInterval(() => comprobarNotificaciones().catch(console.error), 30000);
-
-
-/* =====================================
    MOSTRAR CALENDARIO
 ===================================== */
 
@@ -445,11 +327,6 @@ guardarRiego.addEventListener("click", async function() {
     }
 
 
-    // SOLICITAR PERMISO PARA NOTIFICACIONES
-
-    solicitarPermisoNotificaciones();
-
-
     try {
 
         if (riegoEnEdicion !== null) {
@@ -646,4 +523,3 @@ async function actualizarPantalla() {
 
 actualizarPantalla();
 
-comprobarNotificaciones().catch(console.error);

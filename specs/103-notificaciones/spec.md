@@ -1,6 +1,6 @@
 # 103 — Notificaciones en la app
 
-Status: draft · Supersedes: 002 FR-7.b–e · Depends on: `001-sesion-cliente-api`, `002-calendario-home`, backend `104-notifications`
+Status: built · Supersedes: 002 FR-7.b–e · Depends on: `001-sesion-cliente-api`, `002-calendario-home`, backend `104-notifications`
 
 ## 1. Context and objective
 
@@ -124,4 +124,37 @@ de con una ventana emergente en cada guardado (002 §10 Known deviations).
 
 ### Taken while building
 
-None yet.
+- **D6 — La campana y el perfil van juntos en `.encabezado-acciones`** (round 1). El encabezado reparte
+  sus hijos con `space-between`: una campana suelta quedaría al medio. `notificaciones.js` mueve el
+  perfil dentro del grupo (su clic de cierre de sesión, de `api.js`, se conserva). En Datos el título
+  pasa a `.encabezado h1` en `Datos/datos.css`, sin margen propio (fuera de plan §1; consecuencia de T01).
+- 2026-11-18 · Claude (navegador de Orca en un perfil aislado, backend local; cuenta de prueba nueva
+  `avisos…@example.com`, riegos a las 21:29 y 21:30, sensor 13 con límites 0–1 °C y una lectura de 25 °C)
+  · round 1: FR-1.a: al abrir Home hubo una petición a `/notifications?unread_only=true`. FR-1.c: sin
+  avisos, la campana sin número y nombre "Avisos: ninguno sin leer". FR-1.d: con Home abierta desde las
+  21:28 y sin recargar, al crear el backend el recordatorio (21:29:26) y la alerta (21:29:21) la campana
+  pasó a "2" ("2 avisos sin leer"). FR-1.b: Home, Calendario, Datos y Configuración mostraron "2", la
+  campana antes del ícono de perfil.
+- 2026-11-18 · Claude (mismo entorno; el navegador de Orca bloquea las notificaciones, así que para FR-4 y
+  FR-5.a–b se sustituyó `window.Notification` en la página por uno que registra lo que se le pide: el
+  código de la app corre sin cambios, lo que no se ve es la ventana del sistema) · round 2: FR-2.a: pulsar
+  la campana abrió la lista con el 21:30 arriba, luego el 21:29 y la alerta de 21:29:21. FR-2.b, FR-2.c,
+  FR-2.d: "Recordatorio de riego · Sin leer · Es hora de regar las orquídeas (18-11-2026 21:30) ·
+  18-11-2026, 21:30" y "Alerta de sensor · Sin leer · Temperatura prueba: 25 °C fuera de rango (mín 0 °C,
+  máx 1 °C)". FR-5.c: con el permiso real de Orca (`denied`), "Los avisos del navegador están bloqueados;
+  actívalos en la configuración del navegador.". FR-3.c: con `fetch` fallando solo para el `PATCH` (lo
+  mismo que ve `api.js` con el backend caído), "No se pudo conectar con el servidor.", el aviso siguió
+  "Sin leer" y el contador en 3. FR-3.a, FR-3.b: pulsar el aviso 68 envió `PATCH /notifications/68/read`;
+  pasó a "Leído", el contador bajó de 3 a 2 y `?unread_only=true` ya no lo trajo; un aviso leído no es
+  botón. FR-2.f: pulsar la campana con la lista abierta la cerró (`aria-expanded` false); Escape también,
+  devolviendo el foco a la campana. FR-5.a, FR-5.b: en Configuración, con permiso sin decidir, la lista
+  ofreció "Activar avisos del navegador"; pulsarlo pidió el permiso una vez. FR-4.b: al concederlo salieron
+  "¡Hora de regar tus orquídeas! 🌱 — Es hora de regar las orquídeas (18-11-2026 21:29)" y "Alerta del
+  invernadero ⚠ — Temperatura prueba: 25 °C fuera de rango…"; siguieron sin leer en el backend (D2).
+  FR-4.d: pulsar la notificación llamó a `window.focus()`, la cerró y abrió la lista. FR-4.a, FR-4.c: en
+  Datos, abierta 9 min sin recargar y con permiso, el recordatorio 73 (creado 21:44:26) salió a las
+  21:44:47 con la consulta periódica; 66 y 67, ya mostrados en Configuración, no se repitieron, y el
+  contador subió a 3. FR-5.d: sin `Notification`, "Este navegador no muestra avisos fuera de la página.".
+  FR-2.e: una cuenta nueva `vacio…@example.com` vio "No tienes notificaciones." y la campana sin número.
+  002 FR-7.a reemplazado: guardar el riego 11 en el calendario con permiso sin decidir no pidió permiso.
+

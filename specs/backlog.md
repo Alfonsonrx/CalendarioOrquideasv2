@@ -21,9 +21,9 @@ páginas que faltan. Esto es lo que **no** cubren.
 - **Recuperar contraseña, editar perfil** (backend 001 §7) · target: → 001.
 
 ## Pantallas
-- **Gráficos de Datos con 0 o 1 lectura**: el eje horizontal muestra etiquetas sin sentido (sin
-  lecturas, "31/12, 21:00" repetido; con una, de "14/11" a "17/3"). Fijar el eje al periodo elegido
-  (ahora − 24 h / 7 días → ahora) · source: 103 round 1 (revisión en vivo) · target: → 101.
+- **Consejos según la condición fuera de rango** (la maqueta del rediseño: "Ventila o aumenta la sombra"):
+  textos de cultivo por tipo y lado que alguien con conocimiento de orquídeas debe validar · source: 106
+  §7 · target: → 106 | new spec.
 
 ## Sin dueño
 - **Pruebas automáticas del frontend**: hoy se verifican con revisiones en vivo en el navegador

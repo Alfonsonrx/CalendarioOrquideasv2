@@ -1,0 +1,58 @@
+# 106 — Datos del rediseño · Tasks
+
+Status: draft · Spec: `spec.md` · Plan: `plan.md`
+
+Requiere 104 construido y `estadoLectura` en `api.js` (105 T01). Revisiones en vivo con backend en
+`:8000`, servidor sin caché en `:8080`, cuenta `@example.com` en un perfil aislado de Orca y el simulador
+del backend (claves por tubería, nunca impresas); comparar con `docs/rediseno-maqueta.html`.
+
+## A. Páginas y cliente compartido
+- [ ] **T01 — Franja de estado** · FR-1.a, FR-1.b, FR-1.c
+  `datos.html`/`datos.js`/`datos.css`: `.estado` con clase de color, `.pulse` y "Última lectura hace …".
+  *Made when:* con un sensor fuera de rango la franja es roja y dice "Última lectura hace N min"; sin sensores, gris y sin antigüedad.
+- [ ] **T02 — Periodo en el encabezado** · FR-2.a, FR-2.b, FR-2.c · after T01
+  `datos.html`: `.periodo` con dos botones en `.head-tools`; `datos.js`: `aria-pressed` y recarga del historial; `small.per` de cada gráfico.
+  *Made when:* `grep -c '<select id="periodo"' Datos/datos.html` es 0; pulsar "7 días" lo deja presionado y los gráficos dicen "últimos 7 días".
+- [ ] **T03 — Tarjetas con barra de rango** · FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-3.f · after T01
+  `datos.js`: `mostrarTarjetas()` con tipo, chip, `barraRango()` (escala de plan §2) y pie; `datos.css`: `.sensor`, `.rango`.
+  *Made when:* un sensor 60–80 % con 68 % muestra la franja y el marcador en su lugar; uno sin máximo, la franja hasta el borde y "sin máximo"; uno sin lecturas, "Esperando la primera lectura".
+
+— checkpoint: estado y tarjetas como la maqueta —
+
+- [ ] **T04 — Gráficos con franja y eje del periodo** · FR-4.a, FR-4.b, FR-4.c · after T02
+  `datos.js`: series de la franja con `fill: "-1"`, `scales.x.min/max` del periodo, colores de las variables CSS.
+  *Made when:* con un sensor de temperatura 18–24 hay franja y "Rango ideal"; con dos de humedad de límites distintos, no; con una sola lectura el eje va de hace 24 h a ahora.
+- [ ] **T05 — Tabla con conteo y chips** · FR-5.a, FR-5.b · after T02
+  `datos.js`: `#conteo` "N lecturas", estado como `.chip`.
+  *Made when:* la tabla muestra "N lecturas" igual al número de filas y chips de color.
+
+— checkpoint: Datos como la maqueta —
+
+- [ ] **T06 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-2.a, FR-2.b, FR-2.c, FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-3.f, FR-4.a, FR-4.b, FR-4.c, FR-5.a, FR-5.b
+  Casos de plan §5 en claro y oscuro, a 1280 y 390 px; anotados en spec §10.
+  *Made when:* `sdd_check.py specs/106-datos-rediseno` lista todos los bullets como revisión en vivo.
+- [ ] **T07 — Actualizar 101** · —
+  `specs/101-datos-tiempo-real/spec.md` §10: FR-1.c y FR-4.a reemplazados por 106 (con el motivo).
+  *Made when:* 101 §10 nombra 106.
+
+— checkpoint: spec `built` —
+
+## C. What could change
+
+None yet.
+
+## D. Requirement coverage
+
+| FR | Tareas |
+|---|---|
+| FR-1 | T01, T06 |
+| FR-2 | T02, T06 |
+| FR-3 | T03, T06 |
+| FR-4 | T04, T06 |
+| FR-5 | T05, T06 |
+
+## E. The gates
+
+CI: none defined (no workflow in the repo). Local: `for f in *.js */*.js; do node --check "$f" || exit 1; done`.
+
+## F. Log

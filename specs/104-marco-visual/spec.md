@@ -151,6 +151,19 @@ formulario. Los textos del formulario cambian con el modo, como hoy.
   contraseña; sin token o con uno inválido o vencido, rechazo de sesión (backend 001 FR-3.b–d), que el
   cliente ya maneja (001 FR-3.c).
 
+- **Proposed (round 1): D8 — La barra lateral queda fija a la ventana** (`position: sticky`, alto de la
+  ventana). La maqueta la deja crecer con la página, y en páginas largas "Cerrar sesión" (FR-2.c) quedaba
+  bajo el pliegue. *Por qué:* salir debe estar a la vista (mismo motivo que D4). Pendiente de aprobación.
+
 ### Taken while building
 
-None yet.
+- 2026-11-20, Claude (round 1), navegador de Orca (perfil aislado "pruebas-103"), backend local, cuenta
+  `camila.104@example.com` ("camila prueba"), 1280 px: FR-1.a (marco en las cuatro páginas), FR-1.b
+  (fondo `rgb(16, 26, 21)` con el sistema en oscuro; `data-theme="light"` → `rgb(242, 245, 241)`),
+  FR-2.a–d, FR-3.a–e (avatar "C"; con `/auth/me` abortado, ícono). Falta 390 px, tipografías bloqueadas,
+  chips y foco: T08.
+- 2026-11-21, Claude (round 2), mismo perfil y cuenta, estáticos en :8080: FR-4.a–c (alerta real de
+  hoy "04:51 · No leído" con punto; aviso leído de ayer renderizado con la función de la página, "Ayer
+  14:12 · Leído", porque el backend no crea avisos con fecha pasada; clic del mouse fuera cierra),
+  FR-5.a–d (1280 px y 390 px), FR-2.e (390 px, "Cerrar sesión" visible), FR-1.e (27,4 en Home, Datos
+  y gráfico; 26,5 en Configuración).

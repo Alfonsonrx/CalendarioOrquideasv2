@@ -111,7 +111,7 @@ function mostrarTarjetas() {
 
         tarjeta.appendChild(crearElemento("p", estado.texto, "estado-alerta " + estado.clase));
 
-        tarjeta.appendChild(crearElemento("span", sensor.value + " " + sensor.unit));
+        tarjeta.appendChild(crearElemento("span", formatearNumero(sensor.value) + " " + sensor.unit));
 
         tarjeta.appendChild(crearElemento("small", formatearFechaHora(sensor.recorded_at)));
 
@@ -221,7 +221,7 @@ function mostrarTabla() {
 
         fila.append(
             crearElemento("td", lectura.sensor.name),
-            crearElemento("td", lectura.value + " " + lectura.sensor.unit),
+            crearElemento("td", formatearNumero(lectura.value) + " " + lectura.sensor.unit),
             crearElemento("td", formatearFechaHora(lectura.recorded_at)),
             celdaEstado
         );
@@ -312,6 +312,8 @@ function dibujarGrafico(tipo, idCanvas, tituloEje) {
             maintainAspectRatio: false,
 
             animation: false,
+
+            locale: "es-CL", // ejes y valores con coma decimal (spec 104 FR-1.e)
 
             scales: {
 

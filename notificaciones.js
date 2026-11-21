@@ -3,29 +3,25 @@
 ===================================== */
 
 // Se carga después de api.js en cada página con sesión. Pone la campana
-// antes del ícono de perfil y consulta los no leídos cada 30 s; el backend
+// antes del avatar y consulta los no leídos cada 30 s; el backend
 // crea los avisos, aquí solo se muestran (perfil, regla 2).
 
-const perfilAvisos = document.querySelector(".perfil");
+const perfilAvisos = document.querySelector(".avatar");
 
 let noLeidos = 0;
 
 
-// La campana y el perfil van juntos a la derecha del encabezado.
-
-const grupoAvisos = document.createElement("div");
-grupoAvisos.className = "encabezado-acciones";
-
-const contenedorAvisos = document.createElement("div");
-contenedorAvisos.className = "avisos";
+// La campana va antes del avatar, a la derecha del encabezado (spec 104 FR-3.b).
 
 const campana = document.createElement("button");
 campana.type = "button";
-campana.className = "campana";
-campana.textContent = "🔔";
+campana.className = "icon-btn";
+campana.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`;
 
 const numeroAvisos = document.createElement("span");
-numeroAvisos.className = "campana-numero";
+numeroAvisos.className = "count";
 numeroAvisos.hidden = true;
 campana.append(numeroAvisos);
 
@@ -33,10 +29,10 @@ campana.append(numeroAvisos);
 
 const panelAvisos = document.createElement("div");
 panelAvisos.id = "panelAvisos";
-panelAvisos.className = "panel-avisos";
+panelAvisos.className = "avisos";
 panelAvisos.hidden = true;
 panelAvisos.innerHTML = `
-    <h2>Notificaciones</h2>
+    <header>Notificaciones</header>
     <div class="permiso-avisos"></div>
     <p class="mensaje-avisos" role="alert" hidden></p>
     <ul class="lista-avisos"></ul>`;
@@ -48,12 +44,8 @@ const listaAvisos = panelAvisos.querySelector(".lista-avisos");
 campana.setAttribute("aria-controls", "panelAvisos");
 campana.setAttribute("aria-expanded", "false");
 
-contenedorAvisos.append(campana, panelAvisos);
-grupoAvisos.append(contenedorAvisos);
-
 if (perfilAvisos) {
-    perfilAvisos.before(grupoAvisos);
-    grupoAvisos.append(perfilAvisos);
+    perfilAvisos.before(campana, panelAvisos);
 }
 
 
@@ -99,16 +91,33 @@ const TIPOS_AVISO = {
     reading_alert: "Alerta de sensor"
 };
 
-function formatearFechaAviso(iso) {
+// La fecha corta, solo lo que hace falta para ubicarse (spec 104 FR-4.b):
+// "16:47" hoy, "Ayer 14:12", "03/02 09:00" este año, "03/02/2025 09:00" antes.
 
-    return new Date(iso).toLocaleString("es-CL", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23"
-    });
+function formatearFechaAviso(iso, ahora = new Date()) {
+
+    const fecha = new Date(iso);
+    const dosCifras = numero => String(numero).padStart(2, "0");
+    const hora = dosCifras(fecha.getHours()) + ":" + dosCifras(fecha.getMinutes());
+
+    const ayer = new Date(ahora);
+    ayer.setDate(ahora.getDate() - 1);
+
+    if (fecha.toDateString() === ahora.toDateString()) {
+        return hora;
+    }
+
+    if (fecha.toDateString() === ayer.toDateString()) {
+        return "Ayer " + hora;
+    }
+
+    const diaMes = dosCifras(fecha.getDate()) + "/" + dosCifras(fecha.getMonth() + 1);
+
+    if (fecha.getFullYear() === ahora.getFullYear()) {
+        return diaMes + " " + hora;
+    }
+
+    return diaMes + "/" + fecha.getFullYear() + " " + hora;
 }
 
 function mostrarMensajeAvisos(texto) {
@@ -121,11 +130,13 @@ function mostrarMensajeAvisos(texto) {
 
 function crearAviso(aviso) {
 
+    // Punto de color y texto: el estado no se lee solo por color (spec 104 FR-4.a).
+
     const item = document.createElement("li");
-    item.className = aviso.is_read ? "aviso" : "aviso no-leido";
+    item.className = aviso.is_read ? "leido" : "";
 
     const contenido = document.createElement(aviso.is_read ? "div" : "button");
-    contenido.className = "aviso-contenido";
+    contenido.className = "aviso";
 
     if (!aviso.is_read) {
         contenido.type = "button";
@@ -133,26 +144,27 @@ function crearAviso(aviso) {
         contenido.addEventListener("click", () => marcarLeido(aviso, item));
     }
 
-    const cabecera = document.createElement("span");
-    cabecera.className = "aviso-cabecera";
+    const punto = document.createElement("span");
+    punto.className = "pip";
 
-    const tipo = document.createElement("strong");
-    tipo.textContent = TIPOS_AVISO[aviso.type] || aviso.type;
+    const cabecera = document.createElement("span");
+    cabecera.className = "tipo";
+
+    const tipoYHora = document.createElement("span");
+    tipoYHora.textContent = (TIPOS_AVISO[aviso.type] || aviso.type) + " · " +
+        formatearFechaAviso(aviso.created_at);
 
     const estado = document.createElement("span");
-    estado.className = "aviso-estado";
-    estado.textContent = aviso.is_read ? "Leído" : "Sin leer";
+    estado.className = aviso.is_read ? "" : "nuevo";
+    estado.textContent = aviso.is_read ? "Leído" : "No leído";
 
-    cabecera.append(tipo, estado);
+    cabecera.append(tipoYHora, estado);
 
     const mensaje = document.createElement("span");
-    mensaje.className = "aviso-mensaje";
+    mensaje.className = "msg";
     mensaje.textContent = aviso.message;
 
-    const fecha = document.createElement("small");
-    fecha.textContent = formatearFechaAviso(aviso.created_at);
-
-    contenido.append(cabecera, mensaje, fecha);
+    contenido.append(punto, cabecera, mensaje);
     item.append(contenido);
 
     return item;
@@ -188,6 +200,14 @@ function cerrarLista() {
 
 campana.addEventListener("click", () => {
     panelAvisos.hidden ? abrirLista() : cerrarLista();
+});
+
+// Un clic fuera de la campana y de la lista la cierra, como un menú (spec 104 FR-4.c).
+
+document.addEventListener("click", evento => {
+    if (!panelAvisos.hidden && !campana.contains(evento.target) && !panelAvisos.contains(evento.target)) {
+        cerrarLista();
+    }
 });
 
 document.addEventListener("keydown", evento => {

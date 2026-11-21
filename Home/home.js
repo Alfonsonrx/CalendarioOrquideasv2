@@ -275,9 +275,9 @@ function mostrarCondicionesHome(condiciones) {
 
     const humedad = lecturaMasReciente(condiciones, "humidity");
 
-    document.getElementById("temperatura").textContent = temperatura ? temperatura.value : "--";
+    document.getElementById("temperatura").textContent = temperatura ? formatearNumero(temperatura.value) : "--";
 
-    document.getElementById("humedad").textContent = humedad ? humedad.value : "--";
+    document.getElementById("humedad").textContent = humedad ? formatearNumero(humedad.value) : "--";
 }
 
 // Si la consulta falla se conservan los valores mostrados; el calendario

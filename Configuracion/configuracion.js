@@ -107,7 +107,7 @@ function listaQueRevisar(sensor) {
 
 function textoLimite(valor, unidad) {
 
-    return valor === null ? "—" : valor + " " + unidad;
+    return valor === null ? "—" : formatearNumero(valor) + " " + unidad;
 }
 
 const listaSensores = document.getElementById("listaSensores");

@@ -1,6 +1,65 @@
+/* =====================================
+   SISTEMA VISUAL DEL REDISEÑO (spec 104)
+   Valores tomados de docs/rediseno-maqueta.html. Cada color es una
+   variable: el tema oscuro solo cambia las variables (FR-1.b).
+===================================== */
+
+:root {
+    --bg: #f2f5f1;
+    --surface: #ffffff;
+    --sunken: #e9efe8;
+    --line: #dbe4da;
+    --fg: #1d3a2c;
+    --muted: #5f7468;
+    --brand: #214d3b;
+    --brand-2: #397b59;
+    --on-brand: #ffffff;
+    --orchid: #a8508f;
+    --orchid-soft: #e7a9d6;
+    --band: rgba(57, 123, 89, 0.12);
+    --scrim: rgba(16, 30, 22, 0.45);
+
+    /* Estados (FR-1.d): verde en rango, rojo alto, azul bajo, ámbar advertencia */
+    --ok-bg: #e0f0e4;   --ok-fg: #276744;
+    --hot-bg: #fde5df;  --hot-fg: #b5412d;
+    --cold-bg: #e1edfa; --cold-fg: #356a9c;
+    --warn-bg: #fff0d9; --warn-fg: #94590f;
+
+    /* Sin las fuentes de Google, la del sistema (FR-1.c) */
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --radius: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #101a15; --surface: #17241d; --sunken: #1d2d25; --line: #2a3d33;
+        --fg: #e3eee6; --muted: #93a99b;
+        --brand: #0d1611; --brand-2: #5aa57d; --on-brand: #0d1611; --orchid: #d886c2;
+        --band: rgba(90, 165, 125, 0.16); --scrim: rgba(0, 0, 0, 0.6);
+        --ok-bg: #1d3b2a;   --ok-fg: #8fd4a8;
+        --hot-bg: #42221c;  --hot-fg: #f3a08f;
+        --cold-bg: #1c2e42; --cold-fg: #9cc4ec;
+        --warn-bg: #3d2e14; --warn-fg: #f0c27a;
+        color-scheme: dark;
+    }
+}
+
+/* La misma paleta oscura a mano (revisiones en vivo, plan §5) */
+:root[data-theme="dark"] {
+    --bg: #101a15; --surface: #17241d; --sunken: #1d2d25; --line: #2a3d33;
+    --fg: #e3eee6; --muted: #93a99b;
+    --brand: #0d1611; --brand-2: #5aa57d; --on-brand: #0d1611; --orchid: #d886c2;
+    --band: rgba(90, 165, 125, 0.16); --scrim: rgba(0, 0, 0, 0.6);
+    --ok-bg: #1d3b2a;   --ok-fg: #8fd4a8;
+    --hot-bg: #42221c;  --hot-fg: #f3a08f;
+    --cold-bg: #1c2e42; --cold-fg: #9cc4ec;
+    --warn-bg: #3d2e14; --warn-fg: #f0c27a;
+    color-scheme: dark;
+}
 
 /* =====================================
-   CONFIGURACION GENERAL
+   BASE
 ===================================== */
 
 * {
@@ -10,175 +69,474 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f8f4;
-    color: #333;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
 }
 
+h1, h2, h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+}
+
+button, input, select {
+    font: inherit;
+    color: inherit;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* Foco del teclado siempre visible (FR-1.f) */
+:focus-visible {
+    outline: 2px solid var(--brand-2);
+    outline-offset: 2px;
+}
 
 /* =====================================
-   CONTENEDOR PRINCIPAL
+   MARCO: BARRA LATERAL (FR-2)
 ===================================== */
 
-.contenedor {
+.app {
     display: flex;
     min-height: 100vh;
 }
 
+.sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--brand);
+    color: #e8f2ec; /* la barra es oscura en ambos temas */
+    padding: 24px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    /* Fija a la ventana: "Cerrar sesión" queda a la vista en páginas largas */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
 
-/* =====================================
-   MENU LATERAL
-===================================== */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+}
 
-.menu-lateral {
-    width: 230px;
-    background-color: #244d38;
-    color: white;
-    padding: 25px 15px;
+.logo svg {
     flex-shrink: 0;
 }
 
-.menu-lateral h2 {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.menu-lateral nav {
+.sidebar nav {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
 }
 
-.menu-lateral a {
+.sidebar a,
+.sidebar .salir {
+    color: inherit;
     text-decoration: none;
-    color: white;
-    padding: 14px;
-    border-radius: 8px;
-    transition: 0.3s;
+    padding: 10px 12px;
+    border-radius: 9px;
+    opacity: 0.8;
+    font-weight: 500;
 }
 
-.menu-lateral a:hover,
-.menu-lateral a.activo {
-    background-color: #3d7553;
+.sidebar a:hover,
+.sidebar .salir:hover {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 1;
 }
 
-
-/* =====================================
-   CONTENIDO PRINCIPAL
-===================================== */
-
-.contenido {
-    flex: 1;
-    padding: 30px;
-    min-width: 0;
+.sidebar a:focus-visible,
+.sidebar .salir:focus-visible {
+    outline-color: #ffffff;
 }
 
-
-/* =====================================
-   ENCABEZADO
-===================================== */
-
-.encabezado {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
+.sidebar a.activo {
+    background: rgba(255, 255, 255, 0.14);
+    opacity: 1;
+    box-shadow: inset 3px 0 0 var(--orchid-soft);
 }
 
-.encabezado h1 {
-    color: #244d38;
-    font-size: 28px;
-}
-
-.perfil {
-    width: 45px;
-    height: 45px;
-    background-color: #dcebdd;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-}
-
-
-/* =====================================
-   CAMPANA DE AVISOS (spec 103)
-===================================== */
-
-.encabezado-acciones {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.avisos {
-    position: relative;
-}
-
-.campana {
-    position: relative;
-    width: 45px;
-    height: 45px;
-    border: none;
-    border-radius: 50%;
-    background-color: #dcebdd;
-    font-size: 20px;
+.sidebar .salir {
+    margin-top: auto;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    font-size: 13px;
     cursor: pointer;
 }
 
-.campana-numero {
+/* =====================================
+   MARCO: CONTENIDO Y ENCABEZADO (FR-3)
+===================================== */
+
+main {
+    flex: 1;
+    min-width: 0;
+    padding: 22px 16px 40px;
+}
+
+.wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.head h1 {
+    font-size: 30px;
+}
+
+.head p {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.head-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--sunken);
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    color: var(--brand-2);
+}
+
+/* =====================================
+   COMPONENTES (FR-1.a)
+===================================== */
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    min-width: 0;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.panel h2 {
+    font-size: 17px;
+}
+
+.panel-head small,
+.panel-head a {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.panel-head a {
+    color: var(--brand-2);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* Chips de estado: mismos colores en todas las páginas (FR-1.d) */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.chip.dot::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.chip.ok   { background: var(--ok-bg);   color: var(--ok-fg); }
+.chip.hot  { background: var(--hot-bg);  color: var(--hot-fg); }
+.chip.cold { background: var(--cold-bg); color: var(--cold-fg); }
+.chip.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.chip.none { background: var(--sunken);  color: var(--muted); }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--surface);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: var(--sunken);
+}
+
+.btn.primary {
+    background: var(--brand-2);
+    border-color: var(--brand-2);
+    color: var(--on-brand);
+}
+
+.btn.primary:hover {
+    filter: brightness(1.08);
+}
+
+.btn.danger {
+    color: var(--hot-fg);
+}
+
+.valor {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.valor span {
+    margin-left: 2px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+/* Tablas */
+.tabla {
+    max-height: 22rem;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.tabla table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.tabla th {
+    position: sticky;
+    top: 0;
+    padding: 10px 14px;
+    background: var(--sunken);
+    color: var(--muted);
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tabla td {
+    padding: 11px 14px;
+    border-top: 1px solid var(--line);
+    white-space: nowrap;
+}
+
+.tabla tbody tr:hover {
+    background: var(--sunken);
+}
+
+/* Ventanas y formularios */
+dialog {
+    width: min(440px, calc(100vw - 32px));
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+dialog::backdrop {
+    background: var(--scrim);
+}
+
+dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+}
+
+.dlg-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 8px;
+}
+
+.dlg-head h2 {
+    font-size: 20px;
+}
+
+.dlg-head p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.cerrar {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input,
+.field select {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--bg);
+    font-weight: 400;
+}
+
+.dlg-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.dlg-foot .danger {
+    margin-right: auto;
+}
+
+.ayuda {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* =====================================
+   MARCO: CAMPANA Y LISTA DE AVISOS (spec 103, 104 FR-4)
+===================================== */
+
+.icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}
+
+.icon-btn .count {
     position: absolute;
     top: -4px;
     right: -4px;
-    min-width: 20px;
-    padding: 2px 5px;
-    border-radius: 10px;
-    background-color: #bd4141;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 99px;
+    background: var(--orchid);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
 }
 
-.panel-avisos {
+.avisos {
     position: absolute;
-    top: calc(100% + 8px);
+    top: 48px;
     right: 0;
-    z-index: 900;
-    width: min(360px, calc(100vw - 32px));
+    z-index: 20;
+    width: min(340px, calc(100vw - 32px));
     max-height: 70vh;
     overflow-y: auto;
-    padding: 16px;
-    border-radius: 12px;
-    background-color: white;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    color: #244d38;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
 }
 
-.panel-avisos h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
+.avisos header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
 }
 
-.permiso-avisos p,
-.mensaje-avisos,
-.sin-avisos {
+.permiso-avisos:not(:empty),
+.mensaje-avisos {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
     font-size: 13px;
-    color: #666;
-    margin-bottom: 10px;
+    color: var(--muted);
 }
 
 .mensaje-avisos {
-    color: #8a2a1d;
+    color: var(--hot-fg);
 }
 
 .boton-permiso {
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    border: none;
+    padding: 6px 12px;
+    border: 0;
     border-radius: 8px;
-    background-color: #244d38;
-    color: white;
+    background: var(--brand-2);
+    color: var(--on-brand);
+    font-size: 13px;
     cursor: pointer;
 }
 
@@ -186,56 +544,134 @@ body {
     list-style: none;
 }
 
-.aviso {
-    border-bottom: 1px solid #e7eee8;
+.sin-avisos {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted);
 }
 
-.aviso-contenido {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+.avisos .aviso {
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    gap: 4px 10px;
     width: 100%;
-    padding: 10px 6px;
-    border: none;
+    padding: 12px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
     background: none;
-    color: inherit;
-    font: inherit;
-    font-size: 14px;
     text-align: left;
+    font-size: 14px;
 }
 
-button.aviso-contenido {
+.avisos button.aviso {
     cursor: pointer;
 }
 
-.no-leido .aviso-contenido {
-    background-color: #f1f8f1;
+.avisos button.aviso:hover {
+    background: var(--sunken);
 }
 
-button.aviso-contenido:hover {
-    background-color: #e3f1e6;
+.avisos button.aviso:focus-visible {
+    outline-offset: -2px;
 }
 
-.aviso-cabecera {
+.avisos .pip {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--orchid);
+}
+
+.avisos .leido .pip {
+    background: transparent;
+}
+
+.avisos .tipo {
     display: flex;
     justify-content: space-between;
     gap: 8px;
-}
-
-.aviso-estado {
     font-size: 12px;
-    color: #777;
+    color: var(--muted);
 }
 
-.no-leido .aviso-estado {
-    color: #bd4141;
-    font-weight: bold;
+.avisos .msg {
+    grid-column: 2;
 }
 
-.aviso-contenido small {
-    color: #777;
+.avisos .leido .msg {
+    color: var(--muted);
 }
 
+.avisos .nuevo {
+    color: var(--orchid);
+    font-weight: 600;
+}
+
+/* =====================================
+   MARCO EN PANTALLAS ANGOSTAS (FR-2.e)
+   La barra pasa a una franja sobre el contenido: logo y "Cerrar sesión"
+   arriba, los enlaces debajo con scroll propio (D4: salir siempre visible).
+===================================== */
+
+@media (max-width: 640px) {
+
+    .app {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 12px 16px;
+    }
+
+    .logo {
+        padding: 0;
+        font-size: 18px;
+    }
+
+    .sidebar .salir {
+        margin-top: 0;
+        padding: 8px 10px;
+    }
+
+    .sidebar nav {
+        order: 3;
+        width: 100%;
+        flex-direction: row;
+        gap: 2px;
+        overflow-x: auto;
+    }
+
+    .sidebar a {
+        padding: 8px 10px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .sidebar a.activo {
+        box-shadow: inset 0 -2px 0 var(--orchid-soft);
+    }
+
+    .head h1 {
+        font-size: 24px;
+    }
+}
+
+
+/* =====================================
+   CONTENIDO DE ANTES (hasta 105)
+   El calendario conserva sus reglas, ya con las variables del sistema;
+   105 las reemplaza (plan D7).
+===================================== */
 
 /* =====================================
    SECCION DEL CALENDARIO
@@ -249,7 +685,7 @@ button.aviso-contenido:hover {
 
 .calendario,
 .proximos-riegos {
-    background-color: white;
+    background-color: var(--surface);
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
@@ -258,10 +694,9 @@ button.aviso-contenido:hover {
 
 .calendario h2,
 .proximos-riegos h2 {
-    color: #244d38;
+    color: var(--fg);
     margin-bottom: 20px;
 }
-
 
 /* =====================================
    ENCABEZADO DEL CALENDARIO
@@ -287,7 +722,7 @@ button.aviso-contenido:hover {
 }
 
 .navegacion-mes h3 {
-    color: #244d38;
+    color: var(--fg);
     min-width: 150px;
     text-align: center;
 }
@@ -297,17 +732,16 @@ button.aviso-contenido:hover {
     height: 35px;
     border: none;
     border-radius: 8px;
-    background-color: #244d38;
-    color: white;
+    background-color: var(--brand-2);
+    color: var(--on-brand);
     font-size: 20px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .navegacion-mes button:hover {
-    background-color: #3d7553;
+    background-color: var(--brand-2);
 }
-
 
 /* =====================================
    DIAS DE LA SEMANA
@@ -324,11 +758,10 @@ button.aviso-contenido:hover {
     text-align: center;
     padding: 12px 5px;
     font-weight: bold;
-    color: #244d38;
-    background-color: #e8f1e8;
+    color: var(--fg);
+    background-color: var(--sunken);
     border-radius: 6px;
 }
-
 
 /* =====================================
    CUADRICULA DEL CALENDARIO
@@ -345,17 +778,17 @@ button.aviso-contenido:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #e0e8df;
+    border: 1px solid var(--line);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--surface);
     cursor: pointer;
     transition: 0.2s;
     position: relative;
 }
 
 .dia:hover {
-    background-color: #e8f1e8;
-    border-color: #3d7553;
+    background-color: var(--sunken);
+    border-color: var(--brand-2);
 }
 
 .dia.vacio {
@@ -365,12 +798,11 @@ button.aviso-contenido:hover {
 }
 
 .dia.hoy {
-    background-color: #dcebdd;
-    border: 2px solid #3d7553;
-    color: #244d38;
+    background-color: var(--sunken);
+    border: 2px solid var(--brand-2);
+    color: var(--fg);
     font-weight: bold;
 }
-
 
 /* =====================================
    VENTANA EMERGENTE (MODAL)
@@ -388,7 +820,7 @@ button.aviso-contenido:hover {
 }
 
 .modal-contenido {
-    background-color: white;
+    background-color: var(--surface);
     width: 100%;
     max-width: 420px;
     padding: 25px;
@@ -404,7 +836,7 @@ button.aviso-contenido:hover {
 }
 
 .modal-encabezado h2 {
-    color: #244d38;
+    color: var(--fg);
     margin-bottom: 0;
 }
 
@@ -413,12 +845,12 @@ button.aviso-contenido:hover {
     background: none;
     font-size: 28px;
     cursor: pointer;
-    color: #555;
+    color: var(--muted);
 }
 
 .modal-contenido p {
     margin-bottom: 20px;
-    color: #555;
+    color: var(--muted);
 }
 
 .modal-contenido label {
@@ -430,12 +862,11 @@ button.aviso-contenido:hover {
 .modal-contenido input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--line);
     border-radius: 8px;
     font-size: 16px;
     margin-bottom: 20px;
 }
-
 
 /* =====================================
    BOTONES DEL MODAL
@@ -456,32 +887,31 @@ button.aviso-contenido:hover {
 }
 
 .btn-cancelar {
-    background-color: #eeeeee;
-    color: #333;
+    background-color: var(--sunken);
+    color: var(--fg);
 }
 
 .btn-cancelar:hover {
-    background-color: #dddddd;
+    background-color: var(--sunken);
 }
 
 .btn-guardar {
-    background-color: #244d38;
-    color: white;
+    background-color: var(--brand-2);
+    color: var(--on-brand);
 }
 
 .btn-guardar:hover {
-    background-color: #3d7553;
+    background-color: var(--brand-2);
 }
-
 
 /* =====================================
    DIAS CON RIEGO PROGRAMADO
 ===================================== */
 
 .dia.programado {
-    background-color: #e1f1e3;
-    border: 2px solid #3d7553;
-    color: #244d38;
+    background-color: var(--ok-bg);
+    border: 2px solid var(--brand-2);
+    color: var(--fg);
     font-weight: bold;
 }
 
@@ -489,12 +919,11 @@ button.aviso-contenido:hover {
     content: "";
     width: 7px;
     height: 7px;
-    background-color: #3d7553;
+    background-color: var(--brand-2);
     border-radius: 50%;
     position: absolute;
     bottom: 6px;
 }
-
 
 /* =====================================
    LISTA DE PROXIMOS RIEGOS
@@ -503,22 +932,21 @@ button.aviso-contenido:hover {
 .riego-item {
     padding: 12px;
     margin-bottom: 10px;
-    background-color: #e8f1e8;
+    background-color: var(--sunken);
     border-radius: 8px;
-    border-left: 4px solid #3d7553;
+    border-left: 4px solid var(--brand-2);
 }
 
 .riego-item strong {
     display: block;
-    color: #244d38;
+    color: var(--fg);
     margin-bottom: 5px;
 }
 
 .riego-item span {
     font-size: 13px;
-    color: #555;
+    color: var(--muted);
 }
-
 
 /* =====================================
    ADAPTACION A PANTALLAS PEQUEÑAS
@@ -526,20 +954,8 @@ button.aviso-contenido:hover {
 
 @media (max-width: 600px) {
 
-    .contenedor {
-        flex-direction: column;
-    }
-
-    .menu-lateral {
-        width: 100%;
-    }
-
     .contenido-calendario {
         grid-template-columns: 1fr;
-    }
-
-    .contenido {
-        padding: 15px;
     }
 
     .dia {
@@ -560,8 +976,8 @@ button.aviso-contenido:hover {
 /* BOTON ELIMINAR RIEGO */
 
 .btn-eliminar {
-    background-color: #f8dddd;
-    color: #a52a2a;
+    background-color: var(--hot-bg);
+    color: var(--hot-fg);
     padding: 11px 16px;
     border: none;
     border-radius: 7px;
@@ -570,7 +986,7 @@ button.aviso-contenido:hover {
 }
 
 .btn-eliminar:hover {
-    background-color: #edc2c2;
+    background-color: var(--hot-bg);
 }
 
 /* OCULTAR BOTON CUANDO NO EXISTE UN RIEGO */
@@ -578,7 +994,6 @@ button.aviso-contenido:hover {
 .btn-eliminar.oculto {
     display: none;
 }
-
 
 /* =====================================
    RIEGOS DEL DIA (MODAL)
@@ -589,5 +1004,5 @@ button.aviso-contenido:hover {
 }
 
 #riegosDelDia .riego-item.seleccionado {
-    background-color: #c9e2cc;
+    background-color: var(--ok-bg);
 }

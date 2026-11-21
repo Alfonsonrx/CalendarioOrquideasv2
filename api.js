@@ -25,14 +25,12 @@ if (!obtenerToken() && !location.pathname.endsWith("/login.html")) {
 }
 
 
-// El ícono de perfil del encabezado cierra la sesión.
+// "Cerrar sesión" al pie de la barra lateral (spec 104 FR-2.d).
 
-const iconoPerfil = document.querySelector(".perfil");
+const botonSalir = document.querySelector(".salir");
 
-if (iconoPerfil) {
-    iconoPerfil.title = "Cerrar sesión";
-    iconoPerfil.style.cursor = "pointer";
-    iconoPerfil.addEventListener("click", cerrarSesion);
+if (botonSalir) {
+    botonSalir.addEventListener("click", cerrarSesion);
 }
 
 
@@ -102,3 +100,47 @@ function mensajeDeError(datos) {
 
     return "Ocurrió un error inesperado.";
 }
+
+
+/* =====================================
+   NUMEROS CON COMA DECIMAL (spec 104 FR-1.e)
+===================================== */
+
+// formatearNumero(27.4) → "27,4"; formatearNumero(68) → "68".
+
+const formatoNumero = new Intl.NumberFormat("es-CL", { maximumFractionDigits: 2 });
+
+function formatearNumero(valor) {
+    return formatoNumero.format(valor);
+}
+
+
+/* =====================================
+   AVATAR DEL ENCABEZADO (spec 104 FR-3.c–e)
+===================================== */
+
+// La inicial sale del nombre que tiene el backend; no se guarda en el
+// navegador (perfil, regla 1). Sin nombre o con cualquier error queda el
+// ícono de persona (plan D6); un 401 ya lo maneja api().
+
+async function mostrarAvatar() {
+
+    const avatar = document.querySelector(".avatar");
+
+    if (!avatar || !obtenerToken()) {
+        return;
+    }
+
+    try {
+        const cuenta = await api("/auth/me");
+        const nombre = ((cuenta && cuenta.name) || "").trim();
+
+        if (nombre) {
+            avatar.textContent = [...nombre][0].toLocaleUpperCase("es-CL");
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+mostrarAvatar();

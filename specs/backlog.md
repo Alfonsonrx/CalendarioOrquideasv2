@@ -25,6 +25,10 @@ páginas que faltan. Esto es lo que **no** cubren.
   textos de cultivo por tipo y lado que alguien con conocimiento de orquídeas debe validar · source: 106
   §7 · target: → 106 | new spec.
 
+- **Mensajes de alerta del backend con punto decimal**: la alerta dice "27.4 °C fuera de rango (mín 18 °C,
+  máx 26 °C)" y la app la muestra tal cual (perfil: los mensajes del backend no se cambian), así que la
+  lista de avisos mezcla "27.4" con el "27,4" del resto (104 FR-1.e) · source: 104 T04 · target: → backend 104.
+
 ## Sin dueño
 - **Pruebas automáticas del frontend**: hoy se verifican con revisiones en vivo en el navegador
   (decisión del dueño, 2026-11-18). Si el proyecto crece, una suite de navegador (p. ej. Playwright).

@@ -3,113 +3,28 @@
    ESTILOS GENERALES DE HOME
 ===================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f7f3;
-    color: #244d3a;
-}
-
 /* =====================================
    CONTENEDOR PRINCIPAL
 ===================================== */
-
-.contenedor {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
 
 /* =====================================
    MENU LATERAL
 ===================================== */
 
-.menu-lateral {
-    width: 232px;
-    min-width: 232px;
-    background-color: #214d3b;
-    color: white;
-    padding: 22px 17px;
-}
-
-.menu-lateral h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 40px;
-}
-
-.menu-lateral nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.menu-lateral nav a {
-    display: block;
-    text-decoration: none;
-    color: white;
-    padding: 14px 13px;
-    border-radius: 9px;
-    font-size: 15px;
-    transition: background-color 0.2s ease;
-}
-
-.menu-lateral nav a:hover {
-    background-color: #32694e;
-}
-
-.menu-lateral nav a.activo {
-    background-color: #397b59;
-}
-
 /* =====================================
    CONTENIDO PRINCIPAL
 ===================================== */
 
-.contenido {
-    flex: 1;
-    min-width: 0;
-    padding: 30px;
-}
-
 /* =====================================
    ENCABEZADO
 ===================================== */
-
-.encabezado {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.encabezado h1 {
-    font-size: 28px;
-    color: #244d3a;
-}
-
-.perfil {
-    width: 46px;
-    height: 46px;
-    background-color: #e0eee2;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 23px;
-}
 
 /* =====================================
    INDICADORES DE TEMPERATURA Y HUMEDAD
 ===================================== */
 
 .indicadores-home {
-    background-color: white;
+    background-color: var(--surface);
     border-radius: 15px;
     padding: 30px;
     min-height: 165px;
@@ -126,13 +41,13 @@ body {
 }
 
 .indicador-dato {
-    color: #39975a;
+    color: var(--ok-fg);
     font-size: 52px;
     font-weight: bold;
 }
 
 .indicador p {
-    color: #777;
+    color: var(--muted);
     font-size: 14px;
     margin-top: 8px;
 }
@@ -140,7 +55,7 @@ body {
 .separador {
     width: 1px;
     height: 85px;
-    background-color: #e1e9e1;
+    background-color: var(--sunken);
 }
 
 /* =====================================
@@ -148,7 +63,7 @@ body {
 ===================================== */
 
 .descripcion-home {
-    color: #777;
+    color: var(--muted);
     font-size: 14px;
     margin-top: 13px;
     margin-bottom: 30px;
@@ -170,7 +85,7 @@ body {
 ===================================== */
 
 .tarjeta-home {
-    background-color: white;
+    background-color: var(--surface);
     border-radius: 13px;
     padding: 25px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
@@ -178,7 +93,7 @@ body {
 
 .tarjeta-home h2 {
     font-size: 21px;
-    color: #244d3a;
+    color: var(--fg);
 }
 
 /* =====================================
@@ -194,7 +109,7 @@ body {
 }
 
 .titulo-tarjeta a {
-    color: #397b59;
+    color: var(--brand-2);
     text-decoration: none;
     font-size: 13px;
     font-weight: bold;
@@ -213,13 +128,13 @@ body {
 
 .mes-home h3 {
     font-size: 17px;
-    color: #244d3a;
+    color: var(--fg);
 }
 
 .mes-home button {
     border: none;
-    background-color: #214d3b;
-    color: white;
+    background-color: var(--brand-2);
+    color: var(--on-brand);
     width: 32px;
     height: 32px;
     border-radius: 7px;
@@ -228,7 +143,7 @@ body {
 }
 
 .mes-home button:hover {
-    background-color: #397b59;
+    background-color: var(--brand-2);
 }
 
 /* DIAS DE LA SEMANA */
@@ -244,7 +159,7 @@ body {
 .dias-semana-home span {
     font-size: 12px;
     font-weight: bold;
-    color: #244d3a;
+    color: var(--fg);
 }
 
 /* DIAS DEL MES */
@@ -262,9 +177,9 @@ body {
     justify-content: center;
     border-radius: 7px;
     font-size: 13px;
-    color: #244d3a;
-    background-color: #f8faf8;
-    border: 1px solid #e6eee6;
+    color: var(--fg);
+    background-color: var(--sunken);
+    border: 1px solid var(--line);
 }
 
 .dia-home.vacio {
@@ -273,13 +188,13 @@ body {
 }
 
 .dia-home.riego {
-    color: #ffffff;
-    background-color: #397b59;
+    color: var(--on-brand);
+    background-color: var(--brand-2);
     font-weight: bold;
 }
 
 .dia-home.hoy {
-    border: 2px solid #397b59;
+    border: 2px solid var(--brand-2);
     font-weight: bold;
 }
 
@@ -290,14 +205,14 @@ body {
     align-items: center;
     gap: 8px;
     margin-top: 17px;
-    color: #777;
+    color: var(--muted);
     font-size: 12px;
 }
 
 .leyenda-riego span {
     width: 11px;
     height: 11px;
-    background-color: #397b59;
+    background-color: var(--brand-2);
     border-radius: 50%;
 }
 
@@ -318,7 +233,7 @@ body {
 .hora-actual {
     font-size: 28px;
     font-weight: bold;
-    color: #397b59;
+    color: var(--brand-2);
     margin-bottom: 20px;
 }
 
@@ -327,11 +242,11 @@ body {
 .reloj-analogico {
     width: 220px;
     height: 220px;
-    border: 7px solid #214d3b;
+    border: 7px solid var(--brand-2);
     border-radius: 50%;
     position: relative;
-    background-color: #ffffff;
-    box-shadow: inset 0 0 0 3px #dce9df;
+    background-color: var(--surface);
+    box-shadow: inset 0 0 0 3px var(--line);
 }
 
 /* NUMEROS DEL RELOJ */
@@ -340,7 +255,7 @@ body {
     position: absolute;
     font-size: 15px;
     font-weight: bold;
-    color: #244d3a;
+    color: var(--fg);
 }
 
 .marca-12 {
@@ -380,21 +295,21 @@ body {
 .manecilla.hora {
     width: 5px;
     height: 55px;
-    background-color: #214d3b;
+    background-color: var(--brand-2);
     z-index: 2;
 }
 
 .manecilla.minuto {
     width: 3px;
     height: 75px;
-    background-color: #397b59;
+    background-color: var(--brand-2);
     z-index: 3;
 }
 
 .manecilla.segundo {
     width: 2px;
     height: 82px;
-    background-color: #d45b5b;
+    background-color: var(--hot-fg);
     z-index: 4;
 }
 
@@ -404,7 +319,7 @@ body {
     position: absolute;
     width: 12px;
     height: 12px;
-    background-color: #214d3b;
+    background-color: var(--brand-2);
     border-radius: 50%;
     top: 50%;
     left: 50%;
@@ -413,7 +328,7 @@ body {
 }
 
 .reloj-home > p {
-    color: #888;
+    color: var(--muted);
     font-size: 12px;
     margin-top: 17px;
 }
@@ -432,37 +347,19 @@ body {
 
 @media (max-width: 600px) {
 
-    .contenedor {
-        flex-direction: column;
-    }
+    
 
-    .menu-lateral {
-        width: 100%;
-        min-width: 0;
-        padding: 15px;
-    }
+    
 
-    .menu-lateral h2 {
-        margin-bottom: 15px;
-    }
+    
 
-    .menu-lateral nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
+    
 
-    .menu-lateral nav a {
-        font-size: 12px;
-        padding: 10px;
-    }
+    
 
-    .contenido {
-        padding: 18px;
-    }
+    
 
-    .encabezado h1 {
-        font-size: 23px;
-    }
+    
 
     .indicadores-home {
         padding: 20px 10px;

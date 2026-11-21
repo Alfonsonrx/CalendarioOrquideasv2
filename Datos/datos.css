@@ -3,84 +3,17 @@
    ESTILOS GENERALES DE LA PANTALLA DATOS
 ===================================== */
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f7f3;
-    color: #244d3a;
-}
-
 /* =====================================
    CONTENEDOR PRINCIPAL
 ===================================== */
-
-.contenedor {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
 
 /* =====================================
    BARRA LATERAL
 ===================================== */
 
-.sidebar {
-    width: 232px;
-    min-width: 232px;
-    background-color: #214d3b;
-    color: white;
-    padding: 22px 17px;
-}
-
-.sidebar h2 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 40px;
-}
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.sidebar nav a {
-    display: block;
-    text-decoration: none;
-    color: white;
-    padding: 14px 13px;
-    border-radius: 9px;
-    font-size: 15px;
-    transition: background-color 0.2s ease;
-}
-
-.sidebar nav a:hover {
-    background-color: #32694e;
-}
-
-.sidebar nav a.activo {
-    background-color: #397b59;
-}
-
 /* =====================================
    CONTENIDO PRINCIPAL
 ===================================== */
-
-.contenido {
-    flex: 1;
-    min-width: 0;
-    padding: 30px;
-}
-
-.encabezado h1 {
-    font-size: 28px;
-    color: #244d3a;
-}
 
 /* =====================================
    GRAFICOS
@@ -98,7 +31,7 @@ body {
 ===================================== */
 
 .tarjeta {
-    background-color: white;
+    background-color: var(--surface);
     border-radius: 13px;
     padding: 25px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
@@ -111,12 +44,12 @@ body {
 .tarjeta h2 {
     font-size: 20px;
     margin-bottom: 10px;
-    color: #244d3a;
+    color: var(--fg);
 }
 
 .grafico p {
     font-size: 14px;
-    color: #777;
+    color: var(--muted);
     margin-bottom: 18px;
 }
 
@@ -151,7 +84,7 @@ body {
 thead th {
     position: sticky;
     top: 0;
-    background-color: #e8f1e9;
+    background-color: var(--sunken);
 }
 
 table {
@@ -161,25 +94,25 @@ table {
 }
 
 thead {
-    background-color: #e8f1e9;
+    background-color: var(--sunken);
 }
 
 th {
-    color: #244d3a;
+    color: var(--fg);
     font-weight: bold;
     padding: 16px 12px;
     font-size: 14px;
-    border-bottom: 2px solid #dce8dd;
+    border-bottom: 2px solid var(--line);
 }
 
 td {
     padding: 17px 12px;
     font-size: 14px;
-    border-bottom: 1px solid #e7eee8;
+    border-bottom: 1px solid var(--line);
 }
 
 tbody tr:hover {
-    background-color: #f5faf5;
+    background-color: var(--sunken);
 }
 
 /* =====================================
@@ -196,18 +129,18 @@ tbody tr:hover {
 }
 
 .calor {
-    background-color: #fce2e2;
-    color: #bd4141;
+    background-color: var(--hot-bg);
+    color: var(--hot-fg);
 }
 
 .en-rango {
-    background-color: #e0f1e4;
-    color: #327448;
+    background-color: var(--ok-bg);
+    color: var(--ok-fg);
 }
 
 .frio {
-    background-color: #e0edfa;
-    color: #3975ad;
+    background-color: var(--cold-bg);
+    color: var(--cold-fg);
 }
 
 /* =====================================
@@ -224,37 +157,19 @@ tbody tr:hover {
 
 @media (max-width: 600px) {
 
-    .contenedor {
-        flex-direction: column;
-    }
+    
 
-    .sidebar {
-        width: 100%;
-        min-width: 0;
-        padding: 15px;
-    }
+    
 
-    .sidebar h2 {
-        margin-bottom: 15px;
-    }
+    
 
-    .sidebar nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
+    
 
-    .sidebar nav a {
-        font-size: 13px;
-        padding: 10px;
-    }
+    
 
-    .contenido {
-        padding: 18px;
-    }
+    
 
-    .encabezado h1 {
-        font-size: 23px;
-    }
+    
 
     .tarjeta {
         padding: 17px;
@@ -266,7 +181,7 @@ tbody tr:hover {
 ===================================== */
 
 .panel-alertas {
-    background: white;
+    background: var(--surface);
     padding: 25px;
     border-radius: 15px;
     margin-bottom: 25px;
@@ -274,7 +189,7 @@ tbody tr:hover {
 }
 
 .panel-alertas h2 {
-    color: #214d3b;
+    color: var(--fg);
     margin-bottom: 18px;
 }
 
@@ -286,15 +201,15 @@ tbody tr:hover {
 }
 
 .estado-general.adecuado {
-    background: #e3f1e6;
-    color: #276744;
-    border-left: 5px solid #397b59;
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    border-left: 5px solid var(--brand-2);
 }
 
 .estado-general.advertencia {
-    background: #fff0df;
-    color: #a65b18;
-    border-left: 5px solid #e49a42;
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border-left: 5px solid var(--warn-fg);
 }
 
 .indicadores-alerta {
@@ -304,13 +219,13 @@ tbody tr:hover {
 }
 
 .indicador-alerta {
-    background: #f3f7f3;
+    background: var(--sunken);
     padding: 20px;
     border-radius: 12px;
 }
 
 .indicador-alerta h3 {
-    color: #214d3b;
+    color: var(--fg);
     margin-bottom: 12px;
 }
 
@@ -321,18 +236,18 @@ tbody tr:hover {
 }
 
 .indicador-alerta span {
-    color: #397b59;
+    color: var(--brand-2);
     font-size: 20px;
     font-weight: bold;
 }
 
 .estado-alerta.en-rango {
-    color: #397b59;
+    color: var(--brand-2);
 }
 
 .estado-alerta.calor,
 .estado-alerta.frio {
-    color: #c16b25;
+    color: var(--warn-fg);
 }
 
 @media (max-width: 600px) {
@@ -348,7 +263,7 @@ tbody tr:hover {
 ===================================== */
 
 .panel-alertas {
-    background: #ffffff;
+    background: var(--surface);
     padding: 25px;
     border-radius: 15px;
     margin-bottom: 25px;
@@ -356,7 +271,7 @@ tbody tr:hover {
 }
 
 .panel-alertas h2 {
-    color: #214d3b;
+    color: var(--fg);
     margin-bottom: 18px;
 }
 
@@ -369,15 +284,15 @@ tbody tr:hover {
 }
 
 .estado-general.adecuado {
-    background: #e3f1e6;
-    color: #276744;
-    border-left: 5px solid #397b59;
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    border-left: 5px solid var(--brand-2);
 }
 
 .estado-general.advertencia {
-    background: #fff0df;
-    color: #a65b18;
-    border-left: 5px solid #e49a42;
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border-left: 5px solid var(--warn-fg);
 }
 
 .indicadores-alerta {
@@ -387,14 +302,14 @@ tbody tr:hover {
 }
 
 .indicador-alerta {
-    background: #f3f7f3;
+    background: var(--sunken);
     padding: 22px;
     border-radius: 12px;
-    border: 1px solid #e3ebe3;
+    border: 1px solid var(--line);
 }
 
 .indicador-alerta h3 {
-    color: #214d3b;
+    color: var(--fg);
     margin: 0 0 14px;
     font-size: 17px;
 }
@@ -411,23 +326,23 @@ tbody tr:hover {
 }
 
 .indicador-alerta p.estado-alerta.en-rango {
-    background: #e0f0e4;
-    color: #276744;
+    background: var(--ok-bg);
+    color: var(--ok-fg);
 }
 
 .indicador-alerta p.estado-alerta.calor {
-    background: #fde5df;
-    color: #b5412d;
+    background: var(--hot-bg);
+    color: var(--hot-fg);
 }
 
 .indicador-alerta p.estado-alerta.frio {
-    background: #e1edfa;
-    color: #356a9c;
+    background: var(--cold-bg);
+    color: var(--cold-fg);
 }
 
 .indicador-alerta span {
     display: block;
-    color: #214d3b;
+    color: var(--fg);
     font-size: 25px;
     font-weight: 700;
 }
@@ -440,7 +355,6 @@ tbody tr:hover {
 
 }
 
-
 /* =====================================
    TARJETAS POR SENSOR Y AVISOS (spec 101)
 ===================================== */
@@ -449,15 +363,15 @@ tbody tr:hover {
     display: block;
     margin-top: 6px;
     font-size: 12px;
-    color: #666;
+    color: var(--muted);
 }
 
 .aviso-datos {
     margin: 10px 0;
     padding: 10px 14px;
     border-radius: 8px;
-    background-color: #fdecea;
-    color: #8a2a1d;
+    background-color: var(--hot-bg);
+    color: var(--hot-fg);
 }
 
 .selector-periodo {
@@ -470,11 +384,11 @@ tbody tr:hover {
 .selector-periodo select {
     padding: 6px 10px;
     border-radius: 8px;
-    border: 1px solid #c9d8cc;
+    border: 1px solid var(--line);
 }
 
 .aviso-limite {
     margin-bottom: 10px;
     font-size: 13px;
-    color: #8a5a1d;
+    color: var(--warn-fg);
 }

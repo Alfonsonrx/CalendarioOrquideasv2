@@ -83,66 +83,59 @@
             <section id="tarjetasSensores" class="sensores"></section>
 
 
-            <!-- GRAFICOS -->
+            <!-- GRAFICOS: UNO POR TIPO, CON EL RANGO IDEAL (spec 106 FR-4) -->
             <section class="graficos">
 
-                <div class="tarjeta grafico">
-
+                <div class="panel chart">
                     <div class="panel-head">
                         <h2>Humedad</h2>
                         <small class="per" data-unidad="%"></small>
                     </div>
-
-                    <canvas id="graficoHumedad"></canvas>
-
+                    <div class="lienzo">
+                        <canvas id="graficoHumedad" role="img" data-nombre="Humedad"></canvas>
+                    </div>
+                    <p class="leyenda" id="leyendaHum" hidden><i></i> Rango ideal</p>
                 </div>
 
-
-                <div class="tarjeta grafico">
-
+                <div class="panel chart">
                     <div class="panel-head">
                         <h2>Temperatura</h2>
                         <small class="per" data-unidad="°C"></small>
                     </div>
-
-                    <canvas id="graficoTemperatura"></canvas>
-
+                    <div class="lienzo">
+                        <canvas id="graficoTemperatura" role="img" data-nombre="Temperatura"></canvas>
+                    </div>
+                    <p class="leyenda" id="leyendaTemp" hidden><i></i> Rango ideal</p>
                 </div>
 
             </section>
 
 
-            <!-- REGISTRO HISTORICO -->
-            <section class="tarjeta historial">
+            <!-- REGISTRO HISTORICO (spec 106 FR-5) -->
+            <section class="panel">
 
-                <h2>Registro Histórico de Condiciones Ambientales</h2>
+                <div class="panel-head">
+                    <h2>Registro histórico</h2>
+                    <small id="conteo"></small>
+                </div>
 
                 <!-- Aviso cuando un sensor llega al tope de 1000 lecturas -->
                 <p id="avisoLimite" class="aviso-limite" hidden></p>
 
-                <p id="sinLecturas" hidden>No hay lecturas en este periodo.</p>
+                <p id="sinLecturas" class="sin-lecturas" hidden>No hay lecturas en este periodo.</p>
 
-                <div class="tabla-contenedor">
-
+                <div class="tabla">
                     <table>
-
                         <thead>
-
                             <tr>
                                 <th>Sensor</th>
-                                <th>Valor</th>
+                                <th class="num">Valor</th>
                                 <th>Fecha y hora</th>
                                 <th>Estado</th>
                             </tr>
-
                         </thead>
-
-                        <tbody id="tablaRegistros">
-                            <!-- Los registros se cargarán desde JavaScript -->
-                        </tbody>
-
+                        <tbody id="tablaRegistros"></tbody>
                     </table>
-
                 </div>
 
             </section>

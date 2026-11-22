@@ -141,3 +141,22 @@ y "Temperatura vivero" desde 18 °C sin máximo y sin lecturas; capturas en oscu
   primera lectura".
 - Cortes: a 390 px la franja deja el punto junto al texto y la antigüedad debajo; sin scroll lateral. La barra
   tiene texto equivalente ("68 %, entre 60 y 80 %").
+
+**Revisión en vivo, ronda 2 (T04–T05)** — Claude, 2026-11-21, mismo entorno; capturas en claro y oscuro a
+1280 px y en claro a 390 px.
+- FR-4.a: humedad con un solo sensor 60–80 % → franja de 60 a 80 y "Rango ideal" bajo el gráfico; si los dos
+  de temperatura comparten 18–24, también aparece su franja.
+- FR-4.b: temperatura con 18–24 y 18–sin máximo → sin franja ni leyenda.
+- FR-4.c: en 24 horas el eje va de "20/11 23:44" a "21/11 23:44" con marcas 00:00, 04:00 … 20:00; en 7 días,
+  de "14/11 23:45" a "21/11 23:45" con marcas 15/11 … 21/11; con cero lecturas el eje sigue cubriendo el
+  periodo; la única lectura de humedad del día se ve como punto.
+- FR-5.a: "3 lecturas" con tres filas; sin lecturas, "0 lecturas" y "No hay lecturas en este periodo.".
+- FR-5.b: "Calor" con chip rojo y "En rango" con chip verde, los colores de 104 en ambos temas.
+- Accesibilidad: cada gráfico se nombra "Humedad en las últimas 24 horas" / "… en los últimos 7 días".
+
+- **D5 — Franja abierta, singular y marcas del eje** (propuesta de la ronda 2, aprobada por el dueño el
+  2026-11-21). Con límites comunes y un lado vacío, la franja del gráfico llega hasta ese borde, como la
+  barra de FR-3.d; sin ningún límite no hay franja. "1 lectura" en singular (como 105 D6). Las marcas del eje
+  caen en horas redondas locales (cada 4 h en 24 horas, cada medianoche en 7 días) y una serie de una sola
+  lectura se dibuja como punto. *Por qué:* un lado vacío no genera alertas (101 FR-1.e); las marcas
+  automáticas caían en horas como 13:53, y una línea de un solo punto no se ve.

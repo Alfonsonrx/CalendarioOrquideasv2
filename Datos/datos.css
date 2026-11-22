@@ -156,7 +156,7 @@
     color: var(--muted);
 }
 
-/* GRAFICOS (hasta la ronda 2 de 106) */
+/* GRAFICOS (106 FR-4) */
 
 .graficos {
     display: grid;
@@ -165,80 +165,37 @@
     margin-bottom: 14px;
 }
 
-.tarjeta {
-    padding: 18px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface);
+.chart .lienzo {
+    position: relative;
+    height: 220px;
 }
 
-.tarjeta h2 {
-    font-size: 17px;
+.chart .leyenda i {
+    background: var(--band);
 }
 
-.grafico canvas {
-    width: 100% !important;
-    height: 210px !important;
+/* REGISTRO HISTORICO (106 FR-5) */
+
+.tabla .num {
+    text-align: right;
 }
 
-/* REGISTRO HISTORICO (hasta la ronda 2 de 106) */
-
-.historial h2 {
-    margin-bottom: 14px;
+td.num {
+    font-weight: 600;
 }
 
-.tabla-contenedor {
-    width: 100%;
-    max-height: 24rem; /* ~6 filas; el resto se recorre con scroll */
-    overflow: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-}
-
-thead th {
-    position: sticky;
-    top: 0;
-    background-color: var(--sunken);
-}
-
-th {
-    padding: 16px 12px;
-    border-bottom: 2px solid var(--line);
-    font-size: 14px;
-}
-
-td {
-    padding: 17px 12px;
-    border-bottom: 1px solid var(--line);
-    font-size: 14px;
-}
-
-tbody tr:hover {
-    background-color: var(--sunken);
-}
-
-td .estado {
-    display: inline-block;
-    min-width: 85px;
-    margin: 0;
-    padding: 7px 15px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-td .calor    { background-color: var(--hot-bg);  color: var(--hot-fg); }
-td .en-rango { background-color: var(--ok-bg);   color: var(--ok-fg); }
-td .frio     { background-color: var(--cold-bg); color: var(--cold-fg); }
-
-.aviso-limite {
+.aviso-limite,
+.sin-lecturas {
     margin-bottom: 10px;
     font-size: 13px;
+}
+
+.aviso-limite {
     color: var(--warn-fg);
+}
+
+.sin-lecturas {
+    color: var(--muted);
 }
 
 /* CORTES */

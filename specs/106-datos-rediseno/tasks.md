@@ -19,10 +19,10 @@ del backend (claves por tubería, nunca impresas); comparar con `docs/rediseno-m
 
 — checkpoint: estado y tarjetas como la maqueta —
 
-- [ ] **T04 — Gráficos con franja y eje del periodo** · FR-4.a, FR-4.b, FR-4.c · after T02
+- [x] **T04 — Gráficos con franja y eje del periodo** · FR-4.a, FR-4.b, FR-4.c · after T02
   `datos.js`: series de la franja con `fill: "-1"`, `scales.x.min/max` del periodo, colores de las variables CSS.
   *Made when:* con un sensor de temperatura 18–24 hay franja y "Rango ideal"; con dos de humedad de límites distintos, no; con una sola lectura el eje va de hace 24 h a ahora.
-- [ ] **T05 — Tabla con conteo y chips** · FR-5.a, FR-5.b · after T02
+- [x] **T05 — Tabla con conteo y chips** · FR-5.a, FR-5.b · after T02
   `datos.js`: `#conteo` "N lecturas", estado como `.chip`.
   *Made when:* la tabla muestra "N lecturas" igual al número de filas y chips de color.
 
@@ -62,3 +62,6 @@ CI: none defined (no workflow in the repo). Local: `for f in *.js */*.js; do nod
 2026-11-21 · T02 · done · `.periodo` con `#p24`/`#p168` y `aria-pressed`; sin `<select id="periodo">`; `small.per` en cada gráfico · en vivo
 2026-11-21 · T03 · done · `.sensor` con tipo, chip, `barraRango()` y pie; la escala de temperatura usa mín, máx y valor juntos (el pseudocódigo de plan §2 dejaba la franja fuera de la escala con un solo límite); `formatearFechaHora` sin coma ("21/11 21:04:40") · en vivo
 2026-11-21 · round 1 · T01–T03 · gates green; a 390 px la franja partía el punto del texto (corregido en `datos.css`); la tabla conserva su chip viejo bajo `td .estado` hasta T05
+2026-11-21 · T04 · done · franja con dos series (`fill: "-1"`, o `"start"`/`"end"` con un lado vacío), `scales.x.min/max` del periodo, marcas en horas locales con `afterBuildTicks`, colores de `--brand-2`/`--orchid`/`--band`/`--muted`/`--line`, punto para una sola lectura, `aria-label` por periodo · en vivo
+2026-11-21 · T05 · done · `#conteo` "N lecturas", estado como `.chip`, valor en `td.num`; tabla en `.tabla` de `styles.css` · en vivo
+2026-11-21 · round 2 · T04–T05 · gates green; revisión propia: una sola lectura no se veía y las marcas caían en horas sueltas (corregidos en T04); el cambio de tema llega a los gráficos en la siguiente actualización (≤ 30 s), aceptable (plan D3: colores en cada dibujo); Proposed en spec §10

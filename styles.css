@@ -668,341 +668,286 @@ dialog form {
 
 
 /* =====================================
-   CONTENIDO DE ANTES (hasta 105)
-   El calendario conserva sus reglas, ya con las variables del sistema;
-   105 las reemplaza (plan D7).
+   CALENDARIO COMPARTIDO (spec 105 plan D5)
+   Home y el Calendario de riego dibujan el mismo mes.
 ===================================== */
 
-/* =====================================
-   SECCION DEL CALENDARIO
-===================================== */
-
-.contenido-calendario {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 25px;
-}
-
-.calendario,
-.proximos-riegos {
-    background-color: var(--surface);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    min-height: 300px;
-}
-
-.calendario h2,
-.proximos-riegos h2 {
-    color: var(--fg);
-    margin-bottom: 20px;
-}
-
-/* =====================================
-   ENCABEZADO DEL CALENDARIO
-===================================== */
-
-.calendario-encabezado {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.calendario-encabezado h2 {
-    margin-bottom: 0;
-}
-
-.navegacion-mes {
+.mes-nav {
     display: flex;
     align-items: center;
-    gap: 15px;
-}
-
-.navegacion-mes h3 {
-    color: var(--fg);
-    min-width: 150px;
-    text-align: center;
-}
-
-.navegacion-mes button {
-    width: 35px;
-    height: 35px;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--brand-2);
-    color: var(--on-brand);
-    font-size: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.navegacion-mes button:hover {
-    background-color: var(--brand-2);
-}
-
-/* =====================================
-   DIAS DE LA SEMANA
-===================================== */
-
-.dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.dias-semana div {
-    text-align: center;
-    padding: 12px 5px;
-    font-weight: bold;
-    color: var(--fg);
-    background-color: var(--sunken);
-    border-radius: 6px;
-}
-
-/* =====================================
-   CUADRICULA DEL CALENDARIO
-===================================== */
-
-.dias-calendario {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
     gap: 8px;
 }
 
-.dia {
-    min-height: 65px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.mes-nav h3 {
+    min-width: 130px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.mes-nav button {
+    width: 32px;
+    height: 32px;
     border: 1px solid var(--line);
     border-radius: 8px;
-    background-color: var(--surface);
+    background: var(--surface);
+    color: var(--fg);
     cursor: pointer;
-    transition: 0.2s;
-    position: relative;
 }
 
-.dia:hover {
-    background-color: var(--sunken);
+.mes-nav button:hover {
+    background: var(--sunken);
+}
+
+.cal {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.cal .dow {
+    padding: 6px 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cal .dia {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+}
+
+.cal button.dia {
+    cursor: pointer;
+}
+
+.cal button.dia:hover {
+    background: var(--sunken);
+}
+
+.cal .dia.hoy {
+    border-color: var(--brand-2);
+    font-weight: 700;
+}
+
+.cal .dia.pasado {
+    color: var(--muted);
+}
+
+.cal .dia.riego {
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    font-weight: 600;
+}
+
+.cal .dia.riego::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-2);
+}
+
+.leyenda {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.leyenda i {
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--brand-2);
+    border-radius: 4px;
+    background: var(--ok-bg);
+}
+
+
+/* =====================================
+   CALENDARIO DE RIEGO (spec 105 FR-4 a FR-6)
+===================================== */
+
+.mes-nav .btn {
+    width: auto;
+    padding: 0 12px;
+}
+
+.cal-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+/* Cada día muestra las horas de sus riegos (FR-4.a) */
+.cal-grande .dia {
+    aspect-ratio: auto;
+    min-height: 84px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px;
+    border-color: var(--line);
+    background: var(--surface);
+}
+
+.cal-grande .dia.vacio {
+    border-color: transparent;
+    background: transparent;
+}
+
+.cal-grande .dia.hoy {
     border-color: var(--brand-2);
 }
 
-.dia.vacio {
-    border: none;
-    background-color: transparent;
-    cursor: default;
+.cal-grande .dia.riego {
+    background: var(--ok-bg);
 }
 
-.dia.hoy {
-    background-color: var(--sunken);
-    border: 2px solid var(--brand-2);
-    color: var(--fg);
-    font-weight: bold;
-}
-
-/* =====================================
-   VENTANA EMERGENTE (MODAL)
-===================================== */
-
-.modal {
+.cal-grande .dia.riego::after {
     display: none;
-    position: fixed;
-    z-index: 1000;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
 }
 
-.modal-contenido {
-    background-color: var(--surface);
-    width: 100%;
-    max-width: 420px;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-}
-
-.modal-encabezado {
+.cal-grande .horas {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.modal-encabezado h2 {
-    color: var(--fg);
-    margin-bottom: 0;
-}
-
-.cerrar-modal {
-    border: none;
-    background: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: var(--muted);
-}
-
-.modal-contenido p {
-    margin-bottom: 20px;
-    color: var(--muted);
-}
-
-.modal-contenido label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-.modal-contenido input {
+    flex-direction: column;
+    gap: 2px;
     width: 100%;
-    padding: 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font-size: 16px;
-    margin-bottom: 20px;
 }
 
-/* =====================================
-   BOTONES DEL MODAL
-===================================== */
-
-.modal-botones {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.modal-botones button {
-    padding: 11px 16px;
-    border: none;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-cancelar {
-    background-color: var(--sunken);
-    color: var(--fg);
-}
-
-.btn-cancelar:hover {
-    background-color: var(--sunken);
-}
-
-.btn-guardar {
-    background-color: var(--brand-2);
+.cal-grande .horas span {
+    padding: 1px 6px;
+    border-radius: 5px;
+    background: var(--brand-2);
     color: var(--on-brand);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
 }
 
-.btn-guardar:hover {
-    background-color: var(--brand-2);
+/* Próximos riegos (FR-5) */
+.lista-riegos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
 }
 
-/* =====================================
-   DIAS CON RIEGO PROGRAMADO
-===================================== */
-
-.dia.programado {
-    background-color: var(--ok-bg);
-    border: 2px solid var(--brand-2);
-    color: var(--fg);
-    font-weight: bold;
+.lista-riegos li {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--sunken);
 }
 
-.dia.programado::after {
-    content: "";
-    width: 7px;
-    height: 7px;
-    background-color: var(--brand-2);
-    border-radius: 50%;
-    position: absolute;
-    bottom: 6px;
-}
-
-/* =====================================
-   LISTA DE PROXIMOS RIEGOS
-===================================== */
-
-.riego-item {
-    padding: 12px;
-    margin-bottom: 10px;
-    background-color: var(--sunken);
-    border-radius: 8px;
-    border-left: 4px solid var(--brand-2);
-}
-
-.riego-item strong {
+.lista-riegos li.vacio,
+.lista-riegos li.mensaje-error {
     display: block;
-    color: var(--fg);
-    margin-bottom: 5px;
 }
 
-.riego-item span {
+.fecha-box {
+    padding: 4px 0;
+    border-radius: 8px;
+    background: var(--surface);
+    text-align: center;
+    line-height: 1.1;
+}
+
+.fecha-box b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 20px;
+}
+
+.fecha-box small {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.lista-riegos strong {
+    display: block;
+    font-size: 14px;
+}
+
+.lista-riegos span {
     font-size: 13px;
     color: var(--muted);
 }
 
-/* =====================================
-   ADAPTACION A PANTALLAS PEQUEÑAS
-===================================== */
+/* Ventana de un día (FR-6) */
+.chips-dia {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
 
-@media (max-width: 600px) {
+.chips-dia button {
+    padding: 4px 12px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--sunken);
+    color: var(--fg);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+}
 
-    .contenido-calendario {
+.chips-dia button[aria-pressed="true"] {
+    border-color: var(--brand-2);
+    background: var(--brand-2);
+    color: var(--on-brand);
+}
+
+.mensaje-error {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--hot-bg);
+    color: var(--hot-fg);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+@media (max-width: 980px) {
+
+    .cal-layout {
         grid-template-columns: 1fr;
     }
+}
 
-    .dia {
-        min-height: 45px;
+/* Pantalla angosta: cada riego es una marca sin hora (FR-4.b) */
+@media (max-width: 640px) {
+
+    .cal-grande .dia {
+        min-height: 56px;
+        padding: 4px;
+        font-size: 13px;
     }
 
-    .dias-semana,
-    .dias-calendario {
-        gap: 4px;
+    .cal-grande .horas span {
+        height: 5px;
+        padding: 0;
+        font-size: 0;
     }
-
-    .calendario-encabezado {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-}
-/* BOTON ELIMINAR RIEGO */
-
-.btn-eliminar {
-    background-color: var(--hot-bg);
-    color: var(--hot-fg);
-    padding: 11px 16px;
-    border: none;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-eliminar:hover {
-    background-color: var(--hot-bg);
-}
-
-/* OCULTAR BOTON CUANDO NO EXISTE UN RIEGO */
-
-.btn-eliminar.oculto {
-    display: none;
-}
-
-/* =====================================
-   RIEGOS DEL DIA (MODAL)
-===================================== */
-
-#riegosDelDia .riego-item {
-    cursor: pointer;
-}
-
-#riegosDelDia .riego-item.seleccionado {
-    background-color: var(--ok-bg);
 }

@@ -1,525 +1,341 @@
-
 /* =====================================
-   FECHA ACTUAL
+   CALENDARIO DE RIEGO (spec 002, 105 FR-4 a FR-6)
+   El backend decide si una fecha sirve; aquí solo se muestra su respuesta.
 ===================================== */
 
-let fechaActual = new Date();
-
-
-/* =====================================
-   ELEMENTOS DEL HTML
-===================================== */
-
+const calendario = document.getElementById("calendario");
 const mesActual = document.getElementById("mesActual");
-const diasCalendario = document.getElementById("diasCalendario");
+const cuentaRiegos = document.getElementById("cuentaRiegos");
+const proximosRiegos = document.getElementById("proximosRiegos");
 
-const botonAnterior = document.getElementById("mesAnterior");
-const botonSiguiente = document.getElementById("mesSiguiente");
-
-
-/* =====================================
-   ELEMENTOS DEL MODAL
-===================================== */
-
-const modalRiego = document.getElementById("modalRiego");
-const cerrarModal = document.getElementById("cerrarModal");
-const cancelarRiego = document.getElementById("cancelarRiego");
-
-const fechaSeleccionada = document.getElementById("fechaSeleccionada");
+const dlgRiego = document.getElementById("dlgRiego");
+const formRiego = document.getElementById("formRiego");
+const dlgFecha = document.getElementById("dlgFecha");
+const riegosDia = document.getElementById("riegosDia");
+const chipsDia = document.getElementById("chipsDia");
 const horaRiego = document.getElementById("horaRiego");
+const mensajeRiego = document.getElementById("mensajeRiego");
 const guardarRiego = document.getElementById("guardarRiego");
 const eliminarRiego = document.getElementById("eliminarRiego");
 
-const listaRiegos = document.getElementById("listaRiegos");
-
-const riegosDelDia = document.getElementById("riegosDelDia");
-
-
-/* =====================================
-   NOMBRES DE LOS MESES
-===================================== */
-
 const nombresMeses = [
-    "Enero", "Febrero", "Marzo",
-    "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre",
-    "Octubre", "Noviembre", "Diciembre"
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
 ];
+
+const DIAS_SEMANA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+// Primer día del mes que se muestra.
+
+let mesMostrado = primerDiaDelMes(new Date());
+
+function primerDiaDelMes(fecha) {
+    return new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+}
+
+// "2026-11-19" de una fecha local.
+
+function fechaIso(fecha) {
+    return fecha.getFullYear() + "-" +
+        String(fecha.getMonth() + 1).padStart(2, "0") + "-" +
+        String(fecha.getDate()).padStart(2, "0");
+}
 
 
 /* =====================================
-   DIAS DE LA SEMANA
+   RIEGOS ACTIVOS DEL BACKEND
 ===================================== */
 
-const nombresDias = [
-    "Domingo", "Lunes", "Martes",
-    "Miércoles", "Jueves", "Viernes", "Sábado"
-];
-
-
-/* =====================================
-   RIEGOS PROGRAMADOS (DESDE EL BACKEND)
-===================================== */
-
-// Cada riego: { id, fecha: "AAAA-MM-DD", hora: "HH:MM" }.
+// Cada riego: { id, fecha: "AAAA-MM-DD", hora: "HH:MM" }, en orden de fecha y hora.
 // Un día puede tener varios riegos.
 
 let riegos = [];
-
-let fechaEnEdicion = null;
-
-let riegoEnEdicion = null; // id del riego que se edita; null = riego nuevo
-
 
 async function cargarRiegos() {
 
     const entradas = await api("/schedules?active_only=true");
 
-    riegos = entradas.map(entrada => ({
-        id: entrada.id,
-        fecha: entrada.irrigation_date,
-        hora: entrada.irrigation_time.slice(0, 5) // "14:30:00" → "14:30"
-    }));
+    riegos = entradas
+        .map(entrada => ({
+            id: entrada.id,
+            fecha: entrada.irrigation_date,
+            hora: entrada.irrigation_time.slice(0, 5) // "14:30:00" → "14:30"
+        }))
+        .sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+}
 
+function riegosDelDia(fecha) {
+    return riegos.filter(riego => riego.fecha === fecha);
 }
 
 
 /* =====================================
-   MOSTRAR CALENDARIO
+   CALENDARIO GRANDE (FR-3.a, FR-4)
 ===================================== */
+
+function crearCelda(etiqueta, texto, clases) {
+
+    const celda = document.createElement(etiqueta);
+    celda.className = clases;
+    celda.textContent = texto;
+    return celda;
+}
 
 function mostrarCalendario() {
 
-    const mes = fechaActual.getMonth();
-    const año = fechaActual.getFullYear();
+    const anio = mesMostrado.getFullYear();
+    const mes = mesMostrado.getMonth();
 
-    mesActual.textContent =
-        nombresMeses[mes] + " " + año;
+    mesActual.textContent = nombresMeses[mes] + " " + anio;
 
-    const primerDia = new Date(año, mes, 1);
-    const ultimoDia = new Date(año, mes + 1, 0);
+    const celdas = DIAS_SEMANA.map(dia => crearCelda("div", dia, "dow"));
 
-    let diaInicio = primerDia.getDay();
+    // La semana empieza el lunes.
 
-    diaInicio = diaInicio === 0 ? 6 : diaInicio - 1;
+    const espacios = (mesMostrado.getDay() + 6) % 7;
 
-    const cantidadDias = ultimoDia.getDate();
-
-    diasCalendario.innerHTML = "";
-
-
-    // ESPACIOS VACIOS
-
-    for (let i = 0; i < diaInicio; i++) {
-
-        const espacio = document.createElement("div");
-
-        espacio.classList.add("dia", "vacio");
-
-        diasCalendario.appendChild(espacio);
-
+    for (let i = 0; i < espacios; i++) {
+        celdas.push(crearCelda("div", "", "dia vacio"));
     }
 
-
-    // GENERAR LOS DIAS
+    const cantidadDias = new Date(anio, mes + 1, 0).getDate();
+    const hoy = fechaIso(new Date());
 
     for (let dia = 1; dia <= cantidadDias; dia++) {
 
-        const elementoDia = document.createElement("div");
+        const fecha = fechaIso(new Date(anio, mes, dia));
+        const delDia = riegosDelDia(fecha);
 
-        elementoDia.classList.add("dia");
+        const boton = crearCelda("button", dia, "dia");
+        boton.type = "button";
+        boton.dataset.fecha = fecha;
+        boton.classList.toggle("hoy", fecha === hoy);
+        boton.classList.toggle("pasado", fecha < hoy);
+        boton.classList.toggle("riego", delDia.length > 0);
 
-        elementoDia.textContent = dia;
+        // "19", "19, 1 riego", "19, 2 riegos" (FR-4.e).
 
-        const fecha = crearFecha(año, mes, dia);
+        boton.setAttribute("aria-label", delDia.length === 0 ? String(dia)
+            : dia + ", " + delDia.length + (delDia.length === 1 ? " riego" : " riegos"));
 
-        const hoy = new Date();
+        // Las horas, de la más temprana a la más tardía; bajo 640 px son marcas (FR-4.a, FR-4.b).
 
-
-        // IDENTIFICAR EL DIA ACTUAL
-
-        if (
-            dia === hoy.getDate() &&
-            mes === hoy.getMonth() &&
-            año === hoy.getFullYear()
-        ) {
-
-            elementoDia.classList.add("hoy");
-
+        if (delDia.length > 0) {
+            const horas = document.createElement("div");
+            horas.className = "horas";
+            horas.append(...delDia.map(riego => crearCelda("span", riego.hora, "")));
+            boton.append(horas);
         }
 
+        boton.addEventListener("click", () => abrirVentana(fecha));
 
-        // IDENTIFICAR DIAS PROGRAMADOS
-
-        if (riegos.some(r => r.fecha === fecha)) {
-
-            elementoDia.classList.add("programado");
-
-        }
-
-
-        // ABRIR MODAL
-
-        elementoDia.addEventListener("click", function() {
-
-            abrirModal(fecha);
-
-        });
-
-        diasCalendario.appendChild(elementoDia);
-
+        celdas.push(boton);
     }
 
+    calendario.replaceChildren(...celdas);
+}
+
+function cambiarMes(cuantos) {
+    mesMostrado = new Date(mesMostrado.getFullYear(), mesMostrado.getMonth() + cuantos, 1);
+    mostrarCalendario();
+}
+
+document.getElementById("mesAnterior").addEventListener("click", () => cambiarMes(-1));
+document.getElementById("mesSiguiente").addEventListener("click", () => cambiarMes(1));
+
+// "Hoy" vuelve al mes actual (FR-4.c).
+
+document.getElementById("mesHoy").addEventListener("click", () => {
+    mesMostrado = primerDiaDelMes(new Date());
+    mostrarCalendario();
+});
+
+
+/* =====================================
+   PROXIMOS RIEGOS (FR-5, 002 FR-6)
+===================================== */
+
+// Desde hoy, aunque la hora de hoy ya haya pasado (002 D7).
+
+function mostrarProximosRiegos() {
+
+    const hoy = fechaIso(new Date());
+    const proximos = riegos.filter(riego => riego.fecha >= hoy);
+
+    cuentaRiegos.textContent = proximos.length + (proximos.length === 1 ? " programado" : " programados");
+
+    if (proximos.length === 0) {
+        proximosRiegos.replaceChildren(crearCelda("li", "No hay riegos programados.", "vacio"));
+        return;
+    }
+
+    proximosRiegos.replaceChildren(...proximos.slice(0, 6).map(riego => {
+
+        const fecha = new Date(riego.fecha + "T00:00");
+
+        const caja = crearCelda("div", "", "fecha-box");
+        caja.append(
+            crearCelda("b", fecha.getDate(), ""),
+            crearCelda("small", fecha.toLocaleDateString("es-CL", { month: "short" }).replace(".", ""), "")
+        );
+
+        const texto = document.createElement("div");
+        texto.append(
+            crearCelda("strong", "Riego a las " + riego.hora, ""),
+            crearCelda("span", fecha.toLocaleDateString("es-CL", { weekday: "long" }), "")
+        );
+
+        const fila = document.createElement("li");
+        fila.append(caja, texto);
+        return fila;
+    }));
 }
 
 
 /* =====================================
-   CREAR FECHA
+   VENTANA DE UN DIA (FR-6)
 ===================================== */
 
-function crearFecha(año, mes, dia) {
+let fechaEnEdicion = null;
 
-    const mesTexto = String(mes + 1).padStart(2, "0");
+let riegoEnEdicion = null; // id del riego elegido; null = riego nuevo
 
-    const diaTexto = String(dia).padStart(2, "0");
-
-    return `${año}-${mesTexto}-${diaTexto}`;
-
+function mostrarMensajeRiego(texto) {
+    mensajeRiego.textContent = texto;
+    mensajeRiego.hidden = !texto;
 }
 
-
-/* =====================================
-   ABRIR MODAL PARA AGREGAR O EDITAR
-===================================== */
-
-function abrirModal(fecha) {
+function abrirVentana(fecha) {
 
     fechaEnEdicion = fecha;
+    dlgFecha.textContent = formatearFechaLarga(new Date(fecha + "T00:00"));
 
-    const [año, mes, dia] = fecha.split("-").map(Number);
-
-    fechaSeleccionada.textContent =
-        "Fecha seleccionada: " +
-        dia + " de " +
-        nombresMeses[mes - 1] + " de " + año;
-
+    mostrarChips();
     seleccionarRiego(null);
-
-    modalRiego.style.display = "flex";
-
+    dlgRiego.showModal();
 }
 
-
-/* =====================================
-   SELECCIONAR RIEGO DEL DIA
-===================================== */
-
-// null prepara un riego nuevo; un id carga ese riego para editarlo.
+// null prepara un riego nuevo a las 08:00 (D2); un id carga ese riego (FR-6.c, FR-6.d).
 
 function seleccionarRiego(id) {
 
     riegoEnEdicion = id;
 
-    const riegoExistente = riegos.find(r => r.id === id);
+    const elegido = riegos.find(riego => riego.id === id);
 
-    if (riegoExistente) {
+    horaRiego.value = elegido ? elegido.hora : "08:00";
+    guardarRiego.textContent = elegido ? "Guardar cambios" : "Guardar riego";
+    eliminarRiego.hidden = !elegido;
 
-        // SI EXISTE, CARGAR SU HORARIO
+    mostrarMensajeRiego("");
 
-        horaRiego.value = riegoExistente.hora;
+    // Se marca en su lugar, sin rehacer los chips: el foco sigue en el que se tocó.
 
-        guardarRiego.textContent = "Actualizar riego";
+    for (const chip of chipsDia.children) {
+        chip.setAttribute("aria-pressed", String(chip.dataset.id === String(id)));
+    }
+}
 
-        eliminarRiego.classList.remove("oculto");
+function mostrarChips() {
 
-    } else {
+    const delDia = riegosDelDia(fechaEnEdicion);
 
-        // SI NO EXISTE, PREPARAR NUEVA PROGRAMACION
+    riegosDia.hidden = delDia.length === 0;
 
-        horaRiego.value = "";
+    chipsDia.replaceChildren(...delDia.map(riego => {
 
-        guardarRiego.textContent = "Guardar riego";
+        const chip = crearCelda("button", riego.hora, "");
+        chip.type = "button";
+        chip.dataset.id = riego.id;
 
-        eliminarRiego.classList.add("oculto");
+        // Un segundo toque vuelve a "riego nuevo".
 
+        chip.addEventListener("click", () =>
+            seleccionarRiego(riego.id === riegoEnEdicion ? null : riego.id));
+
+        return chip;
+    }));
+}
+
+// Cancelar, × y Escape (nativo de <dialog>) cierran sin llamar al backend (FR-6.h).
+
+document.getElementById("cerrarRiego").addEventListener("click", () => dlgRiego.close());
+document.getElementById("cancelarRiego").addEventListener("click", () => dlgRiego.close());
+
+// Mientras el backend responde, los botones esperan: un doble clic no programa dos riegos.
+
+async function enviar(peticion) {
+
+    guardarRiego.disabled = eliminarRiego.disabled = true;
+    mostrarMensajeRiego("");
+
+    try {
+        await peticion();
+    } catch (error) {
+        mostrarMensajeRiego(error.message); // FR-6.f: la ventana queda abierta
+        return;
+    } finally {
+        guardarRiego.disabled = eliminarRiego.disabled = false;
     }
 
-    mostrarRiegosDelDia();
+    dlgRiego.close(); // FR-6.g: el calendario muestra el cambio, sin mensaje
+    await actualizarPantalla();
 
+    // El calendario se rehízo: el foco vuelve al día pulsado (spec §5, Accessibility).
+
+    const dia = calendario.querySelector(`[data-fecha="${fechaEnEdicion}"]`);
+
+    if (dia) {
+        dia.focus();
+    }
 }
 
+formRiego.addEventListener("submit", evento => {
 
-/* =====================================
-   MOSTRAR RIEGOS DEL DIA EN EL MODAL
-===================================== */
-
-function mostrarRiegosDelDia() {
-
-    riegosDelDia.innerHTML = "";
-
-    riegos
-        .filter(r => r.fecha === fechaEnEdicion)
-        .forEach(riego => {
-
-            const elemento = document.createElement("div");
-
-            elemento.classList.add("riego-item");
-
-            if (riego.id === riegoEnEdicion) {
-                elemento.classList.add("seleccionado");
-            }
-
-            elemento.textContent = "Hora: " + riego.hora + " (clic para editar)";
-
-            elemento.addEventListener("click", function() {
-
-                // Un segundo clic vuelve a "riego nuevo".
-
-                seleccionarRiego(riego.id === riegoEnEdicion ? null : riego.id);
-
-            });
-
-            riegosDelDia.appendChild(elemento);
-
-        });
-
-}
-
-
-/* =====================================
-   CERRAR MODAL
-===================================== */
-
-function cerrarVentana() {
-
-    modalRiego.style.display = "none";
-
-    fechaEnEdicion = null;
-
-    riegoEnEdicion = null;
-
-}
-
-cerrarModal.addEventListener("click", cerrarVentana);
-
-cancelarRiego.addEventListener("click", cerrarVentana);
-
-
-/* =====================================
-   GUARDAR O ACTUALIZAR RIEGO
-===================================== */
-
-// El backend valida que la fecha y hora sean futuras (hora del invernadero).
-
-guardarRiego.addEventListener("click", async function() {
+    evento.preventDefault();
 
     const hora = horaRiego.value;
 
-
-    // VALIDAR QUE EXISTA UNA HORA
-
     if (!hora) {
-
-        alert("Por favor, selecciona una hora de riego.");
-
+        mostrarMensajeRiego("Por favor, selecciona una hora de riego."); // FR-6.e
         return;
-
     }
 
-
-    try {
-
-        if (riegoEnEdicion !== null) {
-
-            // ACTUALIZAR RIEGO EXISTENTE
-
-            await api("/schedules/" + riegoEnEdicion, {
-                method: "PATCH",
-                body: { irrigation_time: hora }
-            });
-
-            alert("El horario del riego fue actualizado correctamente.");
-
-        } else {
-
-            // AGREGAR NUEVO RIEGO
-
-            await api("/schedules", {
-                method: "POST",
-                body: { irrigation_date: fechaEnEdicion, irrigation_time: hora }
-            });
-
-            alert("El riego fue programado correctamente.");
-
-        }
-
-    } catch (error) {
-
-        alert(error.message);
-
-        return;
-
-    }
-
-    cerrarVentana();
-
-    await actualizarPantalla();
-
+    enviar(() => riegoEnEdicion !== null
+        ? api("/schedules/" + riegoEnEdicion, { method: "PATCH", body: { irrigation_time: hora } })
+        : api("/schedules", { method: "POST", body: { irrigation_date: fechaEnEdicion, irrigation_time: hora } }));
 });
 
-
-/* =====================================
-   ELIMINAR RIEGO
-===================================== */
-
+// Quitar no se deshace desde la interfaz: se pregunta antes (spec D3).
 // El backend no borra riegos: los desactiva y dejan de mostrarse.
 
-eliminarRiego.addEventListener("click", async function() {
+eliminarRiego.addEventListener("click", () => {
 
-    const confirmar = confirm(
-        "¿Estás seguro de que deseas eliminar este riego?"
-    );
-
-    if (!confirmar) {
+    if (!confirm("¿Estás seguro de que deseas eliminar este riego?")) {
         return;
     }
 
-    try {
-
-        await api("/schedules/" + riegoEnEdicion, {
-            method: "PATCH",
-            body: { is_active: false }
-        });
-
-    } catch (error) {
-
-        alert(error.message);
-
-        return;
-
-    }
-
-    cerrarVentana();
-
-    await actualizarPantalla();
-
-    alert("El riego fue eliminado correctamente.");
-
+    enviar(() => api("/schedules/" + riegoEnEdicion, { method: "PATCH", body: { is_active: false } }));
 });
 
 
 /* =====================================
-   MOSTRAR PROXIMOS RIEGOS
-===================================== */
-
-function mostrarProximosRiegos() {
-
-    listaRiegos.innerHTML = "";
-
-    const ahora = new Date();
-
-    const hoy = crearFecha(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-
-    const proximos = riegos.filter(r => r.fecha >= hoy);
-
-
-    if (proximos.length === 0) {
-
-        listaRiegos.innerHTML =
-            "<p>No hay riegos programados.</p>";
-
-        return;
-
-    }
-
-
-    proximos.forEach(riego => {
-
-        const [año, mes, dia] =
-            riego.fecha.split("-").map(Number);
-
-        const fecha = new Date(año, mes - 1, dia);
-
-        const elemento = document.createElement("div");
-
-        elemento.classList.add("riego-item");
-
-
-        const titulo = document.createElement("strong");
-
-        titulo.textContent =
-            nombresDias[fecha.getDay()] +
-            " " + dia + " de " +
-            nombresMeses[mes - 1];
-
-
-        const hora = document.createElement("span");
-
-        hora.textContent = "Hora: " + riego.hora;
-
-
-        elemento.appendChild(titulo);
-
-        elemento.appendChild(hora);
-
-        listaRiegos.appendChild(elemento);
-
-    });
-
-}
-
-
-/* =====================================
-   CAMBIAR MES ANTERIOR
-===================================== */
-
-botonAnterior.addEventListener("click", function() {
-
-    fechaActual.setDate(1);
-
-    fechaActual.setMonth(fechaActual.getMonth() - 1);
-
-    mostrarCalendario();
-
-});
-
-
-/* =====================================
-   CAMBIAR MES SIGUIENTE
-===================================== */
-
-botonSiguiente.addEventListener("click", function() {
-
-    fechaActual.setDate(1);
-
-    fechaActual.setMonth(fechaActual.getMonth() + 1);
-
-    mostrarCalendario();
-
-});
-
-
-/* =====================================
-   INICIAR APLICACION
+   INICIAR
 ===================================== */
 
 async function actualizarPantalla() {
 
     try {
-
         await cargarRiegos();
-
     } catch (error) {
-
-        alert("No se pudieron cargar los riegos: " + error.message);
-
+        mostrarCalendario();
+        cuentaRiegos.textContent = "";
+        proximosRiegos.replaceChildren(crearCelda("li", "No se pudieron cargar los riegos: " + error.message, "mensaje-error"));
+        return;
     }
 
     mostrarCalendario();
-
     mostrarProximosRiegos();
-
 }
 
 actualizarPantalla();
-

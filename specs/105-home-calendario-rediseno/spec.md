@@ -1,6 +1,6 @@
 # 105 — Home y Calendario del rediseño
 
-Status: draft · Supersedes: 002 FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b, FR-6.a · Depends on: `104-marco-visual`, `002-calendario-home`, `101-datos-tiempo-real`
+Status: building · Supersedes: 002 FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b, FR-6.a · Depends on: `104-marco-visual`, `002-calendario-home`, `101-datos-tiempo-real`
 
 ## 1. Context and objective
 
@@ -147,4 +147,58 @@ la ventana y los éxitos no interrumpen: el calendario cambia a la vista.
 
 ### Taken while building
 
-None yet.
+**Revisión en vivo, ronda 1 (T01–T03)** — Claude, 2026-11-21, navegador de Orca (perfil aislado), backend en
+`:8000`, cuenta `alvaro.104@example.com`; tamaños y colores medidos en la página porque la ventana de Orca no
+dibujaba capturas.
+- FR-1.a, FR-1.b: sensor de temperatura 18–24 °C con una lectura de 25 °C → chip "Calor" (rojo de la maqueta
+  en claro y oscuro), "Ideal 18–24 °C"; humedad 60–80 % con 68 % → "En rango", "Ideal 60–80 %". Límites con
+  decimales: "Ideal 18,5–26,5 °C".
+- FR-1.c: `textoRango` da "Ideal desde 18 °C", "Ideal hasta 24 °C" y "Sin límites".
+- FR-1.d: la lectura recién enviada dice "recién" y cinco minutos después "hace 5 min"; la de humedad
+  "hace 3 h"; `antiguedad` a 2, 59, 61 min, 23 h 59, 24 h y 72 h da "hace 2 min", "hace 59 min", "hace 1 h",
+  "hace 23 h", "hace 1 d", "hace 3 d".
+- FR-1.e: sin condiciones, ambas tarjetas "--" y "Sin lecturas", sin rango ni antigüedad.
+- FR-2.a: con riegos de hoy a las 21:34 y de mañana a las 08:00 (21:04), la tarjeta dice "Hoy, 21:34";
+  con un riego de hoy ya pasado y otro mañana, `proximoRiego` elige el de mañana.
+- FR-2.b: "Hoy", "Mañana" y "domingo 29 de noviembre".
+- FR-2.c: "Faltan 29 min" en vivo; `textoFalta` da "Faltan 1 min", "Faltan 59 min", "Faltan 1 h",
+  "Faltan 15 h", "Faltan 47 h", "Faltan 2 días", "Faltan 3 días".
+- FR-2.d: una cuenta con solo riegos pasados muestra "No hay riegos programados.".
+- FR-2.e: "Ver calendario →" lleva a `index.html`.
+- FR-2.f: con un riego a las 21:10 y Home abierta, a las 21:10:14 la tarjeta pasó sola a "Hoy, 21:34 ·
+  Faltan 24 min", sin recargar.
+- FR-3.a: en noviembre los 20 días anteriores al 21 se ven atenuados (`--muted`); el 21 con borde de hoy.
+- FR-3.b: hora con segundos que avanza y manecillas del SVG que giran cada segundo.
+- FR-3.c: "sábado 21 de noviembre · hora del dispositivo".
+- Cortes: a 1280 px, tres columnas arriba y dos abajo, como la maqueta; a 390 px, una columna y sin scroll
+  lateral. Datos sigue mostrando "Calor" y "En rango" con `estadoLectura` desde `api.js`.
+
+**Revisión en vivo, ronda 2 (T04–T06)** — Claude, 2026-11-21, mismo entorno; peticiones contadas envolviendo
+`fetch` en la página.
+- FR-3.a: en el calendario grande, los 20 días anteriores al 21 atenuados (`--muted`) en claro y oscuro.
+- FR-4.a: el 25 con riegos a las 19:30 y 08:00 muestra "08:00" sobre "19:30" (etiquetas `--brand-2`).
+- FR-4.b: a 390 px cada riego es una marca de 32×5 px sin texto; sin scroll lateral.
+- FR-4.c: desde diciembre, "Hoy" vuelve a noviembre de 2026.
+- FR-4.d: "Toca un día para programar, editar o eliminar un riego." bajo el calendario.
+- FR-4.e: nombres accesibles "25, 2 riegos", "2, 1 riego" y "3".
+- FR-5.a: con diez riegos de hoy en adelante, "10 programados"; tras quitar uno, "9 programados".
+- FR-5.b: seis filas, la primera "21 NOV · Riego a las 21:10 · sábado" (el riego de hoy ya pasado sigue, 002 D7).
+- FR-6.a: el 25 abre "Programar riego" con "miércoles 25 de noviembre".
+- FR-6.b: "Ya programados este día (toca uno para editarlo):" y botones "08:00" y "19:30".
+- FR-6.c: un día vacío propone 08:00, "Guardar riego" y ningún "Eliminar".
+- FR-6.d: tocar "19:30" la marca presionada, carga 19:30 y muestra "Guardar cambios" y "Eliminar"; con
+  teclado, el foco queda en el botón tocado.
+- FR-6.e: con la hora borrada, "Por favor, selecciona una hora de riego." en la ventana y ninguna petición.
+- FR-6.f: guardar el 19 (pasado) deja la ventana abierta con "La fecha y hora de riego deben ser futuras";
+  con `/schedules` bloqueado, "No se pudo conectar con el servidor.".
+- FR-6.g: cambiar 19:30 a 20:15 (un PATCH), quitar ese riego (`confirm`, un PATCH `is_active:false`) y
+  programar el 30 a las 08:00 (un POST) cierran la ventana sin `alert` y el día cambia a la vista;
+  `grep -c "alert(" calendario.js` da 0.
+- FR-6.h: "Cancelar", "×" y Escape cierran sin peticiones; con Escape el foco vuelve al día pulsado. Tras
+  guardar o quitar, el calendario se rehace y el foco vuelve también al día.
+- Cortes: a 1280 px, calendario y lista en dos columnas como la maqueta; a 390 px, una columna y la ventana
+  de 354 px dentro de la pantalla.
+
+**Proposed (round 2):** "1 programado" en singular (FR-5.a dice "N programados"), "1 riego" en el nombre
+accesible (FR-4.e), y un error al cargar los riegos se muestra en la lista de próximos riegos en lugar de una
+ventana emergente (D3 lo pedía solo para guardar y quitar). ¿Se aceptan?

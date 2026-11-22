@@ -115,6 +115,15 @@ function formatearNumero(valor) {
 }
 
 
+// formatearFechaLarga(fecha) → "jueves 19 de noviembre" (spec 105 FR-2.b,
+// FR-3.c, FR-6.a). Intl pone una coma tras el día de la semana; la maqueta no.
+
+function formatearFechaLarga(fecha) {
+    return fecha.toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "long" })
+        .replace(",", "");
+}
+
+
 /* =====================================
    ESTADO DE UNA LECTURA (spec 101 FR-1.d–f, 105 FR-1.a)
 ===================================== */

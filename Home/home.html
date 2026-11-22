@@ -67,130 +67,68 @@
             </header>
 
 
-            <!-- TEMPERATURA Y HUMEDAD -->
-            <section class="indicadores-home">
+            <!-- LECTURAS Y PROXIMO RIEGO (spec 105 FR-1, FR-2) -->
+            <section class="home-top">
 
-                <div class="indicador">
-
-                    <div class="indicador-dato">
-                        <span id="temperatura">--</span>
-                        <span>°C</span>
-                    </div>
-
-                    <p>Temperatura ambiental</p>
-
+                <div class="panel lectura">
+                    <div class="row">Temperatura <span id="estadoTemperatura" class="chip none">Sin lecturas</span></div>
+                    <div class="valor"><b id="temperatura">--</b><span>°C</span></div>
+                    <small id="detalleTemperatura"></small>
                 </div>
 
+                <div class="panel lectura">
+                    <div class="row">Humedad <span id="estadoHumedad" class="chip none">Sin lecturas</span></div>
+                    <div class="valor"><b id="humedad">--</b><span>%</span></div>
+                    <small id="detalleHumedad"></small>
+                </div>
 
-                <div class="separador"></div>
-
-
-                <div class="indicador">
-
-                    <div class="indicador-dato">
-                        <span id="humedad">--</span>
-                        <span>%</span>
-                    </div>
-
-                    <p>Humedad ambiental</p>
-
+                <div class="panel proximo">
+                    <span class="eyebrow">Próximo riego</span>
+                    <span class="cuando" id="proxCuando">--</span>
+                    <span class="cuenta" id="proxCuenta"></span>
+                    <a href="../index.html">Ver calendario →</a>
                 </div>
 
             </section>
 
 
-            <p class="descripcion-home">
-                Información actual del ambiente de tus orquídeas
-            </p>
+            <!-- CALENDARIO Y RELOJ (spec 105 FR-3) -->
+            <section class="home-bottom">
 
+                <div class="panel">
 
-            <!-- SECCION INFERIOR -->
-            <section class="seccion-inferior">
-
-
-                <!-- CALENDARIO DE RIEGO -->
-                <div class="tarjeta-home calendario-home">
-
-                    <div class="titulo-tarjeta">
-
+                    <div class="panel-head">
                         <h2>Fechas de riego</h2>
-
-                        <a href="../index.html">Ver calendario</a>
-
+                        <div class="mes-nav">
+                            <button id="mesAnteriorHome" type="button" aria-label="Mes anterior">‹</button>
+                            <h3 id="mesActualHome"></h3>
+                            <button id="mesSiguienteHome" type="button" aria-label="Mes siguiente">›</button>
+                        </div>
                     </div>
 
+                    <div id="calendarioHome" class="cal"></div>
 
-                    <div class="mes-home">
-
-                        <button id="mesAnteriorHome" type="button">
-                            &lt;
-                        </button>
-
-                        <h3 id="mesActualHome"></h3>
-
-                        <button id="mesSiguienteHome" type="button">
-                            &gt;
-                        </button>
-
-                    </div>
-
-
-                    <div class="dias-semana-home">
-
-                        <span>Lun</span>
-                        <span>Mar</span>
-                        <span>Mié</span>
-                        <span>Jue</span>
-                        <span>Vie</span>
-                        <span>Sáb</span>
-                        <span>Dom</span>
-
-                    </div>
-
-
-                    <div id="calendarioHome" class="dias-mes-home">
-
-                    </div>
-
-                    <p class="leyenda-riego">
-                        <span></span>
-                        Días programados para riego
-                    </p>
+                    <p class="leyenda"><i></i> Días con riego programado</p>
 
                 </div>
 
+                <div class="panel reloj">
 
-                <!-- RELOJ -->
-                <div class="tarjeta-home reloj-home">
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                        <circle cx="50" cy="50" r="46" fill="var(--sunken)" stroke="var(--line)" stroke-width="2"/>
+                        <g id="marcasReloj" stroke="var(--muted)" stroke-linecap="round"></g>
+                        <line id="manecillaHora" x1="50" y1="50" x2="50" y2="28" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+                        <line id="manecillaMinuto" x1="50" y1="50" x2="50" y2="16" stroke="var(--fg)" stroke-width="2.5" stroke-linecap="round"/>
+                        <line id="manecillaSegundo" x1="50" y1="56" x2="50" y2="12" stroke="var(--orchid)" stroke-width="1.2" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="3" fill="var(--orchid)"/>
+                    </svg>
 
-                    <h2>Hora actual</h2>
-
-                    <div id="horaActual" class="hora-actual">
-                        00:00:00
+                    <div>
+                        <div class="hora" id="horaActual">--:--:--</div>
+                        <small id="fechaHoy"></small>
                     </div>
-
-
-                    <div class="reloj-analogico">
-
-                        <div class="marca-reloj marca-12">12</div>
-                        <div class="marca-reloj marca-3">3</div>
-                        <div class="marca-reloj marca-6">6</div>
-                        <div class="marca-reloj marca-9">9</div>
-
-                        <div id="manecillaHora" class="manecilla hora"></div>
-
-                        <div id="manecillaMinuto" class="manecilla minuto"></div>
-
-                        <div id="manecillaSegundo" class="manecilla segundo"></div>
-
-                        <div class="centro-reloj"></div>
-
-                    </div>
-
-                    <p>Hora local del dispositivo</p>
 
                 </div>
-
 
             </section>
 

@@ -62,134 +62,75 @@
             </header>
 
 
-            <!-- SECCION DEL CALENDARIO -->
-            <section class="contenido-calendario">
+            <!-- CALENDARIO Y PROXIMOS RIEGOS (spec 105 FR-4, FR-5) -->
+            <section class="cal-layout">
 
-                <div class="calendario">
+                <div class="panel">
 
-                    <div class="calendario-encabezado">
-
-                        <h2>Calendario de Riego</h2>
-
-                        <div class="navegacion-mes">
-
-                            <button id="mesAnterior">&lt;</button>
-
-                            <h3 id="mesActual"></h3>
-
-                            <button id="mesSiguiente">&gt;</button>
-
+                    <div class="panel-head">
+                        <h2 id="mesActual"></h2>
+                        <div class="mes-nav">
+                            <button id="mesAnterior" type="button" aria-label="Mes anterior">‹</button>
+                            <button id="mesHoy" class="btn" type="button">Hoy</button>
+                            <button id="mesSiguiente" type="button" aria-label="Mes siguiente">›</button>
                         </div>
-
                     </div>
 
+                    <div id="calendario" class="cal cal-grande"></div>
 
-                    <!-- DIAS DE LA SEMANA -->
-                    <div class="dias-semana">
-
-                        <div>Lun</div>
-                        <div>Mar</div>
-                        <div>Mié</div>
-                        <div>Jue</div>
-                        <div>Vie</div>
-                        <div>Sáb</div>
-                        <div>Dom</div>
-
-                    </div>
-
-
-                    <!-- DIAS DEL MES -->
-                    <div id="diasCalendario" class="dias-calendario">
-
-                    </div>
+                    <p class="leyenda">Toca un día para programar, editar o eliminar un riego.</p>
 
                 </div>
 
+                <div class="panel">
 
-                <!-- PANEL DE PROXIMOS RIEGOS -->
-                <div class="proximos-riegos">
-
-                    <h2>Próximos riegos</h2>
-
-                    <div id="listaRiegos">
-
-                        <p>No hay riegos programados.</p>
-
+                    <div class="panel-head">
+                        <h2>Próximos riegos</h2>
+                        <small id="cuentaRiegos"></small>
                     </div>
+
+                    <ul id="proximosRiegos" class="lista-riegos"></ul>
 
                 </div>
 
             </section>
 
 
-            <!-- VENTANA PARA PROGRAMAR EL RIEGO -->
-            <div id="modalRiego" class="modal">
+            <!-- VENTANA DE UN DIA (spec 105 FR-6) -->
+            <dialog id="dlgRiego" aria-labelledby="tituloRiego">
 
-                <div class="modal-contenido">
+                <!-- novalidate: la hora vacía la avisa la ventana, no el navegador (FR-6.e) -->
+                <form id="formRiego" novalidate>
 
-                    <!-- ENCABEZADO DEL MODAL -->
-                    <div class="modal-encabezado">
-
-                        <h2>Programar riego</h2>
-
-                        <button
-                            id="cerrarModal"
-                            class="cerrar-modal"
-                            type="button">
-                            &times;
-                        </button>
-
+                    <div class="dlg-head">
+                        <div>
+                            <h2 id="tituloRiego">Programar riego</h2>
+                            <p id="dlgFecha"></p>
+                        </div>
+                        <button id="cerrarRiego" class="cerrar" type="button" aria-label="Cerrar">×</button>
                     </div>
 
+                    <div id="riegosDia" hidden>
+                        <p class="ayuda">Ya programados este día (toca uno para editarlo):</p>
+                        <div id="chipsDia" class="chips-dia"></div>
+                    </div>
 
-                    <!-- FECHA SELECCIONADA -->
-                    <p id="fechaSeleccionada"></p>
-
-
-                    <!-- RIEGOS YA PROGRAMADOS ESE DIA (clic para editar) -->
-                    <div id="riegosDelDia"></div>
-
-
-                    <!-- SELECCIONAR HORA -->
-                    <label for="horaRiego">
-                        Seleccionar hora de riego:
+                    <label class="field">
+                        Hora de riego
+                        <input type="time" id="horaRiego">
                     </label>
 
-                    <input
-                        type="time"
-                        id="horaRiego"
-                    >
+                    <p id="mensajeRiego" class="mensaje-error" role="alert" hidden></p>
 
-
-                    <!-- BOTONES DEL MODAL -->
-                    <div class="modal-botones">
-
-                        <button
-                            id="eliminarRiego"
-                            class="btn-eliminar"
-                            type="button">
-                            Eliminar
-                        </button>
-
-                        <button
-                            id="cancelarRiego"
-                            class="btn-cancelar"
-                            type="button">
-                            Cancelar
-                        </button>
-
-                        <button
-                            id="guardarRiego"
-                            class="btn-guardar"
-                            type="button">
-                            Guardar riego
-                        </button>
-
+                    <div class="dlg-foot">
+                        <button id="eliminarRiego" class="btn danger" type="button" hidden>Eliminar</button>
+                        <button id="cancelarRiego" class="btn" type="button">Cancelar</button>
+                        <button id="guardarRiego" class="btn primary" type="submit">Guardar riego</button>
                     </div>
 
-                </div>
+                </form>
 
-            </div>
+            </dialog>
 
         </div>
         </main>

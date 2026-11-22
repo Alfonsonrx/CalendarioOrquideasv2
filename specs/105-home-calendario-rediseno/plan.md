@@ -1,6 +1,6 @@
 # 105 — Home y Calendario del rediseño · Implementation plan
 
-Status: draft · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
+Status: building · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
 
 Referencia visual: `docs/rediseno-maqueta.html`, vistas `#inicio` y `#calendario`, y la ventana
 `dlgRiego`. Usa el sistema de 104 (`styles.css`).

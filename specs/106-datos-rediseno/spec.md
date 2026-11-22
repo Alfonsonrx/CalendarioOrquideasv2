@@ -1,6 +1,6 @@
 # 106 — Datos del rediseño
 
-Status: draft · Supersedes: 101 FR-1.c, FR-4.a · Depends on: `104-marco-visual`, `101-datos-tiempo-real`
+Status: building · Supersedes: 101 FR-1.c, FR-4.a · Depends on: `104-marco-visual`, `101-datos-tiempo-real`
 
 ## 1. Context and objective
 
@@ -117,4 +117,27 @@ None.
 
 ### Taken while building
 
-None yet.
+**Revisión en vivo, ronda 1 (T01–T03)** — Claude, 2026-11-21, navegador de Orca (perfil aislado), backend en
+`:8000`, cuenta `alvaro.104@example.com` con sensores de temperatura 18–24 °C (25 °C), humedad 60–80 % (68 %)
+y "Temperatura vivero" desde 18 °C sin máximo y sin lecturas; capturas en oscuro a 1280 px y claro a 390 px.
+- FR-1.a: con el sensor de temperatura fuera de rango, franja roja "⚠ Atención: fuera de rango Temperatura
+  invernadero"; con valores en rango, verde con el texto de 101 FR-2.a; sin lecturas y sin sensores, gris con
+  los textos de 101 FR-2.d y FR-2.c.
+- FR-1.b: "Última lectura hace 1 h" (la más reciente de los tres sensores, de las 21:04).
+- FR-1.c: sin lecturas y sin sensores, la franja no tiene antigüedad.
+- FR-2.a: al abrir, "24 horas" presionado y "7 días" suelto, en el encabezado.
+- FR-2.b: "7 días" queda presionado, "24 horas" se suelta y el historial se vuelve a pedir; de vuelta a
+  "24 horas", al revés.
+- FR-2.c: "% · últimas 24 h" y "°C · últimas 24 h"; con 7 días, "% · últimos 7 días" y "°C · últimos 7 días".
+- FR-3.a: "Humedad invernadero", "Humedad relativa", chip "En rango", "68 %" en números grandes; la de
+  temperatura con chip "Calor" rojo.
+- FR-3.b: humedad 60–80 con 68 → franja de 60 % a 80 % de la barra y marcador en 68 %; temperatura 18–24 con
+  25 → franja de 25 % a 67,9 % y marcador en 75 %; un valor de 105 % queda en el borde (100 %).
+- FR-3.c: "mín 60 %" / "máx 80 %", "mín 18 °C" / "máx 24 °C".
+- FR-3.d: el sensor sin máximo pinta la franja hasta el borde derecho y dice "sin máximo"; uno sin límites,
+  franja completa y "21,5 °C, sin límites" como texto equivalente.
+- FR-3.e: "Última lectura 21/11 21:04:40".
+- FR-3.f: el sensor sin lecturas muestra "--", chip "Sin lecturas", barra sin marcador y "Esperando la
+  primera lectura".
+- Cortes: a 390 px la franja deja el punto junto al texto y la antigüedad debajo; sin scroll lateral. La barra
+  tiene texto equivalente ("68 %, entre 60 y 80 %").

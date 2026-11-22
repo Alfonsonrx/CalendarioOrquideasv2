@@ -1,6 +1,6 @@
 # 106 — Datos del rediseño · Implementation plan
 
-Status: draft · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
+Status: building · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
 
 Referencia visual: `docs/rediseno-maqueta.html`, vista `#datos`. Usa el sistema de 104 y `estadoLectura`
 en `api.js` (105 T01).

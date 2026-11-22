@@ -132,7 +132,7 @@ function formatearFechaLarga(fecha) {
 
 function antiguedad(iso, ahora) {
 
-    const minutos = Math.floor((ahora - Date.parse(iso)) / 60000);
+    const minutos = Math.floor((ahora - new Date(iso)) / 60000); // ISO o milisegundos
 
     if (minutos < 1) {
         return "recién";

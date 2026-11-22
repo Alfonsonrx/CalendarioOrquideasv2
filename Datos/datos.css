@@ -1,56 +1,179 @@
-
 /* =====================================
-   ESTILOS GENERALES DE LA PANTALLA DATOS
+   DATOS (spec 101, 106)
 ===================================== */
 
-/* =====================================
-   CONTENEDOR PRINCIPAL
-===================================== */
+/* ESTADO GENERAL (106 FR-1) */
 
-/* =====================================
-   BARRA LATERAL
-===================================== */
+.estado {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 500;
+}
 
-/* =====================================
-   CONTENIDO PRINCIPAL
-===================================== */
+.estado.ok   { background: var(--ok-bg);  color: var(--ok-fg); }
+.estado.hot  { background: var(--hot-bg); color: var(--hot-fg); }
+.estado.none { background: var(--sunken); color: var(--muted); }
 
-/* =====================================
-   GRAFICOS
-===================================== */
+.estado .pulse {
+    flex-shrink: 0;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 20%, transparent);
+}
+
+/* El texto ocupa lo que queda junto al punto; al angostar, la antigüedad baja */
+#textoEstado {
+    flex: 1;
+}
+
+.estado small {
+    margin-left: auto;
+    color: var(--muted);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.aviso-datos {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--hot-bg);
+    color: var(--hot-fg);
+}
+
+/* PERIODO EN EL ENCABEZADO (106 FR-2) */
+
+.periodo {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 10px;
+    background: var(--sunken);
+}
+
+.periodo button {
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.periodo button[aria-pressed="true"] {
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* TARJETAS DE SENSOR (106 FR-3) */
+
+.sensores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.sensor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.sensor-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 8px;
+}
+
+.sensor h3 {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.sensor .tipo {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.sensor.sin-lectura .valor {
+    color: var(--muted);
+}
+
+.rango {
+    position: relative;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--sunken);
+}
+
+.rango i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 2px solid var(--brand-2);
+    border-right: 2px solid var(--brand-2);
+    background: var(--band);
+}
+
+.rango b {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border: 3px solid var(--fg);
+    border-radius: 50%;
+    background: var(--surface);
+    transform: translate(-50%, -50%);
+}
+
+.rango-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.sensor footer {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* GRAFICOS (hasta la ronda 2 de 106) */
 
 .graficos {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
-    margin-bottom: 25px;
+    gap: 14px;
+    margin-bottom: 14px;
 }
-
-/* =====================================
-   TARJETAS
-===================================== */
 
 .tarjeta {
-    background-color: var(--surface);
-    border-radius: 13px;
-    padding: 25px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
-}
-
-.grafico {
-    min-height: 300px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
 }
 
 .tarjeta h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: var(--fg);
-}
-
-.grafico p {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 18px;
+    font-size: 17px;
 }
 
 .grafico canvas {
@@ -58,33 +181,16 @@
     height: 210px !important;
 }
 
-/* =====================================
-   REGISTRO HISTORICO
-===================================== */
-
-.historial {
-    width: 100%;
-}
+/* REGISTRO HISTORICO (hasta la ronda 2 de 106) */
 
 .historial h2 {
-    margin-bottom: 22px;
+    margin-bottom: 14px;
 }
-
-/* =====================================
-   TABLA
-===================================== */
 
 .tabla-contenedor {
     width: 100%;
     max-height: 24rem; /* ~6 filas; el resto se recorre con scroll */
     overflow: auto;
-}
-
-/* La cabecera queda visible al recorrer la tabla */
-thead th {
-    position: sticky;
-    top: 0;
-    background-color: var(--sunken);
 }
 
 table {
@@ -93,302 +199,65 @@ table {
     text-align: center;
 }
 
-thead {
+thead th {
+    position: sticky;
+    top: 0;
     background-color: var(--sunken);
 }
 
 th {
-    color: var(--fg);
-    font-weight: bold;
     padding: 16px 12px;
-    font-size: 14px;
     border-bottom: 2px solid var(--line);
+    font-size: 14px;
 }
 
 td {
     padding: 17px 12px;
-    font-size: 14px;
     border-bottom: 1px solid var(--line);
+    font-size: 14px;
 }
 
 tbody tr:hover {
     background-color: var(--sunken);
 }
 
-/* =====================================
-   ESTADOS AMBIENTALES
-===================================== */
-
-.estado {
+td .estado {
     display: inline-block;
+    min-width: 85px;
+    margin: 0;
     padding: 7px 15px;
     border-radius: 7px;
     font-size: 13px;
     font-weight: bold;
-    min-width: 85px;
 }
 
-.calor {
-    background-color: var(--hot-bg);
-    color: var(--hot-fg);
-}
-
-.en-rango {
-    background-color: var(--ok-bg);
-    color: var(--ok-fg);
-}
-
-.frio {
-    background-color: var(--cold-bg);
-    color: var(--cold-fg);
-}
-
-/* =====================================
-   DISEÑO RESPONSIVE
-===================================== */
-
-@media (max-width: 900px) {
-
-    .graficos {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-@media (max-width: 600px) {
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    .tarjeta {
-        padding: 17px;
-    }
-
-}
-/* =====================================
-   PANEL DE ALERTAS AMBIENTALES
-===================================== */
-
-.panel-alertas {
-    background: var(--surface);
-    padding: 25px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.panel-alertas h2 {
-    color: var(--fg);
-    margin-bottom: 18px;
-}
-
-.estado-general {
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.estado-general.adecuado {
-    background: var(--ok-bg);
-    color: var(--ok-fg);
-    border-left: 5px solid var(--brand-2);
-}
-
-.estado-general.advertencia {
-    background: var(--warn-bg);
-    color: var(--warn-fg);
-    border-left: 5px solid var(--warn-fg);
-}
-
-.indicadores-alerta {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-.indicador-alerta {
-    background: var(--sunken);
-    padding: 20px;
-    border-radius: 12px;
-}
-
-.indicador-alerta h3 {
-    color: var(--fg);
-    margin-bottom: 12px;
-}
-
-.indicador-alerta p {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.indicador-alerta span {
-    color: var(--brand-2);
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.estado-alerta.en-rango {
-    color: var(--brand-2);
-}
-
-.estado-alerta.calor,
-.estado-alerta.frio {
-    color: var(--warn-fg);
-}
-
-@media (max-width: 600px) {
-
-    .indicadores-alerta {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-/* =====================================
-   MEJORA VISUAL DE ALERTAS
-===================================== */
-
-.panel-alertas {
-    background: var(--surface);
-    padding: 25px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.panel-alertas h2 {
-    color: var(--fg);
-    margin-bottom: 18px;
-}
-
-.estado-general {
-    padding: 15px 18px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-weight: 600;
-    line-height: 1.5;
-}
-
-.estado-general.adecuado {
-    background: var(--ok-bg);
-    color: var(--ok-fg);
-    border-left: 5px solid var(--brand-2);
-}
-
-.estado-general.advertencia {
-    background: var(--warn-bg);
-    color: var(--warn-fg);
-    border-left: 5px solid var(--warn-fg);
-}
-
-.indicadores-alerta {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-}
-
-.indicador-alerta {
-    background: var(--sunken);
-    padding: 22px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-}
-
-.indicador-alerta h3 {
-    color: var(--fg);
-    margin: 0 0 14px;
-    font-size: 17px;
-}
-
-.indicador-alerta p.estado-alerta {
-    display: inline-block;
-    width: fit-content;
-    padding: 6px 12px;
-    margin: 0 0 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    background: transparent;
-}
-
-.indicador-alerta p.estado-alerta.en-rango {
-    background: var(--ok-bg);
-    color: var(--ok-fg);
-}
-
-.indicador-alerta p.estado-alerta.calor {
-    background: var(--hot-bg);
-    color: var(--hot-fg);
-}
-
-.indicador-alerta p.estado-alerta.frio {
-    background: var(--cold-bg);
-    color: var(--cold-fg);
-}
-
-.indicador-alerta span {
-    display: block;
-    color: var(--fg);
-    font-size: 25px;
-    font-weight: 700;
-}
-
-@media (max-width: 600px) {
-
-    .indicadores-alerta {
-        grid-template-columns: 1fr;
-    }
-
-}
-
-/* =====================================
-   TARJETAS POR SENSOR Y AVISOS (spec 101)
-===================================== */
-
-.indicador-alerta small {
-    display: block;
-    margin-top: 6px;
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.aviso-datos {
-    margin: 10px 0;
-    padding: 10px 14px;
-    border-radius: 8px;
-    background-color: var(--hot-bg);
-    color: var(--hot-fg);
-}
-
-.selector-periodo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-.selector-periodo select {
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-}
+td .calor    { background-color: var(--hot-bg);  color: var(--hot-fg); }
+td .en-rango { background-color: var(--ok-bg);   color: var(--ok-fg); }
+td .frio     { background-color: var(--cold-bg); color: var(--cold-fg); }
 
 .aviso-limite {
     margin-bottom: 10px;
     font-size: 13px;
     color: var(--warn-fg);
+}
+
+/* CORTES */
+
+@media (max-width: 980px) {
+
+    .graficos {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .estado {
+        flex-wrap: wrap;
+    }
+
+    .estado small {
+        flex-basis: 100%;
+        margin-left: 21px;
+    }
 }

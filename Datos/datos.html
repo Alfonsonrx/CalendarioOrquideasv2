@@ -60,26 +60,27 @@
                     <p>Lecturas de tus sensores</p>
                 </div>
                 <div class="head-tools">
+                    <!-- PERIODO DE GRAFICOS Y TABLA (spec 106 FR-2) -->
+                    <div class="periodo" role="group" aria-label="Periodo">
+                        <button id="p24" type="button" aria-pressed="true" data-horas="24">24 horas</button>
+                        <button id="p168" type="button" aria-pressed="false" data-horas="168">7 días</button>
+                    </div>
                     <div class="avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
                 </div>
             </header>
 
-            <!-- ALERTAS AMBIENTALES -->
-            <section class="panel-alertas">
+            <!-- ESTADO GENERAL (spec 106 FR-1) -->
+            <div id="estadoGeneral" class="estado none" role="status">
+                <span class="pulse"></span>
+                <span id="textoEstado">Evaluando condiciones ambientales...</span>
+                <small id="antiguedad"></small>
+            </div>
 
-                <h2>Estado del ambiente</h2>
+            <!-- Mensaje cuando el backend no responde o rechaza -->
+            <p id="avisoDatos" class="aviso-datos" role="status" hidden></p>
 
-                <div id="estadoGeneral" class="estado-general">
-                    Evaluando condiciones ambientales...
-                </div>
-
-                <!-- Mensaje cuando el backend no responde o rechaza -->
-                <p id="avisoDatos" class="aviso-datos" role="status" hidden></p>
-
-                <!-- UNA TARJETA POR SENSOR ACTIVO (se llenan desde JavaScript) -->
-                <div id="tarjetasSensores" class="indicadores-alerta"></div>
-
-            </section>
+            <!-- UNA TARJETA POR SENSOR ACTIVO (spec 106 FR-3) -->
+            <section id="tarjetasSensores" class="sensores"></section>
 
 
             <!-- GRAFICOS -->
@@ -87,9 +88,10 @@
 
                 <div class="tarjeta grafico">
 
-                    <h2>Humedad Ambiental</h2>
-
-                    <p>Registro de humedad (%)</p>
+                    <div class="panel-head">
+                        <h2>Humedad</h2>
+                        <small class="per" data-unidad="%"></small>
+                    </div>
 
                     <canvas id="graficoHumedad"></canvas>
 
@@ -98,9 +100,10 @@
 
                 <div class="tarjeta grafico">
 
-                    <h2>Temperatura Ambiental</h2>
-
-                    <p>Registro de temperatura (°C)</p>
+                    <div class="panel-head">
+                        <h2>Temperatura</h2>
+                        <small class="per" data-unidad="°C"></small>
+                    </div>
 
                     <canvas id="graficoTemperatura"></canvas>
 
@@ -113,15 +116,6 @@
             <section class="tarjeta historial">
 
                 <h2>Registro Histórico de Condiciones Ambientales</h2>
-
-                <!-- PERIODO DEL HISTORIAL (gráficos y tabla) -->
-                <div class="selector-periodo">
-                    <label for="periodo">Periodo:</label>
-                    <select id="periodo">
-                        <option value="24" selected>Últimas 24 horas</option>
-                        <option value="168">Últimos 7 días</option>
-                    </select>
-                </div>
 
                 <!-- Aviso cuando un sensor llega al tope de 1000 lecturas -->
                 <p id="avisoLimite" class="aviso-limite" hidden></p>

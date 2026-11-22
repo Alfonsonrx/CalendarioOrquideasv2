@@ -36,7 +36,7 @@ function formatearFechaHora(iso) {
         minute: "2-digit",
         second: "2-digit",
         hourCycle: "h23"
-    });
+    }).replace(",", ""); // "18/11 16:47:12" (spec 106 FR-3.e)
 }
 
 const avisoDatos = document.getElementById("avisoDatos");
@@ -65,30 +65,108 @@ async function cargarCondiciones() {
 
 const tarjetasSensores = document.getElementById("tarjetasSensores");
 
+const TIPOS_SENSOR = { humidity: "Humedad relativa", temperature: "Temperatura" };
+
+// Las clases de estadoLectura() son las de 101; las tarjetas usan los chips de 104.
+
+const CHIP_ESTADO = { "en-rango": "ok", calor: "hot", frio: "cold" };
+
+// Escala de la barra de rango (plan 106 §2): humedad de 0 a 100; temperatura
+// alrededor de sus límites y su valor, con margen para ver cuánto se sale.
+
+function escalaRango(sensor) {
+
+    if (sensor.type === "humidity") {
+        return [0, 100];
+    }
+
+    const numeros = [sensor.min_val, sensor.max_val, sensor.value].filter(n => n != null);
+
+    if (numeros.length === 0) {
+        return [0, 40];
+    }
+
+    const bajo = Math.min(...numeros);
+    const alto = Math.max(...numeros);
+    const margen = Math.max((alto - bajo) / 2, 2);
+
+    return [bajo - margen, alto + margen];
+}
+
+// Franja entre los límites (abierta hacia el lado sin límite) y marcador
+// en el último valor; fuera de los límites, el marcador queda en el borde (FR-3.b, FR-3.d).
+
+function barraRango(sensor) {
+
+    const [inicio, fin] = escalaRango(sensor);
+    const posicion = v => Math.min(Math.max((v - inicio) / (fin - inicio), 0), 1) * 100;
+
+    const barra = crearElemento("div", "", "rango");
+    barra.setAttribute("role", "img");
+
+    const franja = document.createElement("i");
+    franja.style.left = (sensor.min_val != null ? posicion(sensor.min_val) : 0) + "%";
+    franja.style.right = (100 - (sensor.max_val != null ? posicion(sensor.max_val) : 100)) + "%";
+    barra.append(franja);
+
+    if (sensor.value !== null) {
+        const marcador = document.createElement("b");
+        marcador.style.left = posicion(sensor.value) + "%";
+        barra.append(marcador);
+    }
+
+    // Texto equivalente: "68 %, entre 60 y 80 %" (spec 106 §5, Accessibility).
+
+    const conUnidad = v => formatearNumero(v) + " " + sensor.unit;
+    const valor = sensor.value !== null ? conUnidad(sensor.value) : "Sin lecturas";
+
+    const rango = sensor.min_val != null && sensor.max_val != null
+        ? "entre " + formatearNumero(sensor.min_val) + " y " + conUnidad(sensor.max_val)
+        : sensor.max_val != null ? "hasta " + conUnidad(sensor.max_val)
+        : sensor.min_val != null ? "desde " + conUnidad(sensor.min_val)
+        : "sin límites";
+
+    barra.setAttribute("aria-label", valor + ", " + rango);
+
+    return barra;
+}
+
 function mostrarTarjetas() {
 
     tarjetasSensores.replaceChildren(...condiciones.map(function(sensor) {
 
-        const tarjeta = crearElemento("div", "", "indicador-alerta");
+        const sinLectura = sensor.value === null;
+        const estado = sinLectura ? null : estadoLectura(sensor.value, sensor);
 
-        tarjeta.appendChild(crearElemento("h3", sensor.name));
+        const nombre = document.createElement("div");
+        nombre.append(
+            crearElemento("h3", sensor.name),
+            crearElemento("div", TIPOS_SENSOR[sensor.type] || sensor.type, "tipo")
+        );
 
-        if (sensor.value === null) {
+        const arriba = crearElemento("div", "", "sensor-top");
+        arriba.append(nombre, sinLectura
+            ? crearElemento("span", "Sin lecturas", "chip none")
+            : crearElemento("span", estado.texto, "chip " + CHIP_ESTADO[estado.clase]));
 
-            tarjeta.appendChild(crearElemento("p", "Sin lecturas", "estado-alerta"));
+        const valor = crearElemento("div", sinLectura ? "--" : formatearNumero(sensor.value), "valor");
 
-            tarjeta.appendChild(crearElemento("span", "--"));
-
-            return tarjeta;
+        if (!sinLectura) {
+            valor.append(crearElemento("span", sensor.unit));
         }
 
-        const estado = estadoLectura(sensor.value, sensor);
+        const etiquetas = crearElemento("div", "", "rango-labels");
+        etiquetas.append(
+            crearElemento("span", sensor.min_val != null ? "mín " + formatearNumero(sensor.min_val) + " " + sensor.unit : "sin mínimo"),
+            crearElemento("span", sensor.max_val != null ? "máx " + formatearNumero(sensor.max_val) + " " + sensor.unit : "sin máximo")
+        );
 
-        tarjeta.appendChild(crearElemento("p", estado.texto, "estado-alerta " + estado.clase));
+        const pie = crearElemento("footer", sinLectura
+            ? "Esperando la primera lectura"
+            : "Última lectura " + formatearFechaHora(sensor.recorded_at));
 
-        tarjeta.appendChild(crearElemento("span", formatearNumero(sensor.value) + " " + sensor.unit));
-
-        tarjeta.appendChild(crearElemento("small", formatearFechaHora(sensor.recorded_at)));
+        const tarjeta = crearElemento("article", "", "sensor" + (sinLectura ? " sin-lectura" : ""));
+        tarjeta.append(arriba, valor, barraRango(sensor), etiquetas, pie);
 
         return tarjeta;
     }));
@@ -101,6 +179,10 @@ function mostrarTarjetas() {
 
 const estadoGeneral = document.getElementById("estadoGeneral");
 
+const textoEstado = document.getElementById("textoEstado");
+
+const antiguedadEstado = document.getElementById("antiguedad");
+
 function mostrarEstadoGeneral() {
 
     const conLectura = condiciones.filter(sensor => sensor.value !== null);
@@ -109,33 +191,42 @@ function mostrarEstadoGeneral() {
         sensor => estadoLectura(sensor.value, sensor).clase !== "en-rango"
     );
 
+    // Verde si todo está en rango, roja si algo se sale, gris sin nada que evaluar (106 FR-1.a).
+
     let texto = "✓ Las condiciones ambientales son adecuadas para las orquídeas.";
 
-    let clase = "adecuado";
+    let clase = "ok";
 
     if (condiciones.length === 0) {
 
         texto = "No hay sensores activos. Regístralos en Configuración.";
 
-        clase = "advertencia";
+        clase = "none";
 
     } else if (conLectura.length === 0) {
 
         texto = "Aún no hay lecturas de tus sensores.";
 
-        clase = "advertencia";
+        clase = "none";
 
     } else if (fueraDeRango.length > 0) {
 
         texto = "⚠ Atención: fuera de rango " +
             fueraDeRango.map(sensor => sensor.name).join(", ");
 
-        clase = "advertencia";
+        clase = "hot";
     }
 
-    estadoGeneral.textContent = texto;
+    textoEstado.textContent = texto;
 
-    estadoGeneral.className = "estado-general " + clase;
+    estadoGeneral.className = "estado " + clase;
+
+    // La edad de la lectura más reciente: "todo en rango" puede ser de hace horas (106 FR-1.b, FR-1.c).
+
+    const masReciente = Math.max(...conLectura.map(sensor => Date.parse(sensor.recorded_at)));
+
+    antiguedadEstado.textContent = conLectura.length === 0 ? ""
+        : "Última lectura " + antiguedad(masReciente, new Date());
 }
 
 
@@ -148,7 +239,39 @@ function mostrarEstadoGeneral() {
 
 const LIMITE_LECTURAS = 1000;
 
-const periodo = document.getElementById("periodo");
+// Periodo elegido en el encabezado: 24 horas al abrir (106 FR-2.a).
+
+let horasPeriodo = 24;
+
+const botonesPeriodo = document.querySelectorAll(".periodo button");
+
+// "% · últimas 24 h", "°C · últimos 7 días" junto al título de cada gráfico (106 FR-2.c).
+
+function mostrarPeriodo() {
+
+    for (const boton of botonesPeriodo) {
+        boton.setAttribute("aria-pressed", String(Number(boton.dataset.horas) === horasPeriodo));
+    }
+
+    for (const etiqueta of document.querySelectorAll(".per")) {
+        etiqueta.textContent = etiqueta.dataset.unidad + " · " +
+            (horasPeriodo === 24 ? "últimas 24 h" : "últimos 7 días");
+    }
+}
+
+for (const boton of botonesPeriodo) {
+
+    boton.addEventListener("click", function() {
+
+        horasPeriodo = Number(boton.dataset.horas);
+
+        mostrarPeriodo();
+
+        actualizar();
+    });
+}
+
+mostrarPeriodo();
 
 let lecturas = [];        // { value, recorded_at, sensor } del periodo, más reciente primero
 
@@ -156,9 +279,7 @@ let sensoresTopados = []; // nombres de sensores que llegaron al tope
 
 async function cargarHistorial() {
 
-    const horas = Number(periodo.value);
-
-    const inicio = new Date(Date.now() - horas * 3600 * 1000).toISOString();
+    const inicio = new Date(Date.now() - horasPeriodo * 3600 * 1000).toISOString();
 
     const porSensor = await Promise.all(condiciones.map(sensor => api(
         "/sensors/" + sensor.sensor_id + "/readings" +
@@ -380,8 +501,6 @@ async function actualizar() {
         actualizar();
     }
 }
-
-periodo.addEventListener("change", actualizar);
 
 actualizar();
 

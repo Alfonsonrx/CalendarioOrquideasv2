@@ -145,6 +145,16 @@ mejor respuesta a "¿cómo está ahora?".
 - **D6 — Periodos: últimas 24 horas (al abrir) y últimos 7 días** (respuesta del dueño, 2026-11-18).
   *Descartado:* 30 días (con intervalos cortos topa las 1000 lecturas por sensor) y un rango de fechas
   libre (más pantalla para un prototipo).
+- **D7 — 106 reemplaza FR-1.c y FR-4.a** (2026-11-21, 106 rediseño).
+  - FR-1.c → 106 FR-3.f: un sensor sin lecturas muestra "--", el chip "Sin lecturas", la barra de rango sin
+    marcador y "Esperando la primera lectura".
+  - FR-4.a → 106 FR-2: el periodo se elige con los botones "24 horas" y "7 días" en el encabezado, en vez de
+    la lista "Periodo:"; los periodos (D6) y su efecto (FR-4.b) no cambian.
+
+  *Por qué:* es el rediseño aprobado (`docs/rediseno-maqueta.html`); el periodo afecta a gráficos y tabla,
+  así que va arriba y no junto a la tabla. 106 también suma la franja de color con la antigüedad (FR-1), la
+  barra de rango (FR-3), el rango ideal y el eje del periodo completo en los gráficos (FR-4), y el conteo con
+  chips en la tabla (FR-5).
 
 ### Taken while building
 

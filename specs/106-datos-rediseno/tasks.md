@@ -1,6 +1,6 @@
 # 106 — Datos del rediseño · Tasks
 
-Status: building · Spec: `spec.md` · Plan: `plan.md`
+Status: built · Spec: `spec.md` · Plan: `plan.md`
 
 Requiere 104 construido y `estadoLectura` en `api.js` (105 T01). Revisiones en vivo con backend en
 `:8000`, servidor sin caché en `:8080`, cuenta `@example.com` en un perfil aislado de Orca y el simulador
@@ -28,10 +28,10 @@ del backend (claves por tubería, nunca impresas); comparar con `docs/rediseno-m
 
 — checkpoint: Datos como la maqueta —
 
-- [ ] **T06 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-2.a, FR-2.b, FR-2.c, FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-3.f, FR-4.a, FR-4.b, FR-4.c, FR-5.a, FR-5.b
+- [x] **T06 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-2.a, FR-2.b, FR-2.c, FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-3.f, FR-4.a, FR-4.b, FR-4.c, FR-5.a, FR-5.b
   Casos de plan §5 en claro y oscuro, a 1280 y 390 px; anotados en spec §10.
   *Made when:* `sdd_check.py specs/106-datos-rediseno` lista todos los bullets como revisión en vivo.
-- [ ] **T07 — Actualizar 101** · —
+- [x] **T07 — Actualizar 101** · —
   `specs/101-datos-tiempo-real/spec.md` §10: FR-1.c y FR-4.a reemplazados por 106 (con el motivo).
   *Made when:* 101 §10 nombra 106.
 
@@ -65,3 +65,7 @@ CI: none defined (no workflow in the repo). Local: `for f in *.js */*.js; do nod
 2026-11-21 · T04 · done · franja con dos series (`fill: "-1"`, o `"start"`/`"end"` con un lado vacío), `scales.x.min/max` del periodo, marcas en horas locales con `afterBuildTicks`, colores de `--brand-2`/`--orchid`/`--band`/`--muted`/`--line`, punto para una sola lectura, `aria-label` por periodo · en vivo
 2026-11-21 · T05 · done · `#conteo` "N lecturas", estado como `.chip`, valor en `td.num`; tabla en `.tabla` de `styles.css` · en vivo
 2026-11-21 · round 2 · T04–T05 · gates green; revisión propia: una sola lectura no se veía y las marcas caían en horas sueltas (corregidos en T04); el cambio de tema llega a los gráficos en la siguiente actualización (≤ 30 s), aceptable (plan D3: colores en cada dibujo); Proposed en spec §10
+2026-11-21 · base round 3 · `35730ef`, árbol limpio
+2026-11-21 · T06 · done · capturas en claro a 1280 y oscuro a 390 px; el resto de combinaciones en las rondas 1 y 2
+2026-11-21 · T07 · done · 101 §10 D7 nombra 106
+2026-11-21 · round 3 · T06–T07 · gates green; Proposed de la ronda 2 aprobado como D5; spec `built`

@@ -1,6 +1,6 @@
 # 106 — Datos del rediseño
 
-Status: building · Supersedes: 101 FR-1.c, FR-4.a · Depends on: `104-marco-visual`, `101-datos-tiempo-real`
+Status: built · Supersedes: 101 FR-1.c, FR-4.a · Depends on: `104-marco-visual`, `101-datos-tiempo-real`
 
 ## 1. Context and objective
 
@@ -160,3 +160,9 @@ y "Temperatura vivero" desde 18 °C sin máximo y sin lecturas; capturas en oscu
   caen en horas redondas locales (cada 4 h en 24 horas, cada medianoche en 7 días) y una serie de una sola
   lectura se dibuja como punto. *Por qué:* un lado vacío no genera alertas (101 FR-1.e); las marcas
   automáticas caían en horas como 13:53, y una línea de un solo punto no se ve.
+
+**Revisión en vivo, ronda 3 (T06)** — Claude, 2026-11-21, capturas comparadas con la vista `#datos` de la
+maqueta: claro a 1280 px (franja roja, periodo en el encabezado, tres tarjetas con barra, gráficos con franja
+en humedad y sin ella en temperatura, tabla con chips y "3 lecturas") y oscuro a 390 px (gráficos apilados,
+marcas 00:00 … 20:00, tabla con scroll propio, sin scroll de la página). Junto con las rondas 1 y 2, cada
+bullet de FR-1 a FR-5 queda revisado en claro y oscuro, a 1280 y 390 px.

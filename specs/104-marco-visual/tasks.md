@@ -1,6 +1,6 @@
 # 104 — Marco visual del rediseño · Tasks
 
-Status: draft · Spec: `spec.md` · Plan: `plan.md`
+Status: built · Spec: `spec.md` · Plan: `plan.md`
 
 Las revisiones en vivo necesitan el backend en `:8000`, el servidor sin caché en `:8080` y una cuenta
 `@example.com` en un perfil aislado del navegador de Orca (la pestaña principal tiene la sesión del
@@ -34,10 +34,10 @@ dueño). Comparar siempre con `docs/rediseno-maqueta.html`.
 
 — checkpoint: marco completo —
 
-- [ ] **T08 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-1.d, FR-1.e, FR-1.f, FR-2.a, FR-2.b, FR-2.c, FR-2.d, FR-2.e, FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-4.a, FR-4.b, FR-4.c, FR-5.a, FR-5.b, FR-5.c, FR-5.d
+- [x] **T08 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-1.d, FR-1.e, FR-1.f, FR-2.a, FR-2.b, FR-2.c, FR-2.d, FR-2.e, FR-3.a, FR-3.b, FR-3.c, FR-3.d, FR-3.e, FR-4.a, FR-4.b, FR-4.c, FR-5.a, FR-5.b, FR-5.c, FR-5.d
   Casos de plan §5 en tema claro y oscuro, a 1280 y 390 px; anotados en spec §10.
   *Made when:* `sdd_check.py specs/104-marco-visual` lista todos los bullets como revisión en vivo.
-- [ ] **T09 — Actualizar 001 y 103** · —
+- [x] **T09 — Actualizar 001 y 103** · —
   `specs/001-sesion-cliente-api/spec.md` §10: FR-3.d reemplazado por 104 FR-2.d; `specs/103-notificaciones/spec.md` §10: "No leído" y la hora corta de 104 FR-4.
   *Made when:* 001 §10 y 103 §10 nombran 104.
 
@@ -74,3 +74,7 @@ CI: none defined (no workflow in the repo). Local: `for f in *.js */*.js; do nod
 2026-11-21 · T06 · done · live a 390 px (viewport móvil de Orca): Home con franja de logo y "Cerrar sesión" arriba (salir en y=12, visible) y enlaces debajo con scroll propio, sin scroll horizontal de la página; login con la presentación arriba (termina en y=366) y el formulario debajo (y=437). `grep -c "sidebar\|\.perfil"` en las tres hojas: 0 (limpieza hecha en T01). El corte de 980 px de la maqueta es del contenido (grillas de Home y Datos): queda para 105–106
 2026-11-21 · T07 · done · live: lectura 27.4 → "27,4" en Home, "27,4 °C" en la tarjeta y la tabla de Datos, ejes del gráfico "26,0 / 26,5 / 27,0" (`locale: "es-CL"` de Chart.js), y "Máx: 26,5 °C" en Configuración (máximo del sensor de prueba cambiado a 26,5 por la API)
 2026-11-21 · round 2 · T04–T07 · gates green (node --check); sdd_check: bullets de T04–T07 citados como revisión en vivo (FR-1.c, FR-1.d, FR-1.f quedan para T08); floor: sin pruebas en el repo, nada borrado ni suprimido; revisión: hace lo que piden FR-4, FR-5, FR-2.e, FR-1.e; hallazgo al backlog: mensajes de alerta del backend con punto decimal (→ backend 104)
+2026-11-21 · round 3 base · `0df8003` (work tree clean) · backend :8000, estáticos :8080
+2026-11-21 · T08 · done · barrido de 16 combinaciones (4 páginas × 2 temas × 2 anchos) sin fallos; FR-1.c con las fuentes abortadas, FR-1.f con Tab real; anotado en spec §10. Cuenta de prueba nueva porque la contraseña de la anterior se perdió con el scratchpad
+2026-11-21 · T09 · done · 001 §10 D3: reemplazada por 104 FR-2.c–d (FR-3.d sustituido); 103 §10: D6 reemplazada por 104 FR-3.b, y los cambios de 104 sobre FR-2.b, FR-2.d y FR-2.f anotados
+2026-11-21 · round 3 · T08–T09 · gates green (node --check); sdd_check: los 23 bullets citados como revisión en vivo; floor: sin pruebas en el repo, solo cambios de specs en esta ronda; D8 aprobada por el dueño; spec `built`

@@ -122,6 +122,9 @@ None.
   de la página puede leerlo; la interfaz no carga scripts de terceros salvo Chart.js desde su CDN.
 - **D3 — Cerrar sesión desde el ícono de perfil.** El ícono ya estaba en el encabezado de todas las
   páginas y no hacía nada. *Descartado:* un botón nuevo en cada encabezado: más marcado para lo mismo.
+  **Reemplazada por 104 FR-2.c–d** (2026-11-21): se cierra sesión con "Cerrar sesión" al pie de la barra
+  lateral; el ícono de perfil pasa a ser el avatar con la inicial (104 FR-3) y ya no cierra sesión.
+  FR-3.d de este spec queda sustituido por 104 FR-2.d.
 - **D4 — Tras entrar se va a Home**, no a la página que se quería abrir. *Por qué:* la sesión dura 30
   minutos y las páginas son pocas; recordar el destino es código para un caso raro.
 - **D5 — Un 401 en el inicio de sesión no es "sesión vencida"** sino "datos incorrectos" (FR-1.c). El

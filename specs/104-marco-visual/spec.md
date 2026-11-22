@@ -1,6 +1,6 @@
 # 104 — Marco visual del rediseño
 
-Status: draft · Supersedes: 001 FR-3.d · Depends on: `001-sesion-cliente-api`, `103-notificaciones`, backend `001-accounts-auth` FR-4.a (`GET /auth/me`)
+Status: built · Supersedes: 001 FR-3.d · Depends on: `001-sesion-cliente-api`, `103-notificaciones`, backend `001-accounts-auth` FR-4.a (`GET /auth/me`)
 
 ## 1. Context and objective
 
@@ -151,9 +151,10 @@ formulario. Los textos del formulario cambian con el modo, como hoy.
   contraseña; sin token o con uno inválido o vencido, rechazo de sesión (backend 001 FR-3.b–d), que el
   cliente ya maneja (001 FR-3.c).
 
-- **Proposed (round 1): D8 — La barra lateral queda fija a la ventana** (`position: sticky`, alto de la
+- **D8 — La barra lateral queda fija a la ventana** (`position: sticky`, alto de la
   ventana). La maqueta la deja crecer con la página, y en páginas largas "Cerrar sesión" (FR-2.c) quedaba
-  bajo el pliegue. *Por qué:* salir debe estar a la vista (mismo motivo que D4). Pendiente de aprobación.
+  bajo el pliegue. *Por qué:* salir debe estar a la vista (mismo motivo que D4). Propuesta en round 1,
+  aprobada por el dueño el 2026-11-21. Bajo 640 px la barra deja de ser fija (franja de FR-2.e).
 
 ### Taken while building
 
@@ -167,3 +168,12 @@ formulario. Los textos del formulario cambian con el modo, como hoy.
   14:12 · Leído", porque el backend no crea avisos con fecha pasada; clic del mouse fuera cierra),
   FR-5.a–d (1280 px y 390 px), FR-2.e (390 px, "Cerrar sesión" visible), FR-1.e (27,4 en Home, Datos
   y gráfico; 26,5 en Configuración).
+- 2026-11-21, Claude (round 3, T08), perfil aislado, cuenta `alvaro.104@example.com` ("álvaro prueba") con
+  dos sensores (27,4 °C sobre 26,5; 68 % en 60–80): barrido de las cuatro páginas en tema claro y oscuro
+  (`data-theme`) a 1280 y 390 px, 16 combinaciones — FR-1.a, FR-1.b (fondos `rgb(242, 245, 241)` y
+  `rgb(16, 26, 21)`), FR-2.a–c, FR-2.e (salir visible y sin scroll horizontal en todas), FR-3.a–b y FR-3.d
+  (avatar "Á", caso de la tilde); FR-1.d ("Calor" `rgb(181, 65, 45)` sobre `rgb(253, 229, 223)`, "En rango"
+  y "Conectado" `rgb(39, 103, 68)` sobre `rgb(224, 240, 228)`, y sus pares oscuros; frío/baja, advertencia
+  e inactivo leídos en las hojas: variables `--cold-*`, `--warn-*`, gris); FR-1.c (Google Fonts abortadas
+  en el navegador → ninguna fuente web cargada, texto visible con la del sistema); FR-1.f (Tab: enlace
+  "Datos" con contorno blanco de 2 px en la barra, campana y "Desactivar" con contorno verde de 2 px).

@@ -1,6 +1,6 @@
 # 104 — Marco visual del rediseño · Implementation plan
 
-Status: draft · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
+Status: built · Spec: `spec.md` · Reference: `specs/sdd.profile.md`
 
 Referencia visual: `docs/rediseno-maqueta.html` (la maqueta copiada; se abre en el navegador). Los
 valores de color, tipografía, radios y medidas se toman de su `<style>` tal cual.

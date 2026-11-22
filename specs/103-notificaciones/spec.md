@@ -128,6 +128,12 @@ de con una ventana emergente en cada guardado (002 §10 Known deviations).
   sus hijos con `space-between`: una campana suelta quedaría al medio. `notificaciones.js` mueve el
   perfil dentro del grupo (su clic de cierre de sesión, de `api.js`, se conserva). En Datos el título
   pasa a `.encabezado h1` en `Datos/datos.css`, sin margen propio (fuera de plan §1; consecuencia de T01).
+  **Reemplazada por 104** (2026-11-21): la campana va dentro de `.head-tools`, antes del avatar (104
+  FR-3.b); `.encabezado-acciones` y `.perfil` ya no existen.
+- **Cambios de 104 sobre este spec** (2026-11-21): un aviso pendiente dice "No leído" en vez de "Sin leer"
+  (104 FR-4.a, D6; FR-2.d sigue pidiendo un texto); la fecha de cada aviso se acorta según su antigüedad
+  (104 FR-4.b) en lugar de "DD-MM-AAAA, HH:MM" (FR-2.b sigue pidiendo fecha y hora); la lista se cierra
+  también con un clic fuera (104 FR-4.c, además de FR-2.f y Escape).
 - 2026-11-18 · Claude (navegador de Orca en un perfil aislado, backend local; cuenta de prueba nueva
   `avisos…@example.com`, riegos a las 21:29 y 21:30, sensor 13 con límites 0–1 °C y una lectura de 25 °C)
   · round 1: FR-1.a: al abrir Home hubo una petición a `/notifications?unread_only=true`. FR-1.c: sin

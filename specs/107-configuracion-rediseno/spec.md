@@ -1,6 +1,6 @@
 # 107 — Configuración del rediseño
 
-Status: draft · Supersedes: 102 FR-3.c (texto de la clave) · Depends on: `104-marco-visual`, `102-sensores-configuracion`
+Status: building · Supersedes: 102 FR-3.c (texto de la clave) · Depends on: `104-marco-visual`, `102-sensores-configuracion`
 
 ## 1. Context and objective
 
@@ -113,4 +113,36 @@ None.
 
 ### Taken while building
 
-None yet.
+**Revisión en vivo, ronda 1 (T01–T03)** — Claude, 2026-11-22, navegador de Orca (perfil aislado), backend en
+`:8000`, cuenta `alvaro.104@example.com` con sensores 15 (lectura recién enviada), 16 (última lectura de hace
+horas), 17 (sin lecturas) y 18 (desactivado); peticiones contadas envolviendo `fetch` en la página; capturas
+en claro y oscuro a 1280 px y en claro a 390 px.
+- FR-1.a: "#15 Temperatura invernadero" con chip con punto "Conectado".
+- FR-1.b: chips "Conectado" verde, "Sin señal" rojo, "Esperando la primera lectura" ámbar e "Inactivo" gris,
+  en claro y oscuro.
+- FR-1.c: "Temperatura · Wi-Fi · Cada 15 min · Mín 18 °C · Máx 24 °C"; sin máximo, "Máx —".
+- FR-1.d: la fila del sensor 18 con opacidad 0,65.
+- FR-1.e: "Qué revisar" en caja ámbar dentro de las filas 16 y 17; no en la 18 (inactiva, 102 FR-2.e).
+- FR-1.f: la página no tiene "Modificar fechas de riego"; `grep -c` en el HTML da 0.
+- FR-2.a: "+ Registrar sensor" abre "Registrar sensor" con el nombre vacío, "Cada 1 hora" y la ayuda de 102
+  FR-3.b.
+- FR-2.b: "Editar" en el 15 abre "Editar sensor #15" con nombre, 18 y 24, "Cada 15 minutos", y tipo y
+  conexión fijos (atenuados).
+- FR-2.c: los siete textos, de "Cada 1 minuto" a "Cada 6 horas".
+- FR-2.d: mínimo 95 y máximo 90 → "El límite inferior no puede ser mayor que el superior" dentro de la
+  ventana abierta, con 95 y 90 escritos.
+- FR-2.e: cambiar el nombre a "Temperatura invernadero norte" envía un PATCH, cierra la ventana, la fila
+  muestra el nombre nuevo y el foco vuelve a su "Editar".
+- FR-2.f: "Cancelar", "×" y Escape cierran sin peticiones; con Escape el foco vuelve al "Editar" que la abrió.
+- FR-3.a: registrar "Sensor prueba 107" muestra "Sensor 19 · clave nueva" con "Cárgala en el dispositivo
+  ahora. No se volverá a mostrar." y el foco en "Copiar"; `localStorage` solo guarda `token`.
+- FR-3.b: un clic real en "Copiar" cambia el botón a "Copiada"; pegado en un campo temporal, el portapapeles
+  tenía una cadena de 43 caracteres igual a la clave.
+- FR-3.c: con `navigator.clipboard.writeText` rechazando y una clave falsa, "Copiar" deja el texto
+  seleccionado y el botón sin cambiar.
+- FR-3.d: "Listo" oculta la caja y vacía la clave.
+- Cortes: a 390 px las filas pasan a una columna, la ventana mide 354 px sin scroll lateral.
+
+**Incidente en la revisión:** al pegar con `orca keypress`, la herramienta imprimió una instantánea de la
+página con la clave del sensor de prueba 19. La clave se reemplazó en el acto (`POST
+/sensors/19/ingest-key`), así que la impresa ya no sirve; la nueva no se imprimió.

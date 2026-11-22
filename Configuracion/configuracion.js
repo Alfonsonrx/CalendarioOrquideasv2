@@ -64,32 +64,33 @@ async function cargarSensores() {
 ===================================== */
 
 // Conectado = su última lectura tiene menos de dos intervalos: un envío
-// perdido no lo marca caído (102 D6).
+// perdido no lo marca caído (102 D6). La clase es la del chip: verde,
+// rojo, ámbar o gris (107 FR-1.b, plan §2).
 
 function estadoConexion(sensor) {
 
     if (!sensor.is_active) {
-        return { texto: "Inactivo", clase: "inactivo", revisar: false };
+        return { texto: "Inactivo", clase: "none", revisar: false };
     }
 
     const fecha = ultimaLectura[sensor.id];
 
     if (!fecha) {
-        return { texto: "Esperando la primera lectura", clase: "esperando", revisar: true };
+        return { texto: "Esperando la primera lectura", clase: "warn", revisar: true };
     }
 
     const antiguedad = Date.now() - Date.parse(fecha);
 
     if (antiguedad < 2 * sensor.reading_interval_minutes * 60 * 1000) {
-        return { texto: "Conectado", clase: "conectado", revisar: false };
+        return { texto: "Conectado", clase: "ok", revisar: false };
     }
 
-    return { texto: "Sin señal", clase: "desconectado", revisar: true };
+    return { texto: "Sin señal", clase: "hot", revisar: true };
 }
 
 function listaQueRevisar(sensor) {
 
-    const lista = crearElemento("ul", "", "que-revisar");
+    const lista = document.createElement("ul");
 
     const alcance = sensor.connection_type === "bluetooth"
         ? "Que esté al alcance por Bluetooth."
@@ -102,7 +103,12 @@ function listaQueRevisar(sensor) {
         "Que envíe las lecturas a la dirección del backend: " + API_URL
     ].forEach(texto => lista.appendChild(crearElemento("li", texto)));
 
-    return lista;
+    // Caja ámbar dentro de la fila (107 FR-1.e).
+
+    const caja = crearElemento("div", "", "revisar");
+    caja.append(crearElemento("strong", "Qué revisar"), lista);
+
+    return caja;
 }
 
 function textoLimite(valor, unidad) {
@@ -123,47 +129,47 @@ function mostrarSensores() {
 
     listaSensores.replaceChildren(...sensores.map(function(sensor) {
 
-        const fila = crearElemento("div", "", "fila-sensor");
-
-        const encabezado = crearElemento("div", "", "fila-sensor-encabezado");
-
-        encabezado.appendChild(crearElemento("h3", "#" + sensor.id + " · " + sensor.name));
-
         const estado = estadoConexion(sensor);
 
-        const insignia = crearElemento("span", "", "estado-conexion " + estado.clase);
+        // "#13 Nombre [● Conectado]" (107 FR-1.a); el chip dice el estado en texto.
 
-        insignia.append(crearElemento("span", "", "indicador-conexion"), estado.texto);
+        const titulo = document.createElement("h3");
+        titulo.append(
+            crearElemento("span", "#" + sensor.id, "id"),
+            crearElemento("span", sensor.name),
+            crearElemento("span", estado.texto, "chip dot " + estado.clase)
+        );
 
-        encabezado.appendChild(insignia);
-
-        fila.appendChild(encabezado);
-
-        fila.appendChild(crearElemento("p", [
+        const meta = crearElemento("div", "", "meta");
+        meta.append(...[
             NOMBRES_TIPO[sensor.type] || sensor.type,
             NOMBRES_CONEXION[sensor.connection_type] || sensor.connection_type,
-            "Intervalo: " + sensor.reading_interval_minutes + " min",
-            "Mín: " + textoLimite(sensor.min_val, sensor.unit),
-            "Máx: " + textoLimite(sensor.max_val, sensor.unit),
-            sensor.is_active ? "Activo" : "Inactivo"
-        ].join(" · "), "fila-sensor-datos"));
+            "Cada " + sensor.reading_interval_minutes + " min",
+            "Mín " + textoLimite(sensor.min_val, sensor.unit),
+            "Máx " + textoLimite(sensor.max_val, sensor.unit)
+        ].map(texto => crearElemento("span", texto)));
 
-        if (estado.revisar) {
+        const datos = document.createElement("div");
+        datos.append(titulo, meta);
 
-            fila.appendChild(crearElemento("p", "Qué revisar:", "que-revisar-titulo"));
+        const editar = botonAccion("Editar", () => abrirFormulario(sensor));
+        editar.dataset.sensor = sensor.id; // para devolverle el foco al guardar
 
-            fila.appendChild(listaQueRevisar(sensor));
-        }
-
-        const acciones = crearElemento("div", "", "acciones-sensor");
-
+        const acciones = crearElemento("div", "", "acciones");
         acciones.append(
-            botonAccion("Editar", () => abrirFormulario(sensor)),
+            editar,
             botonAccion(sensor.is_active ? "Desactivar" : "Activar", () => cambiarActivo(sensor)),
             botonAccion("Clave nueva", () => nuevaClave(sensor))
         );
 
-        fila.appendChild(acciones);
+        // Un sensor inactivo se atenúa (107 FR-1.d).
+
+        const fila = crearElemento("div", "", "fila-sensor" + (sensor.is_active ? "" : " apagado"));
+        fila.append(datos, acciones);
+
+        if (estado.revisar) {
+            fila.append(listaQueRevisar(sensor));
+        }
 
         return fila;
     }));
@@ -172,7 +178,7 @@ function mostrarSensores() {
 
 function botonAccion(texto, alPulsar) {
 
-    const boton = crearElemento("button", texto, "btn-secundario");
+    const boton = crearElemento("button", texto, "btn");
 
     boton.type = "button";
 
@@ -193,14 +199,33 @@ const claveSensor = document.getElementById("claveSensor");
 
 const claveSensorValor = document.getElementById("claveSensorValor");
 
+const copiarClave = document.getElementById("copiarClave");
+
 function mostrarClave(idSensor, clave) {
 
-    document.getElementById("claveSensorId").textContent = "Sensor " + idSensor + " · clave:";
+    document.getElementById("claveSensorTitulo").textContent = "Sensor " + idSensor + " · clave nueva";
 
     claveSensorValor.textContent = clave;
 
+    copiarClave.textContent = "Copiar";
+
     claveSensor.hidden = false;
+
+    copiarClave.focus();
 }
+
+// Al portapapeles del sistema; si el navegador no deja (sin HTTPS fuera de
+// localhost), la clave queda seleccionada para copiarla a mano (107 FR-3.b–c, plan D2).
+
+copiarClave.addEventListener("click", async function() {
+
+    try {
+        await navigator.clipboard.writeText(claveSensorValor.textContent);
+        copiarClave.textContent = "Copiada";
+    } catch {
+        getSelection().selectAllChildren(claveSensorValor);
+    }
+});
 
 document.getElementById("cerrarClave").addEventListener("click", function() {
 
@@ -213,6 +238,8 @@ document.getElementById("cerrarClave").addEventListener("click", function() {
 /* =====================================
    FORMULARIO: REGISTRAR O EDITAR UN SENSOR (FR-3, FR-4)
 ===================================== */
+
+const dlgSensor = document.getElementById("dlgSensor");
 
 const formSensor = document.getElementById("formSensor");
 
@@ -251,7 +278,7 @@ function abrirFormulario(sensor = null) {
 
     campos.conexion.disabled = sensor !== null;
 
-    document.getElementById("tituloFormulario").textContent =
+    document.getElementById("tituloSensor").textContent =
         sensor ? "Editar sensor #" + sensor.id : "Registrar sensor";
 
     document.getElementById("ayudaLimites").textContent = sensor
@@ -284,20 +311,19 @@ function abrirFormulario(sensor = null) {
 
     mostrarMensajeFormulario("");
 
-    formSensor.hidden = false;
+    dlgSensor.showModal();
 
     campos.nombre.focus();
-}
-
-function cerrarFormulario() {
-
-    formSensor.hidden = true;
 }
 
 // Sin argumentos: el evento del clic no es un sensor.
 document.getElementById("btnNuevoSensor").addEventListener("click", () => abrirFormulario());
 
-document.getElementById("cancelarSensor").addEventListener("click", cerrarFormulario);
+// Cancelar, × y Escape (nativo de <dialog>) cierran sin enviar nada (107 FR-2.f).
+
+document.getElementById("cancelarSensor").addEventListener("click", () => dlgSensor.close());
+
+document.getElementById("cerrarSensor").addEventListener("click", () => dlgSensor.close());
 
 // Un límite vacío se omite: el backend pone el del tipo (102 D4).
 
@@ -361,20 +387,30 @@ formSensor.addEventListener("submit", async function(evento) {
 
     } catch (error) {
 
-        // Lo escrito queda en el formulario para corregirlo (FR-3.e, FR-4.e).
+        // Dentro de la ventana, con lo escrito, para corregirlo (102 FR-3.e, FR-4.e; 107 FR-2.d).
 
         mostrarMensajeFormulario(error.message);
 
         return;
     }
 
-    cerrarFormulario();
+    dlgSensor.close(); // 107 FR-2.e
+
+    const editado = sensorEnEdicion;
+
+    await actualizarPantalla();
+
+    // La lista se rehízo: el foco va a la clave nueva o al "Editar" que abrió la ventana.
 
     if (creado) {
         mostrarClave(creado.id, creado.ingest_key);
-    }
+    } else if (editado) {
+        const boton = listaSensores.querySelector(`[data-sensor="${editado.id}"]`);
 
-    await actualizarPantalla();
+        if (boton) {
+            boton.focus();
+        }
+    }
 });
 
 

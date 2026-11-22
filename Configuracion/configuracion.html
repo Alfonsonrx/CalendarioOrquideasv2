@@ -67,136 +67,104 @@
             </header>
 
 
-            <!-- MIS SENSORES (spec 102) -->
-            <section class="tarjeta-configuracion">
+            <!-- MIS SENSORES (spec 102, 107) -->
+            <section class="panel">
 
-                <div class="titulo-configuracion">
-
+                <div class="panel-head">
                     <div>
                         <h2>Mis sensores</h2>
-                        <p>
-                            Registra tus sensores, elige cada cuánto miden
-                            y revisa si están enviando datos.
-                        </p>
+                        <small>Registra tus sensores, elige cada cuánto miden y revisa si están enviando datos.</small>
                     </div>
-
-                    <div class="icono-seccion">
-                        📡
-                    </div>
-
+                    <button id="btnNuevoSensor" class="btn primary" type="button">+ Registrar sensor</button>
                 </div>
 
                 <p id="mensajeSensores" class="mensaje-error" role="status" hidden></p>
 
-                <div id="listaSensores" class="lista-sensores"></div>
-
-
-                <!-- CLAVE DEL SENSOR: se muestra una sola vez (FR-3.c, FR-6.b) -->
-                <div id="claveSensor" class="caja-clave" role="status" hidden>
-
-                    <p id="claveSensorId"></p>
-
-                    <code id="claveSensorValor"></code>
-
-                    <p>Cópiala en el dispositivo: no se volverá a mostrar.</p>
-
-                    <button id="cerrarClave" class="btn-secundario" type="button">
-                        Listo
-                    </button>
-
+                <!-- CLAVE DEL SENSOR: se muestra una sola vez (102 FR-3.c, FR-6.b; 107 FR-3) -->
+                <div id="claveSensor" class="clave" role="status" hidden>
+                    <strong id="claveSensorTitulo"></strong>
+                    <div class="clave-row">
+                        <code id="claveSensorValor"></code>
+                        <button id="copiarClave" class="btn" type="button">Copiar</button>
+                        <button id="cerrarClave" class="btn" type="button">Listo</button>
+                    </div>
+                    <small>Cárgala en el dispositivo ahora. No se volverá a mostrar.</small>
                 </div>
 
+                <div id="listaSensores" class="filas-sensor"></div>
 
-                <button id="btnNuevoSensor" class="btn-principal" type="button">
-                    Registrar sensor
-                </button>
+            </section>
 
 
-                <!-- FORMULARIO: REGISTRAR O EDITAR UN SENSOR -->
-                <form id="formSensor" class="formulario-sensor" hidden>
+            <!-- VENTANA: REGISTRAR O EDITAR UN SENSOR (107 FR-2) -->
+            <dialog id="dlgSensor" aria-labelledby="tituloSensor">
 
-                    <h3 id="tituloFormulario">Registrar sensor</h3>
+                <form id="formSensor">
 
-                    <label for="nombreSensor">Nombre:</label>
-                    <input type="text" id="nombreSensor" required maxlength="100">
+                    <div class="dlg-head">
+                        <h2 id="tituloSensor">Registrar sensor</h2>
+                        <button id="cerrarSensor" class="cerrar" type="button" aria-label="Cerrar">×</button>
+                    </div>
 
-                    <label for="tipoSensor">Tipo:</label>
-                    <select id="tipoSensor">
-                        <option value="humidity">Humedad</option>
-                        <option value="temperature">Temperatura</option>
-                    </select>
+                    <label class="field">
+                        Nombre
+                        <input type="text" id="nombreSensor" required maxlength="100" placeholder="Ej.: Humedad invernadero">
+                    </label>
 
-                    <label for="conexionSensor">Conexión:</label>
-                    <select id="conexionSensor">
-                        <option value="wifi">Wi-Fi</option>
-                        <option value="bluetooth">Bluetooth</option>
-                    </select>
+                    <div class="field-row">
+                        <label class="field">
+                            Tipo
+                            <select id="tipoSensor">
+                                <option value="humidity">Humedad</option>
+                                <option value="temperature">Temperatura</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            Conexión
+                            <select id="conexionSensor">
+                                <option value="wifi">Wi-Fi</option>
+                                <option value="bluetooth">Bluetooth</option>
+                            </select>
+                        </label>
+                    </div>
 
                     <!-- Frecuencia del registro histórico (RF5, 102 D5) -->
-                    <label for="intervaloSensor">Intervalo de lectura:</label>
-                    <select id="intervaloSensor">
-                        <option value="1">Cada 1 minuto</option>
-                        <option value="5">Cada 5 minutos</option>
-                        <option value="15">Cada 15 minutos</option>
-                        <option value="30">Cada 30 minutos</option>
-                        <option value="60" selected>Cada 1 hora</option>
-                        <option value="120">Cada 2 horas</option>
-                        <option value="360">Cada 6 horas</option>
-                    </select>
+                    <label class="field">
+                        Intervalo de lectura
+                        <select id="intervaloSensor">
+                            <option value="1">Cada 1 minuto</option>
+                            <option value="5">Cada 5 minutos</option>
+                            <option value="15">Cada 15 minutos</option>
+                            <option value="30">Cada 30 minutos</option>
+                            <option value="60" selected>Cada 1 hora</option>
+                            <option value="120">Cada 2 horas</option>
+                            <option value="360">Cada 6 horas</option>
+                        </select>
+                    </label>
 
-                    <label for="minSensor">Mínimo:</label>
-                    <input type="number" id="minSensor" step="0.01">
+                    <div class="field-row">
+                        <label class="field">
+                            Mínimo
+                            <input type="number" id="minSensor" step="0.01">
+                        </label>
+                        <label class="field">
+                            Máximo
+                            <input type="number" id="maxSensor" step="0.01">
+                        </label>
+                    </div>
 
-                    <label for="maxSensor">Máximo:</label>
-                    <input type="number" id="maxSensor" step="0.01">
+                    <p id="ayudaLimites" class="ayuda"></p>
 
-                    <p id="ayudaLimites" class="ayuda-limites"></p>
+                    <p id="mensajeFormulario" class="mensaje-error" role="alert" hidden></p>
 
-                    <p id="mensajeFormulario" class="mensaje-error" role="status" hidden></p>
-
-                    <div class="botones-formulario">
-
-                        <button id="cancelarSensor" class="btn-secundario" type="button">
-                            Cancelar
-                        </button>
-
-                        <button class="btn-principal" type="submit">
-                            Guardar
-                        </button>
-
+                    <div class="dlg-foot">
+                        <button id="cancelarSensor" class="btn" type="button">Cancelar</button>
+                        <button class="btn primary" type="submit">Guardar</button>
                     </div>
 
                 </form>
 
-            </section>
-
-
-            <!-- MODIFICAR FECHAS DE RIEGO -->
-            <section class="tarjeta-configuracion">
-
-                <div class="titulo-configuracion">
-
-                    <div>
-                        <h2>Modificar fechas de riego</h2>
-
-                        <p>
-                            Administra los días y horarios de riego
-                            de tus orquídeas.
-                        </p>
-                    </div>
-
-                    <div class="icono-seccion">
-                        📅
-                    </div>
-
-                </div>
-
-                <a href="../index.html" class="btn-principal enlace-boton">
-                    Ir al calendario de riego
-                </a>
-
-            </section>
-
+            </dialog>
 
         </div>
         </main>

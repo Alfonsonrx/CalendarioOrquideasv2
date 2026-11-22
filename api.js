@@ -116,6 +116,34 @@ function formatearNumero(valor) {
 
 
 /* =====================================
+   ESTADO DE UNA LECTURA (spec 101 FR-1.d–f, 105 FR-1.a)
+===================================== */
+
+// Mismos bordes que las alertas del backend: los límites cuentan como
+// "en rango" y un límite vacío no limita ese lado (backend 104 D5).
+
+const NOMBRES_FUERA_DE_RANGO = {
+    humidity: { bajo: "Baja", alto: "Alta" },
+    temperature: { bajo: "Frío", alto: "Calor" }
+};
+
+function estadoLectura(valor, sensor) {
+
+    const nombres = NOMBRES_FUERA_DE_RANGO[sensor.type] || { bajo: "Bajo", alto: "Alto" };
+
+    if (sensor.min_val != null && valor < sensor.min_val) {
+        return { texto: nombres.bajo, clase: "frio" };
+    }
+
+    if (sensor.max_val != null && valor > sensor.max_val) {
+        return { texto: nombres.alto, clase: "calor" };
+    }
+
+    return { texto: "En rango", clase: "en-rango" };
+}
+
+
+/* =====================================
    AVATAR DEL ENCABEZADO (spec 104 FR-3.c–e)
 ===================================== */
 

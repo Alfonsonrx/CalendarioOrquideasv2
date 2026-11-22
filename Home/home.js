@@ -276,27 +276,6 @@ function textoRango(sensor) {
     return "Sin límites";
 }
 
-// "recién", "hace N min", "hace N h", "hace N d" (FR-1.d).
-
-function antiguedad(iso, ahora) {
-
-    const minutos = Math.floor((ahora - Date.parse(iso)) / 60000);
-
-    if (minutos < 1) {
-        return "recién";
-    }
-
-    if (minutos < 60) {
-        return "hace " + minutos + " min";
-    }
-
-    if (minutos < 24 * 60) {
-        return "hace " + Math.floor(minutos / 60) + " h";
-    }
-
-    return "hace " + Math.floor(minutos / 1440) + " d";
-}
-
 function mostrarLectura(lectura, idValor, idEstado, idDetalle) {
 
     const estado = document.getElementById(idEstado);

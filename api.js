@@ -125,6 +125,31 @@ function formatearFechaLarga(fecha) {
 
 
 /* =====================================
+   ANTIGUEDAD DE UNA LECTURA
+===================================== */
+
+// "recién", "hace N min", "hace N h", "hace N d" (spec 105 FR-1.d, 106 FR-1.b).
+
+function antiguedad(iso, ahora) {
+
+    const minutos = Math.floor((ahora - Date.parse(iso)) / 60000);
+
+    if (minutos < 1) {
+        return "recién";
+    }
+
+    if (minutos < 60) {
+        return "hace " + minutos + " min";
+    }
+
+    if (minutos < 24 * 60) {
+        return "hace " + Math.floor(minutos / 60) + " h";
+    }
+
+    return "hace " + Math.floor(minutos / 1440) + " d";
+}
+
+/* =====================================
    ESTADO DE UNA LECTURA (spec 101 FR-1.d–f, 105 FR-1.a)
 ===================================== */
 

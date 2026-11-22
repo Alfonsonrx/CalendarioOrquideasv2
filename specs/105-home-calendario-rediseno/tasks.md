@@ -1,6 +1,6 @@
 # 105 — Home y Calendario del rediseño · Tasks
 
-Status: building · Spec: `spec.md` · Plan: `plan.md`
+Status: built · Spec: `spec.md` · Plan: `plan.md`
 
 Requiere 104 construido (sistema en `styles.css`, marco en las páginas). Revisiones en vivo con backend en
 `:8000`, servidor sin caché en `:8080`, cuenta `@example.com` en un perfil aislado de Orca; comparar con
@@ -31,10 +31,10 @@ Requiere 104 construido (sistema en `styles.css`, marco en las páginas). Revisi
 
 — checkpoint: Calendario como la maqueta —
 
-- [ ] **T07 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-1.d, FR-1.e, FR-2.a, FR-2.b, FR-2.c, FR-2.d, FR-2.e, FR-2.f, FR-3.a, FR-3.b, FR-3.c, FR-4.a, FR-4.b, FR-4.c, FR-4.d, FR-4.e, FR-5.a, FR-5.b, FR-6.a, FR-6.b, FR-6.c, FR-6.d, FR-6.e, FR-6.f, FR-6.g, FR-6.h
+- [x] **T07 — Revisión en vivo** · FR-1.a, FR-1.b, FR-1.c, FR-1.d, FR-1.e, FR-2.a, FR-2.b, FR-2.c, FR-2.d, FR-2.e, FR-2.f, FR-3.a, FR-3.b, FR-3.c, FR-4.a, FR-4.b, FR-4.c, FR-4.d, FR-4.e, FR-5.a, FR-5.b, FR-6.a, FR-6.b, FR-6.c, FR-6.d, FR-6.e, FR-6.f, FR-6.g, FR-6.h
   Casos de plan §5 en claro y oscuro, a 1280 y 390 px; anotados en spec §10.
   *Made when:* `sdd_check.py specs/105-home-calendario-rediseno` lista todos los bullets como revisión en vivo.
-- [ ] **T08 — Actualizar 002** · —
+- [x] **T08 — Actualizar 002** · —
   `specs/002-calendario-home/spec.md` §10: FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b y FR-6.a reemplazados por 105 (con el motivo).
   *Made when:* 002 §10 nombra 105.
 
@@ -70,3 +70,7 @@ CI: none defined (no workflow in the repo). Local: `for f in *.js */*.js; do nod
 2026-11-21 · T05 · done · "N programados" y seis filas `.fecha-box` · en vivo
 2026-11-21 · T06 · done · `<dialog id="dlgRiego">` con `novalidate`, chips con `aria-pressed` marcados en su lugar, 08:00 por defecto, errores en `#mensajeRiego`, botones deshabilitados durante la petición, foco al día tras guardar; 0 `alert(` · en vivo
 2026-11-21 · round 2 · T04–T06 · gates green; revisión propia: el foco se perdía al rehacer chips y calendario (corregido en T06); singular y error de carga como Proposed en spec §10
+2026-11-21 · base round 3 · `364d73c`; sin confirmar: `README.md` y `servidor.py` (guía y servidor sin caché, pedido del dueño)
+2026-11-21 · T07 · done · capturas en claro y oscuro a 1280 y 390 px; el campo de hora se ve en el formato del navegador ("08:00 AM" en un navegador en inglés), no se controla desde la página
+2026-11-21 · T08 · done · 002 §10 D9 nombra 105
+2026-11-21 · round 3 · T07–T08 · gates green; Proposed de la ronda 2 aprobado como D6; spec `built`

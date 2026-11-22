@@ -163,6 +163,19 @@ None.
   la lista de avisos, no al guardar un riego). *Por qué:* un recordatorio no espera a que la persona abra
   el calendario, y pedir el permiso al guardar interrumpía y, bloqueado, avisaba en cada guardado.
   `calendario.js` ya no tiene ese código.
+- **D9 — 105 reemplaza FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b y FR-6.a** (2026-11-21, 105 rediseño).
+  - FR-2.b → 105 FR-6.c: un riego nuevo propone las 08:00 en vez de la hora vacía (105 D2).
+  - FR-2.c → 105 FR-6.d: "Guardar cambios" en vez de "Actualizar riego" (105 D4).
+  - FR-3.a, FR-3.d → 105 FR-6.e, FR-6.f: la hora vacía y el rechazo del backend se muestran dentro de la
+    ventana, no en una ventana emergente (105 D3).
+  - FR-3.e, FR-4.b → 105 FR-6.g: guardar, cambiar o quitar cierra la ventana sin mensaje; el calendario
+    muestra el cambio (105 D3). Se conserva la confirmación de FR-5.a.
+  - FR-6.a → 105 FR-5: el conteo "N programados" y seis filas con día, mes abreviado, "Riego a las HH:MM"
+    y día de la semana.
+
+  *Por qué:* es el rediseño aprobado (`docs/rediseno-maqueta.html`); un error junto al campo se corrige sin
+  cerrar nada y un éxito ya se ve en el calendario. D7 sigue para la lista; el próximo riego de Home sí
+  compara la hora, con el reloj del dispositivo (105 D1).
 
 ### Known deviations
 

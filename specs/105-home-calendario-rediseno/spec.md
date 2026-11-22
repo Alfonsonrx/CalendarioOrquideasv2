@@ -1,6 +1,6 @@
 # 105 — Home y Calendario del rediseño
 
-Status: building · Supersedes: 002 FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b, FR-6.a · Depends on: `104-marco-visual`, `002-calendario-home`, `101-datos-tiempo-real`
+Status: built · Supersedes: 002 FR-2.b, FR-2.c, FR-3.a, FR-3.d, FR-3.e, FR-4.b, FR-6.a · Depends on: `104-marco-visual`, `002-calendario-home`, `101-datos-tiempo-real`
 
 ## 1. Context and objective
 
@@ -199,6 +199,14 @@ dibujaba capturas.
 - Cortes: a 1280 px, calendario y lista en dos columnas como la maqueta; a 390 px, una columna y la ventana
   de 354 px dentro de la pantalla.
 
-**Proposed (round 2):** "1 programado" en singular (FR-5.a dice "N programados"), "1 riego" en el nombre
-accesible (FR-4.e), y un error al cargar los riegos se muestra en la lista de próximos riegos en lugar de una
-ventana emergente (D3 lo pedía solo para guardar y quitar). ¿Se aceptan?
+- **D6 — Singular y error de carga** (propuesta de la ronda 2, aprobada por el dueño el 2026-11-21). "1
+  programado" (FR-5.a) y "1 riego" en el nombre accesible (FR-4.e) van en singular; si los riegos no se
+  pueden leer, el error se muestra en la lista de próximos riegos en vez de una ventana emergente. *Por qué:*
+  "1 programados" es un error de español, y D3 quita las ventanas emergentes de esta página también al cargar.
+
+**Revisión en vivo, ronda 3 (T07)** — Claude, 2026-11-21, capturas del navegador de Orca (perfil aislado)
+comparadas con la maqueta: Home claro a 1280 px (tres tarjetas arriba, calendario con días pasados atenuados
+y el 21 con borde, reloj con fecha), Calendario oscuro a 1280 px (horas en cada día, lista "10
+programados" con seis filas) y su ventana abierta con "08:00" presionado, "Guardar cambios" y "Eliminar";
+Calendario claro y Home oscuro a 390 px (marcas sin hora, una columna, sin scroll lateral). Junto con las
+rondas 1 y 2, cada bullet de FR-1 a FR-6 queda revisado en claro y oscuro, a 1280 y 390 px.
